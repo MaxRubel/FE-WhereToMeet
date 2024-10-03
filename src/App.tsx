@@ -1,17 +1,19 @@
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './components/Home/Home'
+import { useAuth } from './context/auth/auth'
+import LoginForm from './components/forms/LoginForm/LoginForm'
+import RegistrationForm from './components/forms/RegistrationForm/RegistrationForm'
+import Router from './Route'
 
 function App() {
+  const { user } = useAuth()
 
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
-  )
+  if (user === null) {
+    return <LoginForm />
+  } else if (user === "unregistered") {
+    return <RegistrationForm />
+  } else {
+    return <Router />
+  }
 }
 
 export default App
