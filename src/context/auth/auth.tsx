@@ -1,11 +1,15 @@
-import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
+import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction, ReactNode } from "react";
 import { UserCredential as FirebaseUser } from 'firebase/auth';
 
 type CustomUser = null | "unregistered" | FirebaseUser;
 
-interface AuthContextType {
+type AuthContextType = {
   user: CustomUser;
   setUser: Dispatch<SetStateAction<CustomUser>>;
+}
+
+type AuthContextProviderProps = {
+  children: ReactNode;
 }
 
 const authContext = createContext<AuthContextType>({
@@ -13,8 +17,8 @@ const authContext = createContext<AuthContextType>({
   setUser: () => { }
 });
 
-//@ts-expect-error no need to check children
-export default function AuthContextProvider({ children }) {
+
+export default function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<CustomUser>(null);
 
   useEffect(() => {
