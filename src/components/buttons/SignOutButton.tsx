@@ -8,7 +8,7 @@ export default function SignOutButton() {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
-      setUser(null)
+      setUser("notLoggedIn")
       localStorage.setItem("user", "");
     } catch (error) {
       console.error("Error signing out", error);

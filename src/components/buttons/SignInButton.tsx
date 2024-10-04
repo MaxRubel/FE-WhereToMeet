@@ -16,6 +16,7 @@ export default function SignInButton() {
       if (googleUser) {
         //@ts-ignore
         setUser(googleUser.user)
+        localStorage.setItem("user", JSON.stringify(googleUser.user))
         checkUser({ userId: googleUser.user.uid }).then((resp) => {
           console.log(resp)
           if (resp.userExists) {
@@ -23,7 +24,6 @@ export default function SignInButton() {
           } else {
             setUser("unregistered")
           }
-          localStorage.setItem("user", JSON.stringify(googleUser.user))
         })
       }
     }

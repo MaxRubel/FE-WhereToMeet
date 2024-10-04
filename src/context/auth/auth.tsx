@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, Dispatch, SetStateActio
 import { UserCredential as FirebaseUser } from 'firebase/auth';
 import { checkUser } from "../../api/users";
 
-type CustomUser = null | "unregistered" | FirebaseUser;
+type CustomUser = null | "notLoggedIn" | "unregistered" | FirebaseUser;
 
 type AuthContextType = {
   user: CustomUser;
@@ -27,7 +27,6 @@ export default function AuthContextProvider({ children }: AuthContextProviderPro
     if (user) {
       const parsedUser = JSON.parse(user)
       setUser(parsedUser)
-
       checkUser({ userId: parsedUser.uid }).then((resp) => {
         console.log(resp)
         if (resp.userExists) {
@@ -36,6 +35,8 @@ export default function AuthContextProvider({ children }: AuthContextProviderPro
           setUser("unregistered")
         }
       })
+    } else {
+      setUser("notLoggedIn")
     }
   }, [])
 
