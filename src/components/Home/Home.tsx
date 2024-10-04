@@ -1,23 +1,35 @@
-import { signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '../../context/auth/firebase';
-import { useAuth } from '../../context/auth/auth';
+import { RefObject, useRef } from 'react';
+import SignOutButton from '../buttons/SignOutButton';
+
+const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER
 
 export default function Home() {
-  const { setUser } = useAuth()
+  const buttonRef: RefObject<HTMLButtonElement> = useRef(null);
 
-  const signOut = async () => {
+  const handleTestEndpoint = async () => {
     try {
-      await firebaseSignOut(auth);
-      setUser(null)
-    } catch (error) {
-      console.error("Error signing out", error);
+      const resp = await fetch(endpoint)
+      console.warn(resp)
+      if (buttonRef.current) {
+        buttonRef.current.style.backgroundColor = "Green"
+        buttonRef.current.style.color = "white"
+      }
+    } catch (err) {
+      console.error("Not connecting to endpoint: ", err)
+      if (buttonRef.current) {
+        buttonRef.current.style.backgroundColor = "red"
+        buttonRef.current.style.color = "white"
+      }
     }
-  };
+  }
 
   return (
     <div>
       <h1>Welcome!</h1>
-      <button onClick={signOut}>Sign Out</button>
+      <button onClick={handleTestEndpoint} ref={buttonRef}>
+        Test Server Endpoint
+      </button>
+      <SignOutButton />
     </div>
   )
 }

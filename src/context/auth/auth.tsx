@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction, ReactNode } from "react";
 import { UserCredential as FirebaseUser } from 'firebase/auth';
+import { checkUser } from "../../api/users";
 
 type CustomUser = null | "unregistered" | FirebaseUser;
 
@@ -23,7 +24,19 @@ export default function AuthContextProvider({ children }: AuthContextProviderPro
 
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) { setUser(JSON.parse(user)) }
+    if (user) {
+      const parsedUser = JSON.parse(user)
+      setUser(parsedUser)
+
+      checkUser({ userId: parsedUser.uid }).then((resp) => {
+        console.log(resp)
+        if (resp.userExists) {
+          setUser(resp.user)
+        } else {
+          setUser("unregistered")
+        }
+      })
+    }
   }, [])
 
   return (

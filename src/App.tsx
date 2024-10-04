@@ -11,7 +11,8 @@ function App() {
     return <LoginForm />
   } else if (user === "unregistered") {
     return <RegistrationForm />
-  } else {
+    //@ts-ignore
+  } else if (user._id) {
     return <Router />
   }
 }
