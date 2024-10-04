@@ -15,9 +15,8 @@ export async function checkUser(payload: checkUserType) {
     })
     const parsed = await resp.json()
     return parsed
-
   } catch (err: any) {
-    throw new Error(err)
+    console.error(err)
   }
 
 }

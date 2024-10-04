@@ -28,7 +28,6 @@ export default function AuthContextProvider({ children }: AuthContextProviderPro
       const parsedUser = JSON.parse(user)
       setUser(parsedUser)
       checkUser({ userId: parsedUser.uid }).then((resp) => {
-        console.log(resp)
         if (resp.userExists) {
           setUser(resp.user)
         } else {
