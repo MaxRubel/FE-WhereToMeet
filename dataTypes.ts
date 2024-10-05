@@ -7,7 +7,7 @@ export type User = {
   address: {
     street: string;
     zipcode: number;
-    city: string
+    city: string;
     state: string;
     private: boolean;
     coordinates: {
