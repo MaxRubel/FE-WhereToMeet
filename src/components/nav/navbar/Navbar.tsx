@@ -37,32 +37,51 @@ export default function NavBar() {
   }, [])
 
   return (
-    <div className="nav-bar-container">
-      <div className="logo">
+    <nav className="nav-bar-container" role="navigation" aria-label="Main Navigation">
+      <div className="logo" role="banner">
         MeetUp
       </div>
       <div>
-        <ul className="nav-list">
-          <li className="nav-link">Groups</li>
-          <li className="nav-link">Events</li>
+        <ul className="nav-list" role="menubar">
+          <li className="nav-link" role="menuitem" tabIndex={0}>Groups</li>
+          <li className="nav-link" role="menuitem" tabIndex={0}>Events</li>
         </ul>
       </div>
       <div className="navbar-right">
-        <button id="nav-button" className="clear-button grey-hover"
+        <button
+          id="nav-button"
+          className="clear-button grey-hover"
+          aria-haspopup="true"
+          aria-expanded={settingsOpen}
+          aria-controls="settings-menu"
           onClick={() => {
-            setSettingsOpen((preVal) => !preVal)
-          }}>
-          <PersonRound size={"22"} />
+            setSettingsOpen((prevVal) => !prevVal)
+          }}
+        >
+          <PersonRound size={"22"} aria-hidden="true" />
+          <span className="visually-hidden">User Settings</span>
         </button>
-        <div className="settings-menu-nav"
-          style={{ display: settingsOpen ? "block" : "none" }}>
-          <button id="nav-button" className="nav-button">Edit Profile</button>
-          <button id="nav-button" className="nav-button" onClick={signOut}>
+        <div
+          id="settings-menu"
+          className="settings-menu-nav"
+          role="menu"
+          aria-labelledby="nav-button"
+          style={{ display: settingsOpen ? "block" : "none" }}
+        >
+          <button id="edit-profile-button" className="nav-button" role="menuitem">
+            Edit Profile
+          </button>
+          <button
+            id="sign-out-button"
+            className="nav-button"
+            onClick={signOut}
+            role="menuitem"
+          >
             Sign Out
           </button>
         </div>
       </div>
-    </div>
+    </nav>
 
   )
 }
