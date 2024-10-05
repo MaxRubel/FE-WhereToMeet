@@ -1,12 +1,13 @@
 // -----main types-----
-export type user = {
+export type User = {
   userId: string; //primary key
   name: string;
   phone: number;
   email: string;
   address: {
-    name: string;
+    street: string;
     zipcode: number;
+    city: string;
     state: string;
     private: boolean;
     coordinates: {
@@ -17,7 +18,7 @@ export type user = {
   friends: string[];
 };
 
-export type group = {
+export type Group = {
   groupId: string; //primary key
   ownerId: string; //foreign key
   name: string;
@@ -25,21 +26,21 @@ export type group = {
   members: string[]; //array of userIds
 };
 
-export type event = {
+export type Event = {
   eventId: string; //primary key
   ownerId: string; //foreign key
   groupId: string; //foreign key
 
   description: string;
-  location: location;
+  location: Location;
   time: string; // datetime string
 
-  suggestions: location[];
-  messages: message[];
+  suggestions: Location[];
+  messages: Message[];
 };
 
 //------ sub-types------
-export type location = {
+export type Location = {
   name: string;
   url: string;
   address: {
@@ -53,9 +54,9 @@ export type location = {
   votes: vote[];
 };
 
-export type message = {
+export type Message = {
   messageId: string;
-  userId: user;
+  userId: string;
   name: string;
   email: string;
   message: string;
