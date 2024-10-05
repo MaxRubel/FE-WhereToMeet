@@ -3,7 +3,7 @@ import { RegisterUserForm } from "@/components/forms/RegistrationForm/Registrati
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
 type checkUserType = {
-  userId: string;
+  uid: string;
 };
 
 export function checkUser(payload: checkUserType) {
@@ -38,6 +38,7 @@ export function registerUser(payload: RegisterUserForm) {
 
 //  Delete user -- USES THE GOOGLE-AUTH UID
 export function deleteUser(id: string) {
+  console.log({ id });
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users/${id}`, {
       method: "DELETE",

@@ -17,11 +17,12 @@
   margin-bottom: 20px;
 }
 .form-label {
-  display: block;
+  display: flex;
   margin-bottom: 5px;
   font-weight: bold;
   color: #555;
   text-align: left;
+  gap: 0.5em;
 }
 .form-input,
 .form-textarea {
@@ -57,4 +58,9 @@
 
 .error {
   color: rgb(194, 4, 4);
+}
+
+.small-over-text {
+  position: absolute;
+  max-width: 250px;
 }

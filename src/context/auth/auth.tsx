@@ -40,7 +40,8 @@ export default function AuthContextProvider({
       setUser(parsedUser);
 
       // validate user in database
-      checkUser({ userId: parsedUser.uid })
+      console.log("checking user: ", parsedUser);
+      checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
           //@ts-ignore
           if (resp.userExists) {

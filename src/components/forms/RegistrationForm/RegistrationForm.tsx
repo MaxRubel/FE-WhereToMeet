@@ -6,6 +6,14 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import validator from "validator";
 import { registerUser } from "@/api/users";
+import { HoverCard } from "@radix-ui/react-hover-card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import QuestionMark from "@/components/graphics/QuestionMark";
 
 export type RegisterUserForm = {
   name: string;
@@ -34,6 +42,7 @@ export default function RegistrationForm() {
   });
   const [errors, setErrors] = useState(initErrors);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneOver, setPhoneOver] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +56,9 @@ export default function RegistrationForm() {
     }
 
     //@ts-ignore
-    registerUser({ ...formFields, userId: user.uid }).then((resp) => {
+    registerUser({ ...formFields, uid: user.uid }).then((resp) => {
       //@ts-ignore
-      const storeUser = { user, ...resp };
+      const storeUser = { ...user, ...resp };
       setUser(storeUser);
       localStorage.setItem("user", JSON.stringify(storeUser));
     });
@@ -109,9 +118,38 @@ export default function RegistrationForm() {
 
         {/* PHONE FIELD */}
         <div className="form-group">
-          <Label htmlFor="phone" className="form-label">
-            Phone
-          </Label>
+          <HoverCard>
+            <Label htmlFor="phone" className="form-label">
+              Phone
+              <div
+                onMouseEnter={() => {
+                  setPhoneOver(true);
+                }}
+                onMouseLeave={() => {
+                  setTimeout(() => {
+                    setPhoneOver(false);
+                  }, 3000);
+                }}
+              >
+                <QuestionMark />
+              </div>
+              <Card
+                className="small-over-text"
+                style={{
+                  display: phoneOver ? "block" : "none",
+                }}
+              >
+                <CardHeader>
+                  <CardTitle>Optional</CardTitle>
+                  <CardDescription>
+                    This is an optional field. We use this information to send
+                    you notifications about events you are hosting or attending.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Label>
+          </HoverCard>
+
           <Input
             type="number"
             id="phone"
