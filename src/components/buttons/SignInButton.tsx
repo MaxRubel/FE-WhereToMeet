@@ -3,10 +3,8 @@ import { auth } from "../../context/auth/firebase";
 import { useAuth } from "../../context/auth/auth";
 import { checkUser } from "../../api/users";
 
-
 export default function SignInButton() {
-
-  const { setUser } = useAuth()
+  const { setUser } = useAuth();
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -15,17 +13,15 @@ export default function SignInButton() {
 
       if (googleUser) {
         //@ts-ignore
-        setUser(googleUser.user)
-        localStorage.setItem("user", JSON.stringify(googleUser.user))
-        checkUser({ userId: googleUser.user.uid }).then((resp) => {
-          console.log(resp)
+        setUser(googleUser.user);
+        localStorage.setItem("user", JSON.stringify(googleUser.user));
+        checkUser({ userId: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
-            setUser(resp.user)
+            setUser({ ...resp.user, ...googleUser.user });
           }
-        })
+        });
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error signing in", error);
     }
   };
@@ -34,5 +30,5 @@ export default function SignInButton() {
     <div>
       <button onClick={signIn}>Login</button>
     </div>
-  )
+  );
 }

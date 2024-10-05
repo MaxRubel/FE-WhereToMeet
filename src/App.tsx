@@ -1,25 +1,27 @@
-import './App.css'
-import { useAuth } from './context/auth/auth'
-import LoginForm from './components/forms/LoginForm/LoginForm'
-import RegistrationForm from './components/forms/RegistrationForm/RegistrationForm'
-import Router from './Route'
-import { GridLoader } from 'react-spinners'
+import "./App.css";
+import { useAuth } from "./context/auth/auth";
+import LoginForm from "./components/forms/LoginForm/LoginForm";
+import RegistrationForm from "./components/forms/RegistrationForm/RegistrationForm";
+import Router from "./Route";
+import { GridLoader } from "react-spinners";
 
 function App() {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   if (user === null) {
-    return <GridLoader />
-  } if (user === "notLoggedIn") {
-    return <LoginForm />
+    return <GridLoader />;
+  }
+  if (user === "notLoggedIn") {
+    return <LoginForm />;
   }
   //@ts-ignore
   else if (!user?._id) {
-    return <RegistrationForm />
+    return <RegistrationForm />;
+
     //@ts-ignore
   } else if (user._id) {
-    return <Router />
+    return <Router />;
   }
 }
 
-export default App
+export default App;
