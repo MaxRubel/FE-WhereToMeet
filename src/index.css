@@ -157,3 +157,7 @@ button:focus-visible {
   min-height: 100vh;
   padding-top: 1em;
 }
+
+.visually-hidden {
+  display: none;
+}
