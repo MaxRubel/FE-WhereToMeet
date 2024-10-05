@@ -1,6 +1,7 @@
 // -----main types-----
 export type User = {
-  userId: string; //primary key
+  _id: string; //primary key from mongo
+  uid: string; //primary key from goole
   name: string;
   phone: number;
   email: string;
@@ -23,7 +24,7 @@ export type Group = {
   ownerId: string; //foreign key
   name: string;
   description: string;
-  members: string[]; //array of userIds
+  members: string[]; //array of _ids
 };
 
 export type Event = {
@@ -56,7 +57,7 @@ export type Location = {
 
 export type Message = {
   messageId: string;
-  userId: string;
+  uid: string;
   name: string;
   email: string;
   message: string;
@@ -66,5 +67,5 @@ export type Message = {
 
 export type vote = {
   count: number;
-  userId: string;
+  uid: string;
 };

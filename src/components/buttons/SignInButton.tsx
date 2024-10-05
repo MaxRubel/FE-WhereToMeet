@@ -15,7 +15,7 @@ export default function SignInButton() {
         //@ts-ignore
         setUser(googleUser.user);
         localStorage.setItem("user", JSON.stringify(googleUser.user));
-        checkUser({ userId: googleUser.user.uid }).then((resp: any) => {
+        checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
             setUser({ ...resp.user, ...googleUser.user });
           }
