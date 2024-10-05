@@ -13,6 +13,7 @@ function App() {
   } if (user === "notLoggedIn") {
     return <LoginForm />
   }
+  //@ts-ignore
   else if (!user?._id) {
     return <RegistrationForm />
     //@ts-ignore
