@@ -21,8 +21,6 @@ export default function SignInButton() {
           console.log(resp)
           if (resp.userExists) {
             setUser(resp.user)
-          } else {
-            setUser("unregistered")
           }
         })
       }
