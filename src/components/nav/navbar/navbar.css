@@ -1,0 +1,78 @@
+.nav-bar-container {
+  width: 100vw;
+  height: 50px;
+  background-color: rgb(35, 38, 41);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.5);
+  font-family: "Heebo", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+  color: white;
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  align-items: center;
+  padding: 0em 3em;
+}
+
+.nav-list {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  transform: translateY(-1px);
+  margin-left: 3em;
+  display: flex;
+  flex-direction: row;
+  gap: 2em
+}
+
+.navbar-right {
+  display: flex;
+  justify-content: center;
+}
+
+.settings-menu-nav {
+  position: absolute;
+  top: 60px;
+  right: 100px;
+  color: black;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid rgb(216, 216, 216);
+  padding: .5em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.nav-button {
+  background-color: transparent;
+  width: 100%;
+  min-width: 100px;
+  text-align: left;
+  height: 35px;
+  border: none;
+  outline: none;
+  padding: 0px 10px;
+  border-radius: 3px;
+}
+
+.nav-button:hover,
+.nav-button:focus-visible,
+.nav-button:focus {
+  border: transparent;
+  outline: none;
+  background-color: rgb(245, 245, 245);
+}
+
+.grey-hover:hover {
+  background-color: rgb(29, 29, 29);
+  border-radius: 50%;
+  color: rgb(245, 245, 245);
+}
+
+.nav-link {
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: rgb(226, 224, 224);
+}

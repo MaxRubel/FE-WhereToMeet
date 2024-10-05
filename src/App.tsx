@@ -1,4 +1,3 @@
-import "./App.css";
 import { useAuth } from "./context/auth/auth";
 import LoginForm from "./components/forms/LoginForm/LoginForm";
 import RegistrationForm from "./components/forms/RegistrationForm/RegistrationForm";
