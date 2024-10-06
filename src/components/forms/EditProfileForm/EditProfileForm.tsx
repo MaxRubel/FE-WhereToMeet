@@ -10,27 +10,17 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth/auth";
 import { updateUser } from "@/api/users";
+import validator from "validator";
 
 export type EditUserFields = {
   name: string;
-  phone: number;
+  phone: string;
   email: string;
   street: string;
   city: string;
   state: string;
   zip: number;
   private: boolean;
-}
-
-const initFields = {
-  name: "",
-  phone: 0,
-  email: "",
-  street: "",
-  city: "",
-  state: "",
-  zip: 0,
-  private: true
 }
 
 type pointerOver = {
@@ -40,55 +30,103 @@ type pointerOver = {
 }
 
 export default function EditProfileForm() {
-  const { user } = useAuth();
-  const [formFields, setFormFields] = useState<EditUserFields>(
-    { ...initFields, name: user?.name, email: user?.email });
-  // const [errors, setErrors] = useState({})
+  const { user, checkUserFunc } = useAuth();
+
+  const initFields = {
+    name: user.name,
+    email: user.email,
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: 0,
+    private: true
+  }
+
+  const [formFields, setFormFields] = useState<EditUserFields>(initFields)
+  const [errors, setErrors] = useState({ phone: "" })
   const [phoneOver, setPhoneOver] = useState(false);
   const [pointerOver, setPointerOver] = useState<pointerOver>({
     address: false,
     phone: false,
     street: false
   });
+  const [checkingAddress, setCheckingAddress] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) return
-    if (user.state) {
-      setFormFields((prevVal) => ({ ...prevVal, state: user.state }));
-    }
-    if (user.city) {
-      setFormFields((prevVal) => ({ ...prevVal, city: user.city }));
-    }
-    if (user.zip) {
-      setFormFields((prevVal) => ({ ...prevVal, zip: user.zip }));
-    }
-    if (user.street) {
-      setFormFields((prevVal) => ({ ...prevVal, street: user.street }));
-    }
-    if (user.phone) {
-      setFormFields((prevVal) => ({ ...prevVal, phone: user.phone }));
-    }
-  }, [user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // setErrors((preVal) => ({
-    //   ...preVal,
-    //   [name]: "",
-    // }));
+    setErrors((preVal) => ({
+      ...preVal,
+      [name]: "",
+    }));
     setFormFields((prevFields) => ({
       ...prevFields,
       [name]: value,
     }));
   };
 
+  useEffect(() => {
+    if (user.phone) {
+      setFormFields((prevVal) => ({ ...prevVal, phone: user.phone }));
+    }
+    if (user.address.street) {
+      setFormFields((prevVal) => ({ ...prevVal, street: user.address.street }));
+    }
+
+    if (user.address.zip) {
+      setFormFields((prevVal) => ({ ...prevVal, zip: user.address.zip }));
+    }
+
+    if (user.address.state) {
+      setFormFields((prevVal) => ({ ...prevVal, state: user.address.state }));
+    }
+
+    if (user.address.city) {
+      setFormFields((prevVal) => ({ ...prevVal, city: user.address.city }));
+    }
+  }, [])
+
+  useEffect(() => {
+    if (formFields.street || formFields.city || formFields.state || formFields.zip) {
+      setCheckingAddress(true)
+    } else {
+      setCheckingAddress(false)
+    }
+  }, [formFields])
+
+  const submit = () => {
+    setIsSubmitting(true)
+    const address = {
+      street: formFields.street,
+      state: formFields.state,
+      city: formFields.city,
+      zip: formFields.zip
+    }
+    const { street, state, city, zip, ...payload } = formFields;
+
+    //@ts-ignore
+    payload.address = address;
+    //@ts-ignore
+    updateUser(payload, user._id).then((data) => {
+      checkUserFunc()
+      navigate('/')
+    })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    //@ts-ignore
-    const userId = user._id
-    updateUser(formFields, userId).then((data) => { console.log(data) })
+    if (formFields.phone) {
+      if (validator.isMobilePhone(formFields.phone)) {
+        submit()
+      } else {
+        setErrors(prevErrors => ({ ...prevErrors, phone: "Please enter a valid phone number" }));
+      }
+    } else {
+      submit()
+    }
   }
 
   const handleCancel = () => {
@@ -181,7 +219,7 @@ export default function EditProfileForm() {
             placeholder="Your phone"
             onChange={handleChange}
           />
-          {/* <span className="error">{errors.phone && errors.phone}</span> */}
+          <span className="error">{errors.phone && errors.phone}</span>
         </div>
 
         {/* ADDRESS HEADER */}
@@ -233,7 +271,8 @@ export default function EditProfileForm() {
             value={formFields.street}
             onChange={handleChange}
             className="form-input"
-            aria-required="false"
+            aria-required={checkingAddress}
+            required={checkingAddress}
             placeholder="116 N. Main St."
           />
         </div>
@@ -251,7 +290,8 @@ export default function EditProfileForm() {
               value={formFields.city}
               onChange={handleChange}
               className="form-input"
-              aria-required="false"
+              aria-required={checkingAddress}
+              required={checkingAddress}
               placeholder="New York"
             />
           </div>
@@ -268,7 +308,8 @@ export default function EditProfileForm() {
               value={formFields.state}
               onChange={handleChange}
               className="form-input"
-              aria-required="false"
+              aria-required={checkingAddress}
+              required={checkingAddress}
               placeholder="116 N. Main St."
             />
           </div>
@@ -288,14 +329,15 @@ export default function EditProfileForm() {
               value={formFields.zip ? formFields.zip : ""}
               onChange={handleChange}
               className="form-input"
-              aria-required="false"
+              aria-required={checkingAddress}
+              required={checkingAddress}
               placeholder="01324"
             />
           </div>
         </div>
       </div>
       <div className="edit-profile-button-row">
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isSubmitting}>Submit</Button>
         <Button
           type="button"
           className="secondary-button"

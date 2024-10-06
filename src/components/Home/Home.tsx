@@ -28,8 +28,7 @@ export default function Home() {
 
   const handleDeleteUser = async () => {
     try {
-      //@ts-ignore
-      await deleteUser(user.uid);
+      await deleteUser(user._id);
       setUser("notLoggedIn");
       localStorage.setItem("user", "");
     } catch (err) {

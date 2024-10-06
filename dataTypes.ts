@@ -1,13 +1,17 @@
+import { User as FirebaseUser } from "firebase/auth";
+
 // -----main types-----
-export type User = {
+
+// this is what sends/gets from the database
+export type UserDB = {
   _id: string; //primary key from mongo
   uid: string; //primary key from google
   name: string;
-  phone: number;
+  phone: string;
   email: string;
   address: {
     street: string;
-    zipcode: number;
+    zip: number;
     city: string;
     state: string;
     private: boolean;
@@ -18,6 +22,31 @@ export type User = {
   };
   friends: string[];
 };
+
+// -- init user --
+// -- this is an empty user object for initialising forms
+export const emptyUserDB = {
+  _id: '',
+  uid: '',
+  name: '',
+  phone: "",
+  email: '',
+  address: {
+    street: '',
+    zip: 0,
+    city: '',
+    state: '',
+    private: false,
+    coordinates: {
+      lat: 0,
+      long: 0
+    }
+  },
+  friends: []
+};
+
+//this is the full user type stored in auth context
+export type UserType = UserDB & FirebaseUser | null | "notLoggedIn"
 
 export type Group = {
   groupId: string; //primary key

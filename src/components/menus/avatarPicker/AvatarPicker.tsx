@@ -5,7 +5,7 @@ export function AvatarPicker() {
   return (
     <div className="avatar-picker box-shadow">
       {gifList.map((url) => (
-        <AvatarSmall url={url} />
+        <AvatarSmall url={url} key={url} />
       ))}
     </div>
   );

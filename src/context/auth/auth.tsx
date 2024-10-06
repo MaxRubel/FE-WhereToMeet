@@ -7,14 +7,14 @@ import {
   SetStateAction,
   ReactNode,
 } from "react";
-// import { UserCredential as FirebaseUser } from "firebase/auth";
-import { checkUser } from "../../api/users";
 
-// type CustomUser = null | "notLoggedIn" | "unregistered" | FirebaseUser;
+import { checkUser } from "../../api/users";
+import type { UserType } from "../../../dataTypes"
 
 type AuthContextType = {
   user: any;
   setUser: Dispatch<SetStateAction<any>>;
+  checkUserFunc: () => void;
 };
 
 type AuthContextProviderProps = {
@@ -24,12 +24,18 @@ type AuthContextProviderProps = {
 const authContext = createContext<AuthContextType>({
   user: null,
   setUser: () => { },
+  checkUserFunc: () => { },
 });
 
 export default function AuthContextProvider({
   children,
 }: AuthContextProviderProps) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserType>(null);
+  const [checkUserCount, setCheckUserCount] = useState(0)
+
+  const checkUserFunc = () => {
+    setCheckUserCount((preVal) => preVal + 1)
+  }
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -42,9 +48,12 @@ export default function AuthContextProvider({
       checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
           if (resp.userExists) {
-            const storeUser = { ...resp.user, ...parsedUser };
+            const storeUser = { ...parsedUser, ...resp.user, };
             setUser(storeUser);
             localStorage.setItem("user", JSON.stringify(storeUser));
+          } else {
+            setUser("notLoggedIn");
+            localStorage.setItem("user", "");
           }
         })
         .catch((err: any) => {
@@ -58,10 +67,10 @@ export default function AuthContextProvider({
     } else {
       setUser("notLoggedIn");
     }
-  }, []);
+  }, [checkUserCount]);
 
   return (
-    <authContext.Provider value={{ user, setUser }}>
+    <authContext.Provider value={{ user, setUser, checkUserFunc }}>
       {children}
     </authContext.Provider>
   );
