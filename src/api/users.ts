@@ -1,5 +1,5 @@
 import { EditUserFields } from "@/components/forms/EditProfileForm/EditProfileForm";
-import { RegisterUserForm } from "@/components/forms/RegistrationForm/RegistrationForm";
+import { UserDB } from "dataTypes";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -22,7 +22,7 @@ export function checkUser(payload: checkUserType) {
   });
 }
 
-export function registerUser(payload: RegisterUserForm) {
+export function registerUser(payload: UserDB) {
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users`, {
       method: "POST",

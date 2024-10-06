@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import QuestionMark from "@/components/graphics/QuestionMark";
+import { UserDB, emptyUserDB } from "../../../../dataTypes";
 
 export type RegisterUserForm = {
   name: string;
@@ -34,11 +35,9 @@ const initFields: RegisterUserForm = {
 };
 
 export default function RegistrationForm() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, checkUserFunc } = useAuth();
   const [formFields, setFormFields] = useState<RegisterUserForm>({
-    ...initFields,
-    //@ts-ignore
-    email: user?.email,
+    ...initFields, email: user.email
   });
   const [errors, setErrors] = useState(initErrors);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,11 +54,13 @@ export default function RegistrationForm() {
       return;
     }
 
-    //@ts-ignore
-    registerUser({ ...formFields, uid: user.uid }).then((resp) => {
-      //@ts-ignore
-      const storeUser = { ...user, ...resp };
+    const payload: UserDB = { ...emptyUserDB, ...formFields }
+
+    registerUser(payload).then((resp: unknown) => {
+      const typedResp = resp as UserDB
+      const storeUser = { ...user, ...typedResp };
       setUser(storeUser);
+      checkUserFunc()
       localStorage.setItem("user", JSON.stringify(storeUser));
     });
   };

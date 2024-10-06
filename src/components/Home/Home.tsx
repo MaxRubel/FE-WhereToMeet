@@ -1,6 +1,7 @@
 import { RefObject, useRef } from "react";
 import { useAuth } from "@/context/auth/auth";
 import { deleteUser } from "@/api/users";
+import { AvatarPicker } from "../menus/avatarPicker/AvatarPicker";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -27,8 +28,7 @@ export default function Home() {
 
   const handleDeleteUser = async () => {
     try {
-      //@ts-ignore
-      await deleteUser(user.uid);
+      await deleteUser(user._id);
       setUser("notLoggedIn");
       localStorage.setItem("user", "");
     } catch (err) {
@@ -43,6 +43,9 @@ export default function Home() {
         Test Server Endpoint
       </button>
       <button onClick={handleDeleteUser}>Delete Your User</button>
+      <div>
+        <AvatarPicker />
+      </div>
     </div>
   );
 }
