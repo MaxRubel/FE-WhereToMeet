@@ -1,3 +1,16 @@
 .edit-profile-fields {
   margin-top: 2em;
 }
+
+.edit-profile-split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3em
+}
+
+.edit-profile-button-row {
+  margin-top: 1em;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1em;
+}

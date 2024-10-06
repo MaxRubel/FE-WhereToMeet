@@ -1,0 +1,1 @@
+export const SCROLL_OVER_WAIT_TIME = 800

@@ -171,3 +171,22 @@ button:focus-visible {
 .text-left {
   text-align: left;
 }
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.secondary-button {
+  /* background-color: #50677b; */
+  background-color: whitesmoke;
+  border: 1px solid #b3b8bd !important;
+  color: #50677b
+}
+
+.secondary-button:hover {
+  background-color: rgb(227, 227, 227) !important;
+  border: 1px solid #50677b;
+  color: #50677b
+}
