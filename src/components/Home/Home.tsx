@@ -1,5 +1,4 @@
 import { RefObject, useRef } from "react";
-import SignOutButton from "../buttons/SignOutButton";
 import { useAuth } from "@/context/auth/auth";
 import { deleteUser } from "@/api/users";
 
@@ -43,7 +42,6 @@ export default function Home() {
       <button onClick={handleTestEndpoint} ref={buttonRef}>
         Test Server Endpoint
       </button>
-      <SignOutButton />
       <button onClick={handleDeleteUser}>Delete Your User</button>
     </div>
   );

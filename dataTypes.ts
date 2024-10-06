@@ -1,7 +1,7 @@
 // -----main types-----
 export type User = {
   _id: string; //primary key from mongo
-  uid: string; //primary key from goole
+  uid: string; //primary key from google
   name: string;
   phone: number;
   email: string;

@@ -1,0 +1,25 @@
+.profile-page-layout {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+}
+
+.profile-side-bar {
+  border-right: 1px solid lightgray;
+  font-weight: 900;
+  min-width: 200px;
+  padding-top: 3em;
+  padding-right: 2em;
+}
+
+.profile-list {}
+
+.profile-list-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em
+}
+
+.profile-main-form {
+  padding: 0em 3em;
+}

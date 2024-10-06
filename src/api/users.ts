@@ -1,3 +1,4 @@
+import { EditUserFields } from "@/components/forms/EditProfileForm/EditProfileForm";
 import { RegisterUserForm } from "@/components/forms/RegistrationForm/RegistrationForm";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
@@ -38,12 +39,26 @@ export function registerUser(payload: RegisterUserForm) {
 
 //  Delete user -- USES THE GOOGLE-AUTH UID
 export function deleteUser(id: string) {
-  console.log({ id });
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users/${id}`, {
       method: "DELETE",
     })
       .then((data) => resolve(data))
+      .catch((err) => reject(err));
+  });
+}
+
+export function updateUser(payload: EditUserFields, id: string) {
+
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload)
+    })
+      .then((resp) => resolve(resp))
       .catch((err) => reject(err));
   });
 }

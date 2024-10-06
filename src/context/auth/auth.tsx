@@ -23,7 +23,7 @@ type AuthContextProviderProps = {
 
 const authContext = createContext<AuthContextType>({
   user: null,
-  setUser: () => {},
+  setUser: () => { },
 });
 
 export default function AuthContextProvider({
@@ -39,8 +39,6 @@ export default function AuthContextProvider({
       const parsedUser = JSON.parse(user);
       setUser(parsedUser);
 
-      // validate user in database
-      console.log("checking user: ", parsedUser);
       checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
           //@ts-ignore
