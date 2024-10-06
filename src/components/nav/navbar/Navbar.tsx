@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 import { signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from '../../../context/auth/firebase';
 import { useAuth } from '../../../context/auth/auth';
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { setUser } = useAuth()
+  const navigate = useNavigate()
 
   const handleClickOut = (e: MouseEvent): void => {
     if (!(e.target instanceof Element)) return;
@@ -68,7 +70,7 @@ export default function NavBar() {
           aria-labelledby="nav-button"
           style={{ display: settingsOpen ? "block" : "none" }}
         >
-          <button id="edit-profile-button" className="nav-button" role="menuitem">
+          <button id="edit-profile-button" className="nav-button" role="menuitem" onClick={() => { navigate('/edit-profile') }}>
             Edit Profile
           </button>
           <button
