@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "./EditProfileForm.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard } from "@radix-ui/react-hover-card";
 import QuestionMark from "@/components/graphics/QuestionMark";
@@ -40,18 +40,36 @@ type pointerOver = {
 }
 
 export default function EditProfileForm() {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const [formFields, setFormFields] = useState<EditUserFields>(
-    //@ts-ignore
-    { ...initFields, email: user?.email })
+    { ...initFields, name: user?.name, email: user?.email });
   // const [errors, setErrors] = useState({})
-  const [phoneOver, setPhoneOver] = useState(false)
+  const [phoneOver, setPhoneOver] = useState(false);
   const [pointerOver, setPointerOver] = useState<pointerOver>({
     address: false,
     phone: false,
     street: false
-  })
-  const navigate = useNavigate()
+  });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) return
+    if (user.state) {
+      setFormFields((prevVal) => ({ ...prevVal, state: user.state }));
+    }
+    if (user.city) {
+      setFormFields((prevVal) => ({ ...prevVal, city: user.city }));
+    }
+    if (user.zip) {
+      setFormFields((prevVal) => ({ ...prevVal, zip: user.zip }));
+    }
+    if (user.street) {
+      setFormFields((prevVal) => ({ ...prevVal, street: user.street }));
+    }
+    if (user.phone) {
+      setFormFields((prevVal) => ({ ...prevVal, phone: user.phone }));
+    }
+  }, [user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,7 +85,6 @@ export default function EditProfileForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formFields)
 
     //@ts-ignore
     const userId = user._id
