@@ -161,6 +161,7 @@ button:focus-visible {
 .main-content-container {
   min-height: 100vh;
   padding: 2em;
+  margin-top: 50px;
   padding-top: 2em;
 }
 
