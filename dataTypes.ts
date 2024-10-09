@@ -26,30 +26,30 @@ export type UserDB = {
 // -- init user --
 // -- this is an empty user object for initialising forms
 export const emptyUserDB = {
-  _id: '',
-  uid: '',
-  name: '',
+  _id: "",
+  uid: "",
+  name: "",
   phone: "",
-  email: '',
+  email: "",
   address: {
-    street: '',
+    street: "",
     zip: 0,
-    city: '',
-    state: '',
+    city: "",
+    state: "",
     private: false,
     coordinates: {
       lat: 0,
-      long: 0
-    }
+      long: 0,
+    },
   },
-  friends: []
+  friends: [],
 };
 
 //this is the full user type stored in auth context
-export type UserType = UserDB & FirebaseUser | null | "notLoggedIn"
+export type UserType = (UserDB & FirebaseUser) | null | "notLoggedIn";
 
 export type Group = {
-  groupId: string; //primary key
+  _id: string; //primary key
   ownerId: string; //foreign key
   name: string;
   description: string;
@@ -57,7 +57,7 @@ export type Group = {
 };
 
 export type Event = {
-  eventId: string; //primary key
+  _id: string; //primary key
   ownerId: string; //foreign key
   groupId: string; //foreign key
 
@@ -85,7 +85,7 @@ export type Location = {
 };
 
 export type Message = {
-  messageId: string;
+  _id: string; //primary key
   uid: string;
   name: string;
   email: string;
