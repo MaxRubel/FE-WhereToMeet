@@ -51,9 +51,6 @@ export default function AuthContextProvider({
             const storeUser = { ...parsedUser, ...resp.user, };
             setUser(storeUser);
             localStorage.setItem("user", JSON.stringify(storeUser));
-          } else {
-            setUser("notLoggedIn");
-            localStorage.setItem("user", "");
           }
         })
         .catch((err: any) => {
