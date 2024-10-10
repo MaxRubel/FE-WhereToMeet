@@ -54,7 +54,7 @@ export default function RegistrationForm() {
       return;
     }
 
-    const payload: UserDB = { ...emptyUserDB, ...formFields }
+    const payload: UserDB = { ...emptyUserDB, ...formFields, uid: user.uid }
 
     registerUser(payload).then((resp: unknown) => {
       const typedResp = resp as UserDB
@@ -78,7 +78,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container" style={{ marginTop: '3em' }}>
       <h2 className="form-title">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         {/* NAME FIELD */}
