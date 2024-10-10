@@ -12,6 +12,8 @@ export default function Router() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/edit-profile" element={<ProfilePage />} />
+            <Route path="/groups" element={<h1>Groups Pages</h1>} />
+            <Route path="/events" element={<h1>Events page</h1>} />
           </Routes>
         </div>
       </BrowserRouter>

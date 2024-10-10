@@ -57,6 +57,19 @@
   border-radius: 3px;
 }
 
+.nav-button-inside-nav {
+  background-color: transparent;
+  width: fit-content;
+  min-width: 100px;
+  text-align: left;
+  height: 35px;
+  border: none;
+  outline: none;
+  padding: 0px 10px;
+  border-radius: 3px;
+}
+
+
 .nav-button:hover,
 .nav-button:focus-visible,
 .nav-button:focus {
