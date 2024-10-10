@@ -45,8 +45,12 @@ export default function NavBar() {
       </div>
       <div>
         <ul className="nav-list" role="menubar">
-          <li className="nav-link" role="menuitem" tabIndex={0}>Groups</li>
-          <li className="nav-link" role="menuitem" tabIndex={0}>Events</li>
+        <button id="groups-button" className="nav-button-inside-nav" role="menuitem" onClick={() => { navigate('/groups') }}>
+          Groups
+        </button>
+        <button id="events-button" className="nav-button-inside-nav" role="menubar" onClick={()=> {navigate('/events')}} >
+          Events
+        </button>
         </ul>
       </div>
       <div className="navbar-right">
