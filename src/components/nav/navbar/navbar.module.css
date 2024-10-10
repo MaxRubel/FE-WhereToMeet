@@ -1,4 +1,4 @@
-.nav-bar-container {
+.navBarContainer {
   position: fixed;
   top: 0;
   width: 100vw;
@@ -16,7 +16,7 @@
   padding: 0em 2em;
 }
 
-.nav-list {
+.navList {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -27,12 +27,12 @@
   gap: 2em
 }
 
-.navbar-right {
+.navbarRight {
   display: flex;
   justify-content: center;
 }
 
-.settings-menu-nav {
+.settingsMenuNav {
   position: absolute;
   top: 60px;
   right: 100px;
@@ -45,7 +45,7 @@
   z-index: 10;
 }
 
-.nav-button {
+.navButton {
   background-color: transparent;
   width: 100%;
   min-width: 100px;
@@ -57,37 +57,24 @@
   border-radius: 3px;
 }
 
-.nav-button-inside-nav {
-  background-color: transparent;
-  width: fit-content;
-  min-width: 100px;
-  text-align: left;
-  height: 35px;
-  border: none;
-  outline: none;
-  padding: 0px 10px;
-  border-radius: 3px;
-}
-
-
-.nav-button:hover,
-.nav-button:focus-visible,
-.nav-button:focus {
+.navButton:hover,
+.navButton:focus-visible,
+.navButton:focus {
   border: transparent;
   outline: none;
   background-color: rgb(245, 245, 245);
 }
 
-.grey-hover:hover {
+.greyHover:hover {
   background-color: rgb(29, 29, 29);
   border-radius: 50%;
   color: rgb(245, 245, 245);
 }
 
-.nav-link {
+.navLink {
   cursor: pointer;
 }
 
-.nav-link:hover {
+.navLink:hover {
   color: rgb(226, 224, 224);
 }

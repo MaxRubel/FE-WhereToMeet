@@ -1,10 +1,10 @@
 import { PersonRound } from "@/components/graphics/Graphics1"
-import "./navbar.css"
 import { useEffect, useState } from "react"
 import { signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from '../../../context/auth/firebase';
 import { useAuth } from '../../../context/auth/auth';
 import { useNavigate } from "react-router-dom";
+import styles from "./navbar.module.css"
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -29,7 +29,6 @@ export default function NavBar() {
     }
   };
 
-
   useEffect(() => {
     document.addEventListener("click", handleClickOut)
 
@@ -39,55 +38,58 @@ export default function NavBar() {
   }, [])
 
   return (
-    <nav className="nav-bar-container" role="navigation" aria-label="Main Navigation">
+    <nav className={styles.navBarContainer} role="navigation" aria-label="Main Navigation">
       <div className="logo" role="banner">
         MeetUp
       </div>
-      <div>
-        <ul className="nav-list" role="menubar">
-        <button id="groups-button" className="nav-button-inside-nav" role="menuitem" onClick={() => { navigate('/groups') }}>
-          Groups
-        </button>
-        <button id="events-button" className="nav-button-inside-nav" role="menubar" onClick={()=> {navigate('/events')}} >
-          Events
-        </button>
-        </ul>
-      </div>
-      <div className="navbar-right">
+
+      <ul className={styles.navList}>
+        <li>
+          <a href="/groups" className="nav-link">Groups</a>
+        </li>
+        <li>
+          <a href="/events" className="nav-link">Events</a>
+        </li>
+      </ul>
+
+      <div className={styles.navbarRight}>
         <button
           id="nav-button"
-          className="clear-button grey-hover"
+          className={`clear-button ${styles.greyHover}`}
           aria-haspopup="true"
           aria-expanded={settingsOpen}
           aria-controls="settings-menu"
-          onClick={() => {
-            setSettingsOpen((prevVal) => !prevVal)
-          }}
+          onClick={() => setSettingsOpen((prevVal) => !prevVal)}
         >
           <PersonRound size={"22"} aria-hidden="true" />
           <span className="visually-hidden">User Settings</span>
         </button>
-        <div
-          id="settings-menu"
-          className="settings-menu-nav"
-          role="menu"
-          aria-labelledby="nav-button"
-          style={{ display: settingsOpen ? "block" : "none" }}
-        >
-          <button id="edit-profile-button" className="nav-button" role="menuitem" onClick={() => { navigate('/edit-profile') }}>
-            Edit Profile
-          </button>
-          <button
-            id="sign-out-button"
-            className="nav-button"
-            onClick={signOut}
-            role="menuitem"
+        {settingsOpen && (
+          <div
+            id="settings-menu"
+            className={styles.settingsMenuNav}
+            role="menu"
+            aria-labelledby="nav-button"
           >
-            Sign Out
-          </button>
-        </div>
+            <button
+              id="edit-profile-button"
+              className={styles.navButton}
+              role="menuitem"
+              onClick={() => navigate('/edit-profile')}
+            >
+              Edit Profile
+            </button>
+            <button
+              id="sign-out-button"
+              className={styles.navButton}
+              onClick={signOut}
+              role="menuitem"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
       </div>
     </nav>
-
   )
 }
