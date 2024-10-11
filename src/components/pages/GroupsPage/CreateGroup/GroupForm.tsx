@@ -7,6 +7,7 @@ import { createGroup } from "@/api/groups";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import "./GroupForm.css"
+import { useMutation, useQueryClient } from "react-query";
 
 export type GroupForm = {
   _id?: string; //primary key
@@ -27,8 +28,9 @@ export default function GroupForm() {
   };
 
   const [formFields, setFormFields] = useState<GroupForm>(initFields);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate()
+  const queryClient = useQueryClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -37,6 +39,28 @@ export default function GroupForm() {
       [name]: value,
     }));
   }
+
+  // React Query Mutation for Caching / Syncing with Server
+  const createGroupMutation = useMutation<ResponseType, Error, typeof formFields>({
+    //@ts-ignore
+    mutationFn: createGroup,
+    onSuccess: (data: any) => {
+      // Update cache here
+      queryClient.setQueryData(['groups', user._id], (oldData: any) => {
+        const newGroup = { _id: data.data._id, ...formFields };
+        return oldData ? [...oldData, newGroup] : [newGroup];
+      });
+      queryClient.setQueryData(['group', data.data._id], {
+        _id: data.data._id,
+        ...formFields,
+      });
+      navigate(`/groups/${data.data._id}`);
+    },
+    onError: (error: Error) => {
+      console.error("Error submitting create group form: ", error);
+    },
+  });
+
 
   // const handleSelectMembers = (selectedMembers: string[]) => {
   //   setFormFields((prevFields) => ({
@@ -47,17 +71,9 @@ export default function GroupForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     try {
-      type ResponseType = {
-        data: { _id: string } //response will come with the new group id
-      }
-
-      const resp = await createGroup(formFields);
-      const typedResp = resp as ResponseType
-
-      navigate(`/groups/${typedResp.data._id}`)
+      createGroupMutation.mutate(formFields);
     } catch (err) {
       console.error("error submitting create group form: ", err)
     }
@@ -109,7 +125,7 @@ export default function GroupForm() {
           )}
         </div> */}
 
-        <Button style={{ marginTop: "1em" }} type="submit" disabled={isSubmitting}>
+        <Button style={{ marginTop: "1em" }} type="submit" disabled={createGroupMutation.isLoading}>
           Submit
         </Button>
       </form>

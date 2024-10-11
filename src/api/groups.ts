@@ -31,14 +31,13 @@ export function getSingleGroup(id: string) {
     });
 }
 
-export function getGroups(payload: Group) {
+export function getUserGroups(userId: string) {
     return new Promise((resolve, reject) => {
-        fetch(`${endpoint}/groups`, {
+        fetch(`${endpoint}/groups?userId=${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(payload),
         })
             .then((resp) => resp.json())
             .then((data) => resolve(data))
