@@ -10,7 +10,21 @@ export function createGroup(payload: Group) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
-            })
+        })
+            .then((resp) => resp.json())
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    });
+}
+
+export function getSingleGroup(id: string) {
+    return new Promise((resolve, reject) => {
+        fetch(`${endpoint}/groups/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then((resp) => resp.json())
             .then((data) => resolve(data))
             .catch((err) => reject(err));
@@ -26,8 +40,8 @@ export function getGroups(payload: Group) {
             },
             body: JSON.stringify(payload),
         })
-        .then((resp) => resp.json())
-        .then((data) => resolve(data))
-        .catch((err) => reject(err))
+            .then((resp) => resp.json())
+            .then((data) => resolve(data))
+            .catch((err) => reject(err))
     });
 }

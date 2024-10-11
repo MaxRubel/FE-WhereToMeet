@@ -6,6 +6,7 @@ import ProfilePage from "./components/pages/ProfilePage/ProfilePage";
 import GroupsPage from "./components/pages/GroupsPage/GroupsPage";
 import { createContext, ReactNode, useContext } from "react";
 import { useToast } from "./hooks/use-toast";
+import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 
 // Create the context
 const ToastContext = createContext<((props: any) => void) | undefined>(
@@ -45,6 +46,7 @@ export default function Router() {
             <Route path="/" element={<Home />} />
             <Route path="/edit-profile" element={<ProfilePage />} />
             <Route path="/groups" element={<GroupsPage />} />
+            <Route path="/groups/:groupId" element={<GroupsPage />} />
             <Route path="/events" element={<h1>Events page</h1>} />
           </Routes>
         </div>

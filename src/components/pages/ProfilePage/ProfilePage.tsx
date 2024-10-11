@@ -1,8 +1,8 @@
 import { EditIcon, PersonRound } from "@/components/graphics/Graphics1";
 import "./ProfilePage.css";
-import EditProfileForm from "@/components/forms/EditProfileForm/EditProfileForm";
+import EditProfileForm from "@/components/pages/ProfilePage/EditProfileForm/EditProfileForm";
 import { useState } from "react";
-import ChooseAvatarForm from "@/components/forms/EditProfileForm/ChooseAvatarForm";
+import ChooseAvatarForm from "@/components/pages/ProfilePage/EditProfileForm/ChooseAvatarForm";
 
 export default function ProfilePage() {
   const [isViewing, setIsViewing] = useState("EditProfileForm");
@@ -12,7 +12,7 @@ export default function ProfilePage() {
       <div className="profile-side-bar">
         <ul className="profile-list">
           <button
-            className="clear-button profile-list-item"
+            className="clear-button side-list-item"
             style={{
               fontWeight: isViewing == "EditProfileForm" ? "900" : "",
               backgroundColor:
@@ -29,7 +29,7 @@ export default function ProfilePage() {
           </button>
 
           <button
-            className="profile-list-item"
+            className="side-list-item"
             style={{
               fontWeight: isViewing == "ChooseAvatarForm" ? "900" : "",
               backgroundColor:
