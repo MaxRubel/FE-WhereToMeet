@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import "./EditProfileForm.css"
 import { useEffect, useState } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard } from "@radix-ui/react-hover-card";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth/auth";
 import { updateUser } from "@/api/users";
+import styles from "./EditProfileForm.module.css"
 import validator from "validator";
 
 export type EditUserFields = {
@@ -20,7 +20,6 @@ export type EditUserFields = {
   city: string;
   state: string;
   zip: number;
-  private: boolean;
 }
 
 type pointerOver = {
@@ -35,12 +34,11 @@ export default function EditProfileForm() {
   const initFields = {
     name: user.name,
     email: user.email,
-    phone: "",
-    street: "",
-    city: "",
-    state: "",
-    zip: 0,
-    private: true
+    phone: user.phone || "",
+    street: user.address.street || "",
+    city: user.address.city || "",
+    state: user.address.state || "",
+    zip: user.address.zip || "",
   }
 
   const [formFields, setFormFields] = useState<EditUserFields>(initFields)
@@ -66,27 +64,6 @@ export default function EditProfileForm() {
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    if (user.phone) {
-      setFormFields((prevVal) => ({ ...prevVal, phone: user.phone }));
-    }
-    if (user.address.street) {
-      setFormFields((prevVal) => ({ ...prevVal, street: user.address.street }));
-    }
-
-    if (user.address.zip) {
-      setFormFields((prevVal) => ({ ...prevVal, zip: user.address.zip }));
-    }
-
-    if (user.address.state) {
-      setFormFields((prevVal) => ({ ...prevVal, state: user.address.state }));
-    }
-
-    if (user.address.city) {
-      setFormFields((prevVal) => ({ ...prevVal, city: user.address.city }));
-    }
-  }, [])
 
   useEffect(() => {
     if (formFields.street || formFields.city || formFields.state || formFields.zip) {
@@ -136,7 +113,7 @@ export default function EditProfileForm() {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-left">Edit Profile</h2>
-      <div className="edit-profile-fields">
+      <div className={styles.editProfileFields}>
 
         {/* NAME FIELD */}
         <div className="form-group">
@@ -219,7 +196,7 @@ export default function EditProfileForm() {
             placeholder="Your phone"
             onChange={handleChange}
           />
-          <span className="error">{errors.phone && errors.phone}</span>
+          <span className={styles.error}>{errors.phone && errors.phone}</span>
         </div>
 
         {/* ADDRESS HEADER */}
@@ -277,7 +254,7 @@ export default function EditProfileForm() {
           />
         </div>
 
-        <div className="edit-profile-split-row">
+        <div className={styles.splitRow}>
           {/* CITY FIELD */}
           <div className="form-group">
             <Label htmlFor="city" className="form-label">
@@ -310,7 +287,7 @@ export default function EditProfileForm() {
               className="form-input"
               aria-required={checkingAddress}
               required={checkingAddress}
-              placeholder="116 N. Main St."
+              placeholder="NY"
             />
           </div>
         </div>
@@ -336,13 +313,13 @@ export default function EditProfileForm() {
           </div>
         </div>
       </div>
-      <div className="edit-profile-button-row">
+      <div className={styles.buttonRow}>
         <Button type="submit" disabled={isSubmitting}>Submit</Button>
         <Button
           type="button"
           className="secondary-button"
           onClick={handleCancel}>Cancel</Button>
       </div>
-    </form>
+    </form >
   )
 }
