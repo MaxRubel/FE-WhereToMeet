@@ -3,13 +3,14 @@ import "./GroupsPage.css"
 import { CreateGroup, GroupIcon } from "@/components/graphics/Graphics1";
 import GroupForm from "@/components/pages/GroupsPage/CreateGroup/GroupForm";
 import ViewGroups from "./ViewGroups/ViewGroups";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ViewSingleGroup from "./ViewSingleGroup/ViewSingleGroup";
 
 export default function GroupsPage() {
   const [isViewing, setIsViewing] = useState("ViewGroups");
   const [viewSingleId, setViewSingleId] = useState<null | string>(null)
   const { groupId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (groupId) {
@@ -17,7 +18,6 @@ export default function GroupsPage() {
       setViewSingleId(groupId)
     };
   }, [groupId])
-
 
   return (
     <div className="profile-page-layout">
@@ -34,6 +34,7 @@ export default function GroupsPage() {
             }}
             onClick={() => {
               setIsViewing("ViewGroups");
+              navigate('/groups')
             }}
           >
             <GroupIcon size="18" />
@@ -62,7 +63,6 @@ export default function GroupsPage() {
       <div className="profile-main-form">
         {isViewing == "ViewGroups" && <ViewGroups />}
         {isViewing == "CreateGroupForm" && <GroupForm />}
-
         {/* @ts-expect-error -- groupId is already null checked */}
         {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={viewSingleId} />}
       </div>
