@@ -44,15 +44,6 @@ export default function NavBar() {
           MeetUp
         </button>
       </div>
-<<<<<<< HEAD
-      <div>
-        <ul className="nav-list" role="menubar">
-          <li className="nav-link" role="menuitem" onClick={() => { navigate('/groups') }} tabIndex={0}>Groups</li>
-          <li className="nav-link" role="menuitem" tabIndex={0}>Events</li>
-        </ul>
-      </div>
-      <div className="navbar-right">
-=======
 
       <ul className={styles.navList}>
         <li>
@@ -64,7 +55,6 @@ export default function NavBar() {
       </ul>
 
       <div className={styles.navbarRight}>
->>>>>>> main
         <button
           id="nav-button"
           className={`clear-button ${styles.greyHover}`}

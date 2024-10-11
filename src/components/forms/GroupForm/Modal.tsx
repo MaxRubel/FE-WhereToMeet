@@ -6,14 +6,40 @@ interface FormData {
   selectedOptions: string[];
 }
 
+interface UserDB {
+    _id: string; //primary key from mongo
+    uid: string; //primary key from google
+    name: string;
+    phone: string;
+    email: string;
+    address: {
+      street: string;
+      zip: number;
+      city: string;
+      state: string;
+      private: boolean;
+      coordinates: {
+        lat: number;
+        long: number;
+      };
+    };
+    friends: string[];
+}
+
 const MultiselectModal: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState<FormData>({ selectedOptions: [] });
-    const [members, setMembers] = useState<any>(false);
+    const [members, setMembers] = useState<UserDB[]>([]);
 
     const getTheUsers = () => {
-        getAllUsers().then(setMembers)
+        (getAllUsers() as Promise<UserDB[]>).then((users) => {
+            setMembers(users);
+        }).catch((err) => {
+            console.error('youre dumb', err);
+            setMembers([]);
+        });
     }
+
     useEffect(() => {
         getTheUsers();
     }, [])
@@ -53,8 +79,8 @@ const MultiselectModal: React.FC = () => {
                             onChange={handleChange}
                             style={{ height: '150px'}}
                         >
-                            {members.map((member: any) => (
-                                <option key={member.id}>
+                            {members.map((member: UserDB) => (
+                                <option key={member._id}>
                                     {member.name}
                                 </option>
                             ))}

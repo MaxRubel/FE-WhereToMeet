@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import "./RegistrationForm.css";
 import { useAuth } from "@/context/auth/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
