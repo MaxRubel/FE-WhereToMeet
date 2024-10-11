@@ -17,15 +17,6 @@ export type TheGroupForm = {
 
 const initErrors = {
     _id: "",
-    ownerId: "",
-    name: "",
-    description: "",
-    members: []
-  };
-
-const initFields: TheGroupForm = {
-    _id: "",
-    ownerId: "",
     name: "",
     description: "",
     members: []
@@ -33,6 +24,13 @@ const initFields: TheGroupForm = {
 
 export default function GroupForm() {
     const { user, setUser } = useAuth();
+    const initFields: TheGroupForm = {
+      _id: "",
+      ownerId: user._id,
+      name: "",
+      description: "",
+      members: []
+    };
     const [formFields, setFormFields] = useState<TheGroupForm>({
         ...initFields
       });
@@ -49,6 +47,13 @@ export default function GroupForm() {
           ...prevFields,
           [name]: value,
         }));
+    }
+
+    const handleSelectMembers = (selectedMembers:  string[]) => {
+      setFormFields((prevFields) => ({
+        ...prevFields,
+        members: selectedMembers,
+      }))
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,12 +105,17 @@ export default function GroupForm() {
               required
               aria-required="true"
               value={formFields.description}
-              placeholder="Grooup Details"
-              onChange={handleChange}
+              placeholder="Group Details"
+              onChange={handleChange} 
             />
           </div>
 
-          <MultiselectModal />
+          <div>
+            <MultiselectModal onSelectMembers={handleSelectMembers}/>
+            {formFields.members.length > 0 && (
+              <p>{formFields.members.length} members selected</p>
+            )}
+          </div>
 
           <Button type="submit" className="submit-button" disabled={isSubmitting}>
             Submit
