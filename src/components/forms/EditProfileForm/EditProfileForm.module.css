@@ -5,11 +5,11 @@
 .splitRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3em
+  gap: 3em;
 }
 
 .buttonRow {
-  margin-top: 1em;
+  margin-top: 3em;
   display: flex;
   justify-content: flex-start;
   gap: 1em;

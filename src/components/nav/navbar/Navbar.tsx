@@ -1,15 +1,14 @@
-import { PersonRound } from "@/components/graphics/Graphics1"
-import { useEffect, useState } from "react"
-import { signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '../../../context/auth/firebase';
-import { useAuth } from '../../../context/auth/auth';
+import { useEffect, useState } from "react";
+import { signOut as firebaseSignOut } from "firebase/auth";
+import { auth } from "../../../context/auth/firebase";
+import { useAuth } from "../../../context/auth/auth";
 import { useNavigate } from "react-router-dom";
-import styles from "./navbar.module.css"
+import styles from "./navbar.module.css";
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const { setUser } = useAuth()
-  const navigate = useNavigate()
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleClickOut = (e: MouseEvent): void => {
     if (!(e.target instanceof Element)) return;
@@ -22,7 +21,7 @@ export default function NavBar() {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
-      setUser("notLoggedIn")
+      setUser("notLoggedIn");
       localStorage.setItem("user", "");
     } catch (error) {
       console.error("Error signing out", error);
@@ -30,15 +29,19 @@ export default function NavBar() {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOut)
+    document.addEventListener("click", handleClickOut);
 
     return () => {
-      document.removeEventListener("click", handleClickOut)
-    }
-  }, [])
+      document.removeEventListener("click", handleClickOut);
+    };
+  }, []);
 
   return (
-    <nav className={styles.navBarContainer} role="navigation" aria-label="Main Navigation">
+    <nav
+      className={styles.navBarContainer}
+      role="navigation"
+      aria-label="Main Navigation"
+    >
       <div className="logo" role="banner">
         <button className="nav-link" role="menuitem" onClick={() => { navigate('/') }}>
           MeetUp
@@ -47,10 +50,14 @@ export default function NavBar() {
 
       <ul className={styles.navList}>
         <li>
-          <a href="/groups" className="nav-link">Groups</a>
+          <a href="/groups" className="nav-link">
+            Groups
+          </a>
         </li>
         <li>
-          <a href="/events" className="nav-link">Events</a>
+          <a href="/events" className="nav-link">
+            Events
+          </a>
         </li>
       </ul>
 
@@ -63,7 +70,13 @@ export default function NavBar() {
           aria-controls="settings-menu"
           onClick={() => setSettingsOpen((prevVal) => !prevVal)}
         >
-          <PersonRound size={"22"} aria-hidden="true" />
+          <img
+            className={styles.avatarPhoto}
+            style={{ pointerEvents: "none" }}
+            src={user.avatarUrl ? user.avatarUrl : user.photoURL}
+            alt="avatar photo"
+          />
+
           <span className="visually-hidden">User Settings</span>
         </button>
         {settingsOpen && (
@@ -77,7 +90,7 @@ export default function NavBar() {
               id="edit-profile-button"
               className={styles.navButton}
               role="menuitem"
-              onClick={() => navigate('/edit-profile')}
+              onClick={() => navigate("/edit-profile")}
             >
               Edit Profile
             </button>
@@ -93,5 +106,5 @@ export default function NavBar() {
         )}
       </div>
     </nav>
-  )
+  );
 }

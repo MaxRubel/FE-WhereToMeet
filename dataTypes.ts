@@ -7,6 +7,7 @@ export type UserDB = {
   _id: string; //primary key from mongo
   uid: string; //primary key from google
   name: string;
+  avatarUrl: string;
   phone: string;
   email: string;
   address: {
