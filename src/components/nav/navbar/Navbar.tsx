@@ -41,11 +41,13 @@ export default function NavBar() {
   return (
     <nav className="nav-bar-container" role="navigation" aria-label="Main Navigation">
       <div className="logo" role="banner">
-        MeetUp
+        <button className="nav-link" role="menuitem" onClick={() => { navigate('/') }}>
+          MeetUp
+        </button>
       </div>
       <div>
         <ul className="nav-list" role="menubar">
-          <li className="nav-link" role="menuitem" tabIndex={0}>Groups</li>
+          <li className="nav-link" role="menuitem" onClick={() => { navigate('/groups') }} tabIndex={0}>Groups</li>
           <li className="nav-link" role="menuitem" tabIndex={0}>Events</li>
         </ul>
       </div>
