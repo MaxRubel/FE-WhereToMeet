@@ -12,29 +12,45 @@ import { useToast } from "@/hooks/use-toast";
 export default function ChooseAvatarForm() {
   const [selection, sendSelection] = useState<string | null>(null);
   const [input, setInput] = useState<string>("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, checkUserFunc } = useAuth();
   const { toast } = useToast();
 
   const handleCancel = () => {
     navigate("/");
   };
 
-  const submit = (value: string) => {
+  const submit = async (value: string) => {
     const payload: AvatarPayload = {
       id: user._id,
       avatarUrl: value,
     };
-    updateAvatar(payload).then(() => {
+
+    try {
+      await updateAvatar(payload);
+
       toast({
-        title: "Scheduled: Catch up",
-        description: "Friday, February 10, 2023 at 5:57 PM",
+        title: "Success!",
+        description: "Your new avatar has been set.",
+        action: (
+          <img
+            src={value}
+            alt="New Avatar"
+            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+          />
+        ),
+        className: "toastty",
       });
-    });
+      checkUserFunc();
+      setIsSubmitting(false);
+    } catch (err) {
+      console.error("Error submitting avatar: ", err);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     if (input) {
@@ -58,7 +74,7 @@ export default function ChooseAvatarForm() {
           style={{ marginTop: "1em" }}
         >
           Image URL{" "}
-          <span style={{ fontStyle: "italic", marginLeft: "1em" }}>
+          <span style={{ fontStyle: "italic", marginLeft: ".3em" }}>
             (optional)
           </span>
         </Label>
@@ -67,10 +83,15 @@ export default function ChooseAvatarForm() {
           placeholder="https://i.etsystatic.com/34654177/r/il/22f3d1/4057574661/il_570xN.4057574661_iesx.jpg"
           onChange={(e) => {
             setInput(e.target.value);
+            setError("");
           }}
           type="url"
           value={input}
         />
+
+        <div className="errors">
+          {error && "Ooops! It looks like that URL is not valid."}
+        </div>
       </div>
       <div className={styles.buttonRow}>
         <Button type="submit" disabled={isSubmitting}>

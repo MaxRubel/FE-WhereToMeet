@@ -16,6 +16,7 @@ import { useAuth } from "@/context/auth/auth";
 import { updateUser } from "@/api/users";
 import styles from "./EditProfileForm.module.css";
 import validator from "validator";
+import { toast } from "@/hooks/use-toast";
 
 export type EditUserFields = {
   name: string;
@@ -98,7 +99,12 @@ export default function EditProfileForm() {
     //@ts-ignore
     updateUser(payload, user._id).then((data) => {
       checkUserFunc();
-      navigate("/");
+      toast({
+        title: "Success!",
+        description: "Your profile has been updated.",
+        className: "toastty",
+      });
+      setIsSubmitting(false);
     });
   };
 
