@@ -28,8 +28,6 @@ export default function NavBar() {
     }
   };
 
-  console.log(user);
-
   useEffect(() => {
     document.addEventListener("click", handleClickOut);
 
