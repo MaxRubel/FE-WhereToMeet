@@ -43,7 +43,11 @@ export default function NavBar() {
       aria-label="Main Navigation"
     >
       <div className="logo" role="banner">
-        <a href="/">MeetUp</a>
+        <a href="/">
+          <span style={{ fontSize: "1.5rem", margin: "8px" }}>🍻</span>
+          Where To Meet
+          <span style={{ fontSize: "1.5rem", margin: "8px" }}>🍻</span>
+        </a>
       </div>
 
       <ul className={styles.navList}>

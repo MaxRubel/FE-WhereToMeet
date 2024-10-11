@@ -1,0 +1,14 @@
+.announcementsContainer {
+  height: 400px;
+  background-color: rgb(1, 79, 116);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.5);
+}
+
+.fullSize {
+  height: 100vh;
+  position: sticky;
+}
+
+.homePageContainer {
+  margin-top: 50px;
+}
