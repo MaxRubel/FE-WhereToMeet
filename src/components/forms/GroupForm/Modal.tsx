@@ -2,8 +2,8 @@ import { getAllUsers } from '@/api/users';
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-interface FormData {
-  selectedOptions: string[];
+interface MultiselectModalProps {
+    onSelectMembers: (selectedMembers: string[]) => void;
 }
 
 interface UserDB {
@@ -26,9 +26,9 @@ interface UserDB {
     friends: string[];
 }
 
-const MultiselectModal: React.FC = () => {
+const MultiselectModal: React.FC<MultiselectModalProps> = ({ onSelectMembers }) => {
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState<FormData>({ selectedOptions: [] });
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [members, setMembers] = useState<UserDB[]>([]);
 
     const getTheUsers = () => {
@@ -48,13 +48,13 @@ const MultiselectModal: React.FC = () => {
     const handleOpen = () => setShowModal(true);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-        setFormData({ selectedOptions });
+        const selected = Array.from(e.target.selectedOptions, option => option.value);
+        setSelectedOptions(selected);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Selected Options', formData.selectedOptions);
+        onSelectMembers(selectedOptions);
         handleClose();
     };
 
@@ -66,36 +66,36 @@ const MultiselectModal: React.FC = () => {
 
             {/* MODAL FOR ADDING FRIENDS TO GROUP */}
             <Modal show={showModal} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Add Friends</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="formMultiselect">
-                        <Form.Label>Select people to join the group</Form.Label>
-                        <Form.Select
-                            multiple
-                            value={formData.selectedOptions}
-                            onChange={handleChange}
-                            style={{ height: '150px'}}
-                        >
-                            {members.map((member: UserDB) => (
-                                <option key={member._id}>
-                                    {member.name}
-                                </option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                    {/* <Button variant="primary" type="submit">
-                        Submit
-                    </Button> */}
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Close
-                </Button>
-            </Modal.Footer>
+                <Modal.Header>
+                    <Modal.Title>Add Friends</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3" controlId="formMultiselect">
+                            <Form.Label>Select people to join the group</Form.Label>
+                            <Form.Select
+                                multiple
+                                value={selectedOptions}
+                                onChange={handleChange}
+                                style={{ height: '150px'}}
+                            >
+                                {members.map((member: UserDB) => (
+                                    <option key={member._id}>
+                                        {member.name}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Close
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </>
     );
