@@ -1,4 +1,4 @@
-import { EditUserFields } from "@/components/forms/EditProfileForm/EditProfileForm";
+import { EditUserFields } from "@/components/pages/ProfilePage/EditProfileForm/EditProfileForm";
 import { UserDB } from "dataTypes";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
@@ -89,8 +89,8 @@ export function getAllUsers() {
         "Content-Type": "application/json",
       },
     })
-    .then((resp) => resp.json())
-    .then((data) => resolve(data.users))
-    .catch((err) => reject(err));
+      .then((resp) => resp.json())
+      .then((data) => resolve(data.users))
+      .catch((err) => reject(err));
   });
 }

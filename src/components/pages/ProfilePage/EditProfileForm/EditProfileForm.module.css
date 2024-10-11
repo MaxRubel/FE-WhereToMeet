@@ -9,7 +9,7 @@
 }
 
 .buttonRow {
-  margin-top: 3em;
+  margin-top: 2em;
   display: flex;
   justify-content: flex-start;
   gap: 1em;

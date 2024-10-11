@@ -66,7 +66,7 @@ export default function ChooseAvatarForm() {
     <form onSubmit={handleSubmit}>
       <h2 className="text-left">Choose an Avatar</h2>
       <AvatarPicker sendSelection={sendSelection} />
-      <div className="custom-avatar" style={{ marginTop: "3em" }}>
+      <div className="custom-avatar" style={{ marginTop: "2em" }}>
         <h2 className="text-left">Or choose your own!</h2>
         <Label
           htmlFor="Image URL"

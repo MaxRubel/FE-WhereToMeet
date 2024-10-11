@@ -1,8 +1,8 @@
 import { EditIcon, PersonRound } from "@/components/graphics/Graphics1";
 import "./ProfilePage.css";
-import EditProfileForm from "@/components/forms/EditProfileForm/EditProfileForm";
+import EditProfileForm from "@/components/pages/ProfilePage/EditProfileForm/EditProfileForm";
 import { useState } from "react";
-import ChooseAvatarForm from "@/components/forms/EditProfileForm/ChooseAvatarForm";
+import ChooseAvatarForm from "@/components/pages/ProfilePage/EditProfileForm/ChooseAvatarForm";
 
 export default function ProfilePage() {
   const [isViewing, setIsViewing] = useState("EditProfileForm");

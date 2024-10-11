@@ -1,5 +1,6 @@
 .profile-page-layout {
   display: grid;
+  padding-top: 2em;
   grid-template-columns: 1fr 4fr;
 }
 

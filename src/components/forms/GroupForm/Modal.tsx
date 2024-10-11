@@ -1,29 +1,10 @@
 import { getAllUsers } from '@/api/users';
+import { UserDB } from 'dataTypes';
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 interface MultiselectModalProps {
     onSelectMembers: (selectedMembers: string[]) => void;
-}
-
-interface UserDB {
-    _id: string; //primary key from mongo
-    uid: string; //primary key from google
-    name: string;
-    phone: string;
-    email: string;
-    address: {
-      street: string;
-      zip: number;
-      city: string;
-      state: string;
-      private: boolean;
-      coordinates: {
-        lat: number;
-        long: number;
-      };
-    };
-    friends: string[];
 }
 
 const MultiselectModal: React.FC<MultiselectModalProps> = ({ onSelectMembers }) => {
@@ -77,7 +58,7 @@ const MultiselectModal: React.FC<MultiselectModalProps> = ({ onSelectMembers }) 
                                 multiple
                                 value={selectedOptions}
                                 onChange={handleChange}
-                                style={{ height: '150px'}}
+                                style={{ height: '150px' }}
                             >
                                 {members.map((member: UserDB) => (
                                     <option key={member._id}>
@@ -93,7 +74,7 @@ const MultiselectModal: React.FC<MultiselectModalProps> = ({ onSelectMembers }) 
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
-                    Close
+                        Close
                     </Button>
                 </Modal.Footer>
             </Modal>

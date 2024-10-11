@@ -37,16 +37,21 @@ export default function Home() {
   };
 
   return (
-    <div className={style.homePageContainer}>
-      <div className={`${style.announcementsContainer} centered`}>
-        Announcements container
-      </div>
-      <div className={style.fullSize}>
-        <h1>Welcome!</h1>
-        <button onClick={handleTestEndpoint} ref={buttonRef}>
-          Test Server Endpoint
-        </button>
-        <button onClick={handleDeleteUser}>Delete Your User</button>
+    <div id="home-page-container" className={style.homePageContainer}>
+      <div className={style.content}>
+        {/* fixed section */}
+        <div className={`${style.announcementsContainer} centered`}>
+          Announcements container
+        </div>
+
+        {/* 2nd Section */}
+        <div className={style.lowerSection}>
+          <h1>Welcome!</h1>
+          <button onClick={handleTestEndpoint} ref={buttonRef}>
+            Test Server Endpoint
+          </button>
+          <button onClick={handleDeleteUser}>Delete Your User</button>
+        </div>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { HoverCard } from "@radix-ui/react-hover-card";
 import QuestionMark from "@/components/graphics/QuestionMark";
-import { SCROLL_OVER_WAIT_TIME } from "../../../../AppSettings";
+import { SCROLL_OVER_WAIT_TIME } from "../../../../../AppSettings";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth/auth";
