@@ -50,7 +50,7 @@ export const emptyUserDB = {
 export type UserType = (UserDB & FirebaseUser) | null | "notLoggedIn";
 
 export type Group = {
-  _id: string; //primary key
+  _id?: string; //primary key
   ownerId: string; //foreign key
   name: string;
   description: string;

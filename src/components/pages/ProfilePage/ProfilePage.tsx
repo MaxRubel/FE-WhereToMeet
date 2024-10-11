@@ -12,7 +12,7 @@ export default function ProfilePage() {
       <div className="profile-side-bar">
         <ul className="profile-list">
           <button
-            className="clear-button profile-list-item"
+            className="clear-button side-list-item"
             style={{
               fontWeight: isViewing == "EditProfileForm" ? "900" : "",
               backgroundColor:
@@ -29,7 +29,7 @@ export default function ProfilePage() {
           </button>
 
           <button
-            className="profile-list-item"
+            className="side-list-item"
             style={{
               fontWeight: isViewing == "ChooseAvatarForm" ? "900" : "",
               backgroundColor:

@@ -17,6 +17,7 @@
   top: 0;
   z-index: 1;
   scroll-snap-align: start;
+  color: white;
 }
 
 .lowerSection {
