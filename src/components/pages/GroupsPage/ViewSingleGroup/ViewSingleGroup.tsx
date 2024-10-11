@@ -1,7 +1,6 @@
 import { getSingleGroup } from "@/api/groups"
 import { Group } from "dataTypes"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
 
 type props = {
   groupId: string
