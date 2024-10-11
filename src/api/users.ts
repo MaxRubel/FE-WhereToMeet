@@ -7,6 +7,11 @@ type checkUserType = {
   uid: string;
 };
 
+export type AvatarPayload = {
+  avatarUrl: string;
+  id: string;
+};
+
 export function checkUser(payload: checkUserType) {
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users/exists`, {
@@ -49,14 +54,27 @@ export function deleteUser(id: string) {
 }
 
 export function updateUser(payload: EditUserFields, id: string) {
-
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(err));
+  });
+}
+
+export function updateAvatar(payload: AvatarPayload) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users/${payload.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     })
       .then((resp) => resolve(resp))
       .catch((err) => reject(err));

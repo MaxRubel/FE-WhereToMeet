@@ -1,11 +1,15 @@
 import { gifList } from "@/assets/gifList";
-import "./avatarPicker.css"
+import "./avatarPicker.css";
 
-export function AvatarPicker() {
+type AvatarPicker = {
+  sendSelection: Function;
+};
+
+export function AvatarPicker({ sendSelection }: AvatarPicker) {
   return (
-    <div className="avatar-picker box-shadow">
+    <div className="avatar-picker box-shadow" style={{ marginTop: "1em" }}>
       {gifList.map((url) => (
-        <AvatarSmall url={url} key={url} />
+        <AvatarSmall url={url} key={url} sendSelection={sendSelection} />
       ))}
     </div>
   );
@@ -13,16 +17,26 @@ export function AvatarPicker() {
 
 type AvatarSmallProps = {
   url: string;
-}
+  sendSelection: Function;
+};
 
-export function AvatarSmall({ url }: AvatarSmallProps) {
+export function AvatarSmall({ url, sendSelection }: AvatarSmallProps) {
   return (
-    <img src={url} alt=""
-      style={{
-        height: "45px",
-        width: "45px",
-        borderRadius: "50%",
+    <button
+      onClick={() => {
+        sendSelection(url);
       }}
-    />
+      type="button"
+    >
+      <img
+        src={url}
+        alt=""
+        style={{
+          height: "45px",
+          width: "45px",
+          borderRadius: "50%",
+        }}
+      />
+    </button>
   );
 }

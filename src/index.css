@@ -24,7 +24,7 @@ h2 {
 }
 
 a:hover {
-  color: rgb(216, 216, 216)
+  color: rgb(216, 216, 216);
 }
 
 body {
@@ -139,6 +139,8 @@ button:focus-visible {
 
 .clear-button {
   background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .clear-button:hover,
@@ -149,7 +151,7 @@ button:focus-visible {
 
 .main-content-container {
   min-height: 100vh;
-  padding: 2em;
+  padding: 2em 0em;
   margin-top: 50px;
   padding-top: 2em;
 }
@@ -172,13 +174,13 @@ button:focus-visible {
   /* background-color: #50677b; */
   background-color: whitesmoke;
   border: 1px solid #b3b8bd !important;
-  color: #50677b
+  color: #50677b;
 }
 
 .secondary-button:hover {
   background-color: rgb(227, 227, 227) !important;
   border: 1px solid #50677b;
-  color: #50677b
+  color: #50677b;
 }
 
 .box-shadow {

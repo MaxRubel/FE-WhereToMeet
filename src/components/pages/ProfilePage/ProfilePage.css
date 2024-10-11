@@ -5,19 +5,38 @@
 
 .profile-side-bar {
   border-right: 1px solid lightgray;
-  font-weight: 900;
-  min-width: 200px;
+  /* font-weight: 900; */
+  min-width: 220px;
   padding-top: 3em;
-  padding-right: 2em;
+  padding: 0em 1em;
 }
 
 .profile-list-item {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 10fr;
+  gap: 1em;
+  text-align: left;
   align-items: center;
-  gap: 1em
+  border: none;
+  outline: none;
+  /* min-width: 200px; */
+  padding: 1em;
+  background-color: transparent;
+  font-weight: 400;
+}
+
+.profile-list-item:active,
+.profile-list-item:focus {
+  border: none;
+  outline: none;
 }
 
 .profile-main-form {
   padding: 0em 3em;
+  min-height: 50vh;
+}
+
+.profile-list {
+  display: flex;
+  flex-direction: column;
 }
