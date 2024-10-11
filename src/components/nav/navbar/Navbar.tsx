@@ -43,9 +43,7 @@ export default function NavBar() {
       aria-label="Main Navigation"
     >
       <div className="logo" role="banner">
-        <button className="nav-link" role="menuitem" onClick={() => { navigate('/') }}>
-          MeetUp
-        </button>
+        <a href="/">MeetUp</a>
       </div>
 
       <ul className={styles.navList}>

@@ -35,9 +35,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   );
 };
 
-import GroupsPage from "./components/pages/ProfilePage/GroupsPage/GroupsPage";
-
-
 export default function Router() {
   return (
     <ToastProvider>
@@ -49,7 +46,6 @@ export default function Router() {
             <Route path="/edit-profile" element={<ProfilePage />} />
             <Route path="/groups" element={<GroupsPage />} />
             <Route path="/events" element={<h1>Events page</h1>} />
-
           </Routes>
         </div>
         <Toaster />
