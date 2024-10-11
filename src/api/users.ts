@@ -62,3 +62,17 @@ export function updateUser(payload: EditUserFields, id: string) {
       .catch((err) => reject(err));
   });
 }
+
+export function getAllUsers() {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((resp) => resp.json())
+    .then((data) => resolve(data.users))
+    .catch((err) => reject(err));
+  });
+}
