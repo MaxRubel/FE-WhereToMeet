@@ -3,11 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import Home from "./components/Home/Home";
 import NavBar from "./components/nav/navbar/Navbar";
 import ProfilePage from "./components/pages/ProfilePage/ProfilePage";
-import EventPage from "./components/pages/ProfilePage/EventsPage";
+import EventPage from "./components/pages/EventsPage/EventPage";
 import GroupsPage from "./components/pages/GroupsPage/GroupsPage";
 import { createContext, ReactNode, useContext } from "react";
 import { useToast } from "./hooks/use-toast";
-import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
+// import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 
 // Create the context
 const ToastContext = createContext<((props: any) => void) | undefined>(
