@@ -2,16 +2,8 @@ import { useEffect, useState } from 'react';
 import { Group } from "dataTypes";
 import { formatDate } from "../../../../../utils/formatDate";
 import styles from "./GroupStyles.module.css"; import Avatar from '../Avatar';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ComboboxDemo } from '@/components/ui/ComboBoxDemo';
+import AddMember from './AddMember';
+
 
 
 export interface GroupMemberSmall {
@@ -28,9 +20,9 @@ interface SingleGroupProps {
 export default function SingleGroup({ group }: SingleGroupProps) {
   const [members, setMembers] = useState<GroupMemberSmall[]>([])
 
-  useEffect(() => {
-    console.log("fetching members")
-  }, [])
+  // useEffect(() => {
+  //   console.log("fetching members")
+  // }, [])
 
   return (
     <>
@@ -48,22 +40,8 @@ export default function SingleGroup({ group }: SingleGroupProps) {
             "No one has been added to this group yet..."
           }
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className='secondary-button'>
-              Add Someone
-            </Button>
-          </DialogTrigger>
-          <DialogContent style={{ minHeight: "250px" }}>
-            <DialogHeader>
-              <DialogTitle>Add Someone</DialogTitle>
-              <DialogDescription className={styles.spacedRow}>
-                <ComboboxDemo />
-                <Button>Add</Button>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        {/* @ts-expect-error (groupId is not null) */}
+        <AddMember groupId={group._id} />
       </div>
     </>
   );

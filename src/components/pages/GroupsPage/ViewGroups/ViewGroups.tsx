@@ -17,7 +17,6 @@ export default function ViewGroups() {
     queryKey: ['groups', user._id],
     queryFn: () => getUserGroups(user._id),
     refetchOnMount: false,
-    staleTime: 10000,
     enabled: !!user._id,
   });
 

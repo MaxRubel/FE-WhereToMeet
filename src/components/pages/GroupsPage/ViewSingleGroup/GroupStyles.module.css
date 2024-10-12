@@ -20,3 +20,34 @@
   display: flex;
   gap: 1em;
 }
+
+.singleUserContainer {
+  border: 1px solid rgb(237, 237, 237);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  padding: .5em 1em;
+  cursor: pointer;
+}
+
+.singleUserContainer:hover {
+  background-color: rgb(237, 237, 237);
+}
+
+.nameContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.usersContainer {
+  position: absolute;
+  width: 464px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.userName {
+  font-weight: 900;
+}
