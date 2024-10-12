@@ -44,17 +44,22 @@ export default function GroupForm() {
   const createGroupMutation = useMutation<ResponseType, Error, typeof formFields>({
     //@ts-ignore
     mutationFn: createGroup,
-    onSuccess: (data: any) => {
+    onSuccess: (resp: any) => {
       // Update cache here
       queryClient.setQueryData(['groups', user._id], (oldData: any) => {
-        const newGroup = { _id: data.data._id, ...formFields };
+        const newGroup = {
+          _id: resp.data.insertedId,
+          dateCreated: resp.data.dateCreated,
+          ...formFields
+        };
         return oldData ? [...oldData, newGroup] : [newGroup];
       });
-      queryClient.setQueryData(['group', data.data._id], {
-        _id: data.data._id,
-        ...formFields,
+      queryClient.setQueryData(['group', resp.data._id], {
+        _id: resp.data.insertedId,
+        dateCreated: resp.data.dateCreated,
+        ...formFields
       });
-      navigate(`/groups/${data.data._id}`);
+      navigate(`/groups/${resp.data.insertedId}`);
     },
     onError: (error: Error) => {
       console.error("Error submitting create group form: ", error);
