@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Home from "./components/Home/Home";
 import NavBar from "./components/nav/navbar/Navbar";
 import ProfilePage from "./components/pages/ProfilePage/ProfilePage";
+import EventPage from "./components/pages/ProfilePage/EventsPage";
 import GroupsPage from "./components/pages/GroupsPage/GroupsPage";
 import { createContext, ReactNode, useContext } from "react";
 import { useToast } from "./hooks/use-toast";
@@ -45,9 +46,9 @@ export default function Router() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/edit-profile" element={<ProfilePage />} />
+            <Route path="/events" element={<EventPage />} />
             <Route path="/groups" element={<GroupsPage />} />
-            <Route path="/groups/:groupId" element={<GroupsPage />} />
-            <Route path="/events" element={<h1>Events page</h1>} />
+            <Route path="/groups/:groupId" element={<GroupsPage/>} />
           </Routes>
         </div>
         <Toaster />
