@@ -38,7 +38,7 @@ export default function GroupsPage() {
             }}
           >
             <GroupIcon size="18" />
-            View Groups
+            Your Groups
           </button>
 
           <button

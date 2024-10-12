@@ -21,21 +21,17 @@ type AvatarSmallProps = {
 };
 
 export function AvatarSmall({ url, sendSelection }: AvatarSmallProps) {
+
   return (
     <button
-      onClick={() => {
-        sendSelection(url);
-      }}
+      onClick={() => sendSelection(url)}
       type="button"
+      className="p-0 border-0 bg-transparent"
     >
       <img
         src={url}
-        alt=""
-        style={{
-          height: "45px",
-          width: "45px",
-          borderRadius: "50%",
-        }}
+        alt="Avatar"
+        className="h-12 w-12 rounded-full object-cover"
       />
     </button>
   );

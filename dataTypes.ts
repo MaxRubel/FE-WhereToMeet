@@ -58,6 +58,7 @@ export type Group = {
   name: string;
   description: string;
   members: string[]; //array of _ids
+  dateCreated?: string
 };
 
 export type Event = {

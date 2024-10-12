@@ -41,7 +41,8 @@ export default function Home() {
       <div className={style.content}>
         {/* fixed section */}
         <div className={`${style.announcementsContainer} centered`}>
-          Announcements container
+          Announcments
+          {/* <img src="elvesChatting.jpeg" alt="" style={{ objectFit: "fill", width: "100%" }} /> */}
         </div>
 
         {/* 2nd Section */}

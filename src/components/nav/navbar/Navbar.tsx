@@ -45,7 +45,7 @@ export default function NavBar() {
       <div className="logo" role="banner">
         <a href="/">
           Where To Meet
-          <span style={{ fontSize: "1.5rem", margin: "8px" }}>🍻</span>
+          {/* <span style={{ fontSize: "1.5rem", margin: "8px" }}>🍻</span> */}
         </a>
       </div>
 

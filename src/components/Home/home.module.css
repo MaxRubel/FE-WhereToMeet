@@ -9,10 +9,11 @@
 }
 
 .announcementsContainer {
-  height: 200px;
+  height: 350px;
   background-color: rgb(1, 79, 116);
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.5);
   width: 100%;
+  opacity: .8;
   position: sticky;
   top: 0;
   z-index: 1;
