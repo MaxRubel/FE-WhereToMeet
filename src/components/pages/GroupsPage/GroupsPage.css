@@ -1,0 +1,28 @@
+.groups-page-container {
+  display: grid;
+  padding: 2em 0em;
+  grid-template-columns: 220px 10fr;
+}
+
+.left-side {
+  border-right: 1px solid rgb(201, 196, 196);
+  min-height: 80vh;
+}
+
+.side-group-btn {
+  display: flex;
+  gap: 1em;
+  text-align: left;
+  align-items: center;
+  border: none;
+  outline: none;
+  /* min-width: 200px; */
+  padding: 1em;
+  background-color: transparent;
+  font-weight: 400;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  background-color: red;
+}

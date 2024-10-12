@@ -7,6 +7,7 @@ export type UserDB = {
   _id: string; //primary key from mongo
   uid: string; //primary key from google
   name: string;
+  avatarUrl: string;
   phone: string;
   email: string;
   address: {
@@ -52,7 +53,7 @@ export const emptyUserDB = {
 export type UserType = (UserDB & FirebaseUser) | null | "notLoggedIn";
 
 export type Group = {
-  _id: string; //primary key
+  _id?: string; //primary key
   ownerId: string; //foreign key
   name: string;
   description: string;

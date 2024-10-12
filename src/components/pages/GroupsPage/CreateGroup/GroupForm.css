@@ -1,0 +1,8 @@
+.create-group-form-container {
+  text-align: left;
+}
+
+.create-group-form {
+  max-width: 600px;
+  min-width: 30px;
+}

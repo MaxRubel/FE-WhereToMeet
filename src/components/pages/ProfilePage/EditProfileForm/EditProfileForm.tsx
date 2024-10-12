@@ -1,16 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { HoverCard } from "@radix-ui/react-hover-card";
 import QuestionMark from "@/components/graphics/QuestionMark";
-import { SCROLL_OVER_WAIT_TIME } from "../../../../AppSettings"
+import { SCROLL_OVER_WAIT_TIME } from "../../../../../AppSettings";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth/auth";
 import { updateUser } from "@/api/users";
-import styles from "./EditProfileForm.module.css"
+import styles from "./EditProfileForm.module.css";
 import validator from "validator";
+import { toast } from "@/hooks/use-toast";
 
 export type EditUserFields = {
   name: string;
@@ -20,13 +26,13 @@ export type EditUserFields = {
   city: string;
   state: string;
   zip: number;
-}
+};
 
 type pointerOver = {
-  address: boolean,
-  phone: boolean,
-  street: boolean,
-}
+  address: boolean;
+  phone: boolean;
+  street: boolean;
+};
 
 export default function EditProfileForm() {
   const { user, checkUserFunc } = useAuth();
@@ -39,18 +45,18 @@ export default function EditProfileForm() {
     city: user.address.city || "",
     state: user.address.state || "",
     zip: user.address.zip || "",
-  }
+  };
 
-  const [formFields, setFormFields] = useState<EditUserFields>(initFields)
-  const [errors, setErrors] = useState({ phone: "" })
+  const [formFields, setFormFields] = useState<EditUserFields>(initFields);
+  const [errors, setErrors] = useState({ phone: "" });
   const [phoneOver, setPhoneOver] = useState(false);
   const [pointerOver, setPointerOver] = useState<pointerOver>({
     address: false,
     phone: false,
-    street: false
+    street: false,
   });
-  const [checkingAddress, setCheckingAddress] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [checkingAddress, setCheckingAddress] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,55 +72,67 @@ export default function EditProfileForm() {
   };
 
   useEffect(() => {
-    if (formFields.street || formFields.city || formFields.state || formFields.zip) {
-      setCheckingAddress(true)
+    if (
+      formFields.street ||
+      formFields.city ||
+      formFields.state ||
+      formFields.zip
+    ) {
+      setCheckingAddress(true);
     } else {
-      setCheckingAddress(false)
+      setCheckingAddress(false);
     }
-  }, [formFields])
+  }, [formFields]);
 
   const submit = () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     const address = {
       street: formFields.street,
       state: formFields.state,
       city: formFields.city,
-      zip: formFields.zip
-    }
+      zip: formFields.zip,
+    };
     const { street, state, city, zip, ...payload } = formFields;
 
     //@ts-ignore
     payload.address = address;
     //@ts-ignore
     updateUser(payload, user._id).then((data) => {
-      checkUserFunc()
-      navigate('/')
-    })
-  }
+      checkUserFunc();
+      toast({
+        title: "Success!",
+        description: "Your profile has been updated.",
+        className: "toastty",
+      });
+      setIsSubmitting(false);
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formFields.phone) {
       if (validator.isMobilePhone(formFields.phone)) {
-        submit()
+        submit();
       } else {
-        setErrors(prevErrors => ({ ...prevErrors, phone: "Please enter a valid phone number" }));
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phone: "Please enter a valid phone number",
+        }));
       }
     } else {
-      submit()
+      submit();
     }
-  }
+  };
 
   const handleCancel = () => {
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-left">Edit Profile</h2>
       <div className={styles.editProfileFields}>
-
         {/* NAME FIELD */}
         <div className="form-group">
           <Label htmlFor="name" className="form-label">
@@ -172,7 +190,7 @@ export default function EditProfileForm() {
                 className="small-over-text"
                 style={{
                   display: phoneOver ? "block" : "none",
-                  zIndex: "10"
+                  zIndex: "10",
                 }}
               >
                 <CardHeader>
@@ -202,18 +220,20 @@ export default function EditProfileForm() {
         {/* ADDRESS HEADER */}
         <HoverCard>
           <Label htmlFor="street" className="form-label">
-            <h3 className="text-left"
-              style={{ margin: "1em 0em", fontWeight: "700" }}>
+            <h3
+              className="text-left"
+              style={{ margin: "1em 0em", fontWeight: "700" }}
+            >
               Address
             </h3>
             <div
               className="centered"
               onMouseEnter={() => {
-                setPointerOver((preVal) => ({ ...preVal, street: true }))
+                setPointerOver((preVal) => ({ ...preVal, street: true }));
               }}
               onMouseLeave={() => {
                 setTimeout(() => {
-                  setPointerOver((preVal) => ({ ...preVal, street: false }))
+                  setPointerOver((preVal) => ({ ...preVal, street: false }));
                 }, SCROLL_OVER_WAIT_TIME);
               }}
             >
@@ -229,7 +249,8 @@ export default function EditProfileForm() {
               <CardHeader>
                 <CardTitle>Optional</CardTitle>
                 <CardDescription>
-                  This is an optional field. We use your address to find out the best place for a group to meet.  It is not required.
+                  This is an optional field. We use your address to find out the
+                  best place for a group to meet. It is not required.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -292,7 +313,6 @@ export default function EditProfileForm() {
           </div>
         </div>
 
-
         <div className="edit-profile-split-row">
           {/* ZIP FIELD */}
           <div className="form-group">
@@ -314,12 +334,17 @@ export default function EditProfileForm() {
         </div>
       </div>
       <div className={styles.buttonRow}>
-        <Button type="submit" disabled={isSubmitting}>Submit</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          Submit
+        </Button>
         <Button
           type="button"
           className="secondary-button"
-          onClick={handleCancel}>Cancel</Button>
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
       </div>
-    </form >
-  )
+    </form>
+  );
 }

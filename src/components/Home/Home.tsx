@@ -1,7 +1,7 @@
 import { RefObject, useRef } from "react";
 import { useAuth } from "@/context/auth/auth";
 import { deleteUser } from "@/api/users";
-import { AvatarPicker } from "../menus/avatarPicker/AvatarPicker";
+import style from "./home.module.css";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -37,14 +37,21 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Welcome!</h1>
-      <button onClick={handleTestEndpoint} ref={buttonRef}>
-        Test Server Endpoint
-      </button>
-      <button onClick={handleDeleteUser}>Delete Your User</button>
-      <div>
-        <AvatarPicker />
+    <div id="home-page-container" className={style.homePageContainer}>
+      <div className={style.content}>
+        {/* fixed section */}
+        <div className={`${style.announcementsContainer} centered`}>
+          Announcements container
+        </div>
+
+        {/* 2nd Section */}
+        <div className={style.lowerSection}>
+          <h1>Welcome!</h1>
+          <button onClick={handleTestEndpoint} ref={buttonRef}>
+            Test Server Endpoint
+          </button>
+          <button onClick={handleDeleteUser}>Delete Your User</button>
+        </div>
       </div>
     </div>
   );
