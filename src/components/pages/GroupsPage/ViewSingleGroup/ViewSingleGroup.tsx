@@ -1,4 +1,4 @@
-import { getMembersOfGroup, getSingleGroup, updateGroup } from "@/api/groups"
+import { deleteGroup, getMembersOfGroup, getSingleGroup, updateGroup } from "@/api/groups"
 import { EditIcon } from "@/components/graphics/Graphics1"
 import { Group, UserDB } from "dataTypes"
 import { useState } from "react"
@@ -11,16 +11,28 @@ import { Input } from "@/components/ui/input"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { GridLoader } from "react-spinners"
 import { useAuth } from "@/context/auth/auth"
+import { useNavigate } from "react-router-dom"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { DialogClose } from "@radix-ui/react-dialog"
 
 type props = {
   groupId: string
+  setIsViewing: (view: string) => void;
 }
 
-export default function ViewSingleGroup({ groupId }: props) {
+export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
   const [members, setMembers] = useState<UserDB[]>([])
   const [isEditting, setIsEditting] = useState(false)
   const [inputVal, setInputVal] = useState("")
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const queryClient = useQueryClient();
 
@@ -34,20 +46,35 @@ export default function ViewSingleGroup({ groupId }: props) {
     }
   );
 
+  const deleteGroupMutation = useMutation(
+    (id: string) => deleteGroup(id),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['group', groupId]);
+        queryClient.invalidateQueries(['groups', user._id]);
+        navigate('/groups');
+        setIsViewing("ViewGroups")
+      },
+      onError: (error) => {
+        console.error('Failed to delete group:', error);
+        // You might want to show an error message to the user here
+      }
+    }
+  );
+
   const { data: thisGroup, isLoading: isGroupLoading } = useQuery<Group>(
     ['group', groupId],
     //@ts-ignore
     () => getSingleGroup(groupId),
     {
-      enabled: !!groupId,
       onSuccess: (data) => {
         const typedata = data as Group
-        setInputVal(typedata.name)
+        setInputVal(typedata?.name)
 
         //fetch all the group members
         const memberIds: string[] = []
 
-        typedata.members.forEach((member: any) => {
+        typedata?.members.forEach((member: any) => {
           memberIds.push(member._id)
         })
 
@@ -78,6 +105,14 @@ export default function ViewSingleGroup({ groupId }: props) {
       );
     }
   }
+
+  const handleDeleteGroup = () => {
+    //@ts-ignore will not be null
+    if (thisGroup?._id) {
+      //@ts-ignore will not be null
+      deleteGroupMutation.mutate(thisGroup._id);
+    }
+  };
 
   if (!thisGroup || isGroupLoading) {
     return <GridLoader />
@@ -168,12 +203,31 @@ export default function ViewSingleGroup({ groupId }: props) {
           <AddMember groupId={thisGroup._id} />
         </div>
 
-
+        {/* onClick={handleDeleteGroup} */}
         {/* ----DELETE BUTTON---- */}
-        <div style={{ marginTop: "6em" }}>
-          <Button className="deleteButton">
-            Delete This Group
-          </Button>
+        <Dialog>
+          <DialogTrigger style={{ marginTop: "6em" }} asChild>
+            <Button className="deleteButton">
+              Delete This Group
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your group and remove all of its events from our servers.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="text-left flex gap-4">
+              <Button style={{ backgroundColor: "red" }}
+                onClick={handleDeleteGroup}>Yes, Delete</Button>
+              <DialogClose asChild>
+                <Button className="secondary-button">Cancel</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <div >
         </div>
 
       </div>

@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { getUserGroups } from "@/api/groups"
 import { useAuth } from "@/context/auth/auth"
 import { Group } from "dataTypes"
 import { useQuery } from "react-query"
-import { GridLoader } from "react-spinners"
 import SmallGroupCard from "../Components/SmallGroupCard"
+
 
 export default function ViewGroups() {
   const { user } = useAuth()
@@ -17,6 +18,8 @@ export default function ViewGroups() {
     queryKey: ['groups', user._id],
     queryFn: () => getUserGroups(user._id),
     enabled: !!user._id,
+    staleTime: 0,
+    cacheTime: 0,
   });
 
   if (isLoading) {
@@ -25,10 +28,17 @@ export default function ViewGroups() {
 
   return (
     <div>
-      {/* @ts-ignore */}
-      {groups?.map((group) => (
-        <SmallGroupCard key={group._id} group={group} />
-      ))}
+      {groups && groups.length ? (
+
+        groups.map((group) => (
+          <SmallGroupCard
+            key={group._id}
+            group={group}
+          />
+        ))
+      ) : (
+        <div>No groups have been created yet...</div>
+      )}
     </div>
-  )
+  );
 }

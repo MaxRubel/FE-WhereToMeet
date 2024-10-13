@@ -65,7 +65,7 @@ export default function GroupsPage() {
         {isViewing == "ViewGroups" && <ViewGroups />}
         {isViewing == "CreateGroupForm" && <CreateGroupForm />}
         {/* @ts-expect-error -- groupId is already null checked */}
-        {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={viewSingleId} />}
+        {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={viewSingleId} setIsViewing={setIsViewing} />}
       </div>
     </div>
   );
