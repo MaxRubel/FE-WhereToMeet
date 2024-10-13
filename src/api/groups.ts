@@ -100,3 +100,17 @@ export function getMembersOfGroup(membersArray: string[]) {
       .catch((err) => reject(err))
   })
 }
+
+//  Delete a group
+export function deleteGroup(id: string) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/groups/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(err))
+  })
+}
