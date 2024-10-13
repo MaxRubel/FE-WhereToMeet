@@ -36,12 +36,12 @@ export default function CreateEventForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
+  const [time, setTime] = useState<string>(""); // New state for time
   const [groups, setGroups] = useState<any[]>([]);
   const [formFields, setFormFields] = useState({
     name: "",
     groupId: "",
     description: "",
-    time: "10/10/2024",
     suggestions: [],
     messages: []
   });
@@ -65,7 +65,7 @@ export default function CreateEventForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formattedDate = date ? date.toISOString() : ""; 
+    const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : ""; // Combine date and time
     const payload = {
       _id: "",
       name: formFields.name,
@@ -133,7 +133,7 @@ export default function CreateEventForm() {
           name="description"
           value={formFields.description}
           onChange={handleChange}
-          className="h-20 text-left mt-2 w-full" // Ensure full width
+          className="h-20 text-left mt-2 w-full" 
           required
           aria-required="true"
           placeholder="Add the description"
@@ -146,8 +146,7 @@ export default function CreateEventForm() {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal mt-4", // Added margin-top
-                  !date && "text-muted-foreground"
+                  "w-[240px] justify-start text-left font-normal mt-4", 
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4 text-black" />
@@ -165,7 +164,20 @@ export default function CreateEventForm() {
               </div>
             </PopoverContent>
           </Popover>
-          </div>
+        </div>
+
+        {/* Time Picker */}
+        <Label htmlFor="time" className="form-label mt-4">
+          Select Time:
+        </Label>
+        <Input
+          type="time"
+          name="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className="form-input text-left w-48"
+          placeholder="Hours:Minutes:Seconds"
+        />
       </div>
       
       <div className="form-label">
