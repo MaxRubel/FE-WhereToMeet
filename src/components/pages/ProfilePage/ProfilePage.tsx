@@ -47,7 +47,8 @@ export default function ProfilePage() {
         </ul>
       </div>
       <div className="profile-main-form">
-        {isViewing == "EditProfileForm" && <EditProfileForm />}
+        {isViewing == "EditProfileForm" &&
+          <EditProfileForm />}
         {isViewing == "ChooseAvatarForm" && <ChooseAvatarForm />}
       </div>
     </div>

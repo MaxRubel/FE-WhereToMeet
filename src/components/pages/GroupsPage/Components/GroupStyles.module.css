@@ -52,6 +52,7 @@
   font-weight: 900;
 }
 
-.userToast {
-  background-color: red;
+.removeUser {
+  background-color: #b00404;
+  height: 20px;
 }

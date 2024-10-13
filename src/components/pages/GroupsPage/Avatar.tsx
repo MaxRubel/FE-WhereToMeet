@@ -1,4 +1,4 @@
-import { GroupMemberSmall } from "./ViewSingleGroup/SingleGroup"
+import { GroupMemberSmall } from "./Components/SmallGroupCard"
 
 type props = {
   member: GroupMemberSmall

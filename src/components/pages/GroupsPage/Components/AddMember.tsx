@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useEffect, useRef, useState } from 'react';
 import { findUser } from '@/api/users';
 import { UserDB } from 'dataTypes';
-import SingleUserSmall from './SingleUserSmall';
+import SingleUserSmall from './InviteUserCard';
 
 type props = {
   groupId: string
