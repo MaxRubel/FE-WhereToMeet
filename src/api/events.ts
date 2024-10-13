@@ -19,3 +19,17 @@ export async function createEvent(payload:Event){
         console.error('the error is:',error)
     }
 }
+
+export function getUserEvents(userId: string) {
+    return new Promise((resolve, reject) => {
+        fetch(`${endpoint}/events/user-events/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((resp) => resp.json())
+            .then((data) => resolve(data))
+            .catch((err) => reject(err))
+    });
+}

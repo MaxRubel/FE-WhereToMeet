@@ -4,9 +4,9 @@ import { useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
 import ViewEvents from "./ViewEvents/ViewEvents";
 
-
 export default function EventPage() {
     const [isViewing, setIsViewing] = useState("ViewEvents");
+
     return (
         <div className="profile-page-layout">
             <div className="profile-side-bar">
