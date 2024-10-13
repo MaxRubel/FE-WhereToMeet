@@ -6,6 +6,7 @@ import { getMembersOfGroup } from '@/api/groups';
 import { useAuth } from '@/context/auth/auth';
 import { CheckIcon } from '@/components/graphics/Graphics1';
 import GroupMemberAvatar from './GroupMemberAvatar';
+import { Skeleton } from "@/components/ui/skeleton"
 
 export interface GroupMemberSmall {
   _id: string;
@@ -21,6 +22,7 @@ interface SingleGroupProps {
 export default function SmallGroupCard({ group }: SingleGroupProps) {
   const [members, setMembers] = useState<UserDB[]>([])
   const { user } = useAuth()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const memberIds: string[] = []
@@ -30,9 +32,35 @@ export default function SmallGroupCard({ group }: SingleGroupProps) {
     getMembersOfGroup(memberIds).then((data) => {
       const typedData = data as UserDB[]
       setMembers(typedData)
+      setIsLoading(false)
     })
-
   }, [])
+
+  if (isLoading) {
+    return (
+      <div style={{
+        padding: "1em",
+        marginBottom: "2em",
+        border: "1px solid rgb(240, 240, 240)",
+        borderRadius: "10px"
+      }}>
+        <div style={{ marginBottom: "1em" }}>
+          <Skeleton className="w-[200px] h-[30px] " />
+        </div>
+        <div className={styles.skeleMembers}>
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+          <Skeleton className="w-[40px] h-[40px] rounded-full" />
+        </div>
+        <div style={{ marginTop: "1em" }}>
+          <Skeleton className="w-[100px] h-[45px] " />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

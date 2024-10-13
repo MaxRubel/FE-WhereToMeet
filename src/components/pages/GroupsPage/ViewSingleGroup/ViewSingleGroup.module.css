@@ -37,6 +37,10 @@
   display: flex;
 }
 
+.emptyButton {
+  background-color: red;
+}
+
 .deleteButton {
   color: red;
   background-color: white;
@@ -49,4 +53,20 @@
 
 .topButton:hover {
   background-color: red;
+}
+
+.newNameForm {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  margin-bottom: .3em;
+}
+
+.newInput {
+  max-width: 250px;
+}
+
+.topButtonRowForm {
+  display: flex;
+  gap: 5px;
 }

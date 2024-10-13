@@ -16,12 +16,11 @@ export default function ViewGroups() {
   const { data: groups, isLoading } = useQuery<GroupsResponse[]>({
     queryKey: ['groups', user._id],
     queryFn: () => getUserGroups(user._id),
-    refetchOnMount: false,
     enabled: !!user._id,
   });
 
   if (isLoading) {
-    return <GridLoader />
+    return ""
   }
 
   return (
