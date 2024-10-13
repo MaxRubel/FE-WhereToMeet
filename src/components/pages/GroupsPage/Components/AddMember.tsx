@@ -53,13 +53,13 @@ export default function AddMember({ groupId }: props) {
     <Dialog>
       <DialogTrigger asChild>
         <Button className='secondary-button'>
-          Add Someone
+          Add a Member
         </Button>
       </DialogTrigger>
       <DialogContent style={{ minHeight: "250px" }}>
         <DialogHeader>
           <DialogTitle style={{ marginTop: "1em" }}>
-            Add Someone
+            Add a Member
           </DialogTitle>
           <DialogDescription asChild>
             <div>
