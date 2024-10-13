@@ -3,7 +3,7 @@ import { useAuth } from "@/context/auth/auth"
 import { Group } from "dataTypes"
 import { useQuery } from "react-query"
 import { GridLoader } from "react-spinners"
-import SingleGroup from "../ViewSingleGroup/SingleGroup"
+import SmallGroupCard from "../Components/SmallGroupCard"
 
 export default function ViewGroups() {
   const { user } = useAuth()
@@ -27,9 +27,8 @@ export default function ViewGroups() {
   return (
     <div>
       {/* @ts-ignore */}
-
       {groups?.map((group) => (
-        <SingleGroup key={group._id} group={group} />
+        <SmallGroupCard key={group._id} group={group} />
       ))}
     </div>
   )

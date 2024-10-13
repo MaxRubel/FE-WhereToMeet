@@ -1,0 +1,52 @@
+.editProfileFields {
+  margin-top: 2em;
+}
+
+.splitRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3em;
+}
+
+.buttonRow {
+  margin-top: 2em;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1em;
+}
+
+.error {
+  color: rgb(194, 4, 4);
+}
+
+.membersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 1em 0em;
+}
+
+.membersSection {
+  font-weight: 600;
+  text-align: left;
+  margin-top: 2em;
+}
+
+.buttonRow {
+  margin-top: 1em;
+  display: flex;
+}
+
+.deleteButton {
+  color: red;
+  background-color: white;
+  border: 1px solid lightgrey;
+}
+
+.deleteButton:hover {
+  background-color: black;
+}
+
+.topButton:hover {
+  background-color: red;
+}

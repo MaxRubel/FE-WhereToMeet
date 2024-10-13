@@ -196,3 +196,23 @@ button:focus-visible {
   color: red;
   text-align: left;
 }
+
+.edit-group-button {
+  display: flex;
+  padding: .2em 1em;
+  padding-left: 0px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1em;
+  font-weight: 700;
+}
+
+.edit-group-button:hover {
+  background-color: rgb(227, 227, 227);
+}
+
+.group-title-row {
+  display: flex;
+  align-items: center;
+  gap: .6em;
+}
