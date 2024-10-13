@@ -56,3 +56,9 @@
   background-color: #b00404;
   height: 20px;
 }
+
+.skeleMembers {
+  display: flex;
+  flex-direction: wrap;
+  gap: 6px
+}

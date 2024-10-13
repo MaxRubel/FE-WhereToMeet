@@ -51,12 +51,12 @@ export default function NavBar() {
 
       <ul className={styles.navList}>
         <li>
-          <a href="/groups" className="nav-link">
+          <a href="/groups" className={styles.navLink}>
             Groups
           </a>
         </li>
         <li>
-          <a href="/events" className="nav-link">
+          <a href="/events" className={styles.navLink}>
             Events
           </a>
         </li>
