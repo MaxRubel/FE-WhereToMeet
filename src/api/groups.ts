@@ -44,3 +44,39 @@ export function getUserGroups(userId: string) {
             .catch((err) => reject(err))
     });
 }
+
+export type AddUserPayload = {
+    groupId: string;
+    memberId: string
+}
+
+export function addUserToGroup(payload: AddUserPayload) {
+    return new Promise((resolve, reject) => {
+        fetch(`${endpoint}/groups/add-member`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((resp) => resp.json())
+            .then((data) => resolve(data))
+            .catch((err) => reject(err))
+    })
+}
+
+
+export function getMembersOfGroup(membersArray: string[]) {
+    return new Promise((resolve, reject) => {
+        fetch(`${endpoint}/groups/get-members`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(membersArray)
+        })
+            .then((resp) => resp.json())
+            .then((data) => resolve(data))
+            .catch((err) => reject(err))
+    })
+}

@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Group } from "dataTypes";
+import { Group, UserDB } from "dataTypes";
 import { formatDate } from "../../../../../utils/formatDate";
-import styles from "./GroupStyles.module.css"; import Avatar from '../Avatar';
-import { Button } from '@/components/ui/button';
+import styles from "./GroupStyles.module.css";
+import AddMember from './AddMember';
+import { getMembersOfGroup } from '@/api/groups';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ComboboxDemo } from '@/components/ui/ComboBoxDemo';
-
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export interface GroupMemberSmall {
   _id: string;
@@ -26,10 +23,18 @@ interface SingleGroupProps {
 }
 
 export default function SingleGroup({ group }: SingleGroupProps) {
-  const [members, setMembers] = useState<GroupMemberSmall[]>([])
+  const [members, setMembers] = useState<UserDB[]>([])
 
   useEffect(() => {
-    console.log("fetching members")
+    const memberIds: string[] = []
+    group.members.forEach((member: any) => {
+      memberIds.push(member._id)
+    })
+    getMembersOfGroup(memberIds).then((data) => {
+      const typedData = data as UserDB[]
+      setMembers(typedData)
+    })
+
   }, [])
 
   return (
@@ -42,28 +47,31 @@ export default function SingleGroup({ group }: SingleGroupProps) {
         <div className={styles.membersFlex}>
           {members.length ?
             members.map((member) => (
-              <Avatar key={member.email} member={member} />
+              <TooltipProvider key={member._id}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-block">
+                      <img
+                        src={member.avatarUrl}
+                        alt="Avatar"
+                        className="h-12 w-12 rounded-full object-cover cursor-pointer bg-background"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    className='bg-white text-black shadow-md rounded-md p-2'>
+                    <p style={{ fontWeight: "600" }}>{member.name}</p>
+                    <p>{member.email}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ))
             :
             "No one has been added to this group yet..."
           }
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className='secondary-button'>
-              Add Someone
-            </Button>
-          </DialogTrigger>
-          <DialogContent style={{ minHeight: "250px" }}>
-            <DialogHeader>
-              <DialogTitle>Add Someone</DialogTitle>
-              <DialogDescription className={styles.spacedRow}>
-                <ComboboxDemo />
-                <Button>Add</Button>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        {/* @ts-expect-error (groupId is not null) */}
+        <AddMember groupId={group._id} />
       </div>
     </>
   );

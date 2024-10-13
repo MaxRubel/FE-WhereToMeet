@@ -12,6 +12,10 @@ export type AvatarPayload = {
   id: string;
 };
 
+export type FindUserPayload = {
+  value: string
+}
+
 export function checkUser(payload: checkUserType) {
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/users/exists`, {
@@ -93,4 +97,18 @@ export function getAllUsers() {
       .then((data) => resolve(data.users))
       .catch((err) => reject(err));
   });
+}
+
+export function findUser(searchValue: string) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users/find-user/${searchValue}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then((resp) => resp.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err))
+  })
 }
