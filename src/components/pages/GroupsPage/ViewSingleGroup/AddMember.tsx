@@ -37,8 +37,9 @@ export default function AddMember({ groupId }: props) {
           const typedData = data as UserDB[]
           setUserResults(typedData)
         })
-        console.log("searching... ", searchValue);
       }, 500);
+    } else {
+      setUserResults([])
     }
 
     return () => {

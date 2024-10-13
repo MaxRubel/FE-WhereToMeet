@@ -51,3 +51,7 @@
 .userName {
   font-weight: 900;
 }
+
+.userToast {
+  background-color: red;
+}

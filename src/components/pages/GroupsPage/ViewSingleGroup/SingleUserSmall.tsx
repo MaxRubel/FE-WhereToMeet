@@ -1,6 +1,7 @@
 import { UserDB } from "dataTypes"
 import styles from "./GroupStyles.module.css"
 import { AddUserPayload, addUserToGroup } from "@/api/groups"
+import { toast } from "@/hooks/use-toast"
 
 type props = {
   user: UserDB
@@ -14,9 +15,14 @@ export default function SingleUserSmall({ user, groupId }: props) {
       groupId: groupId,
       memberId: user._id
     }
-    console.log(payload)
+
     try {
       await addUserToGroup(payload)
+      toast({
+        title: "Success!",
+        description: `${user.name} has been added to your group.`,
+        className: "toastty"
+      })
     } catch (err) {
       console.error("error adding user to group: ", err)
     }
