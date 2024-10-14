@@ -27,7 +27,11 @@ const EventComponent: React.FC<EventComponentProps> = ({ event }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{event.name || 'not avail'}</CardTitle>
+        <CardTitle className='group-title-row'>
+          <a href={`/events/${event._id}`}>
+            {event.name || 'not avail'} 
+          </a>
+        </CardTitle>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
       <CardContent>
