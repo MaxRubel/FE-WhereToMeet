@@ -33,3 +33,17 @@ export function getUserEvents(userId: string) {
             .catch((err) => reject(err))
     });
 }
+
+export function getSingleEvent(id: string) {
+    return new Promise((resolve, reject) => {
+      fetch(`${endpoint}/events/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => resp.json())
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    });
+  }
