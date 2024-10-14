@@ -1,34 +1,27 @@
-// @ts-nocheck
-import { useGetUserGroups } from "@/api/groups"
-import { useAuth } from "@/context/auth/auth"
-import { Group } from "dataTypes"
-import { useQuery } from "react-query"
-import SmallGroupCard from "../Components/SmallGroupCard"
-import SmallGroupSkele from "../Components/SmallGroupSkele"
-
+import { useGetUserGroups } from "@/api/groups";
+import { useAuth } from "@/context/auth/auth";
+import { Group } from "dataTypes";
+import SmallGroupCard from "../Components/SmallGroupCard";
+import SmallGroupSkele from "../Components/SmallGroupSkele";
 
 export default function ViewGroups() {
-  const { user } = useAuth()
-
-  type GroupsResponse = {
-    groups: Group[]
-  }
-
-  const { data: groups, isLoading } = useGetUserGroups(user._id)
+  const { user } = useAuth();
+  const { data: groups, isLoading } = useGetUserGroups(user._id);
 
   if (isLoading) {
-    <>
-      <SmallGroupSkele />
-      <SmallGroupSkele />
-      <SmallGroupSkele />
-    </>
+    return (
+      <>
+        <SmallGroupSkele />
+        <SmallGroupSkele />
+        <SmallGroupSkele />
+      </>
+    );
   }
 
   return (
     <div>
-      {groups && groups.length ? (
-
-        groups.map((group) => (
+      {groups && groups.length > 0 ? (
+        groups.map((group: Group) => (
           <SmallGroupCard
             key={group._id}
             group={group}

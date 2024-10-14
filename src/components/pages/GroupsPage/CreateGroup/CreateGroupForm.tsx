@@ -16,7 +16,11 @@ export type GroupForm = {
   members: string[]; //array of _ids
 }
 
-export default function GroupForm() {
+type props = {
+  setIsViewing: (arg0: string) => void
+}
+
+export default function CreateGroupForm({ setIsViewing }: props) {
   const { user } = useAuth();
 
   const initFields: GroupForm = {
@@ -51,7 +55,9 @@ export default function GroupForm() {
 
     createGroupMutation.mutate(formFields, {
       onSuccess: (data: unknown) => {
+        console.log(data)
         const typedData = data as response
+        setIsViewing("ViewSingleGroup")
         navigate(`/groups/${typedData.data.insertedId}`)
       }
     })
