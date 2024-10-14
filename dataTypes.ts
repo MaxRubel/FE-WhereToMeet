@@ -57,13 +57,13 @@ export type Group = {
   ownerId: string; //foreign key
   name: string;
   description: string;
-  members: string[]; //array of _ids
+  members: UserDB[]; //array of _ids
   dateCreated?: string
 };
 
 export type Event = {
   _id: string; //primary key
-  name:string;
+  name: string;
   ownerId: string; //foreign key
   groupId: string; //foreign key
 

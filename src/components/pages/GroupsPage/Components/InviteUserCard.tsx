@@ -1,6 +1,6 @@
 import { UserDB } from "dataTypes"
 import styles from "./GroupStyles.module.css"
-import { AddUserPayload, addUserToGroup } from "@/api/groups"
+import { AddUserPayload, useAddUserToGroup } from "@/api/groups"
 import { toast } from "@/hooks/use-toast"
 
 type props = {
@@ -9,6 +9,7 @@ type props = {
 }
 
 export default function SingleUserSmall({ user, groupId }: props) {
+  const addUserToGroup = useAddUserToGroup();
 
   const handleAddUser = async () => {
     const payload: AddUserPayload = {
@@ -16,16 +17,15 @@ export default function SingleUserSmall({ user, groupId }: props) {
       memberId: user._id
     }
 
-    try {
-      await addUserToGroup(payload)
-      toast({
-        title: "Success!",
-        description: `${user.name} has been added to your group.`,
-        className: "toastty"
-      })
-    } catch (err) {
-      console.error("error adding user to group: ", err)
-    }
+    addUserToGroup.mutate(payload, {
+      onSuccess: () => {
+        toast({
+          title: "Success!",
+          description: `${user.name} has been added to your group.`,
+          className: "toastty"
+        })
+      }
+    })
   }
 
   return (
@@ -42,7 +42,5 @@ export default function SingleUserSmall({ user, groupId }: props) {
         />
       </div>
     </div>
-
-    // look in members array of every group for userId?
   )
 }

@@ -1,9 +1,10 @@
 // @ts-nocheck
-import { getUserGroups } from "@/api/groups"
+import { useGetUserGroups } from "@/api/groups"
 import { useAuth } from "@/context/auth/auth"
 import { Group } from "dataTypes"
 import { useQuery } from "react-query"
 import SmallGroupCard from "../Components/SmallGroupCard"
+import SmallGroupSkele from "../Components/SmallGroupSkele"
 
 
 export default function ViewGroups() {
@@ -13,17 +14,14 @@ export default function ViewGroups() {
     groups: Group[]
   }
 
-  //@ts-ignore
-  const { data: groups, isLoading } = useQuery<GroupsResponse[]>({
-    queryKey: ['groups', user._id],
-    queryFn: () => getUserGroups(user._id),
-    enabled: !!user._id,
-    staleTime: 0,
-    cacheTime: 0,
-  });
+  const { data: groups, isLoading } = useGetUserGroups(user._id)
 
   if (isLoading) {
-    return ""
+    <>
+      <SmallGroupSkele />
+      <SmallGroupSkele />
+      <SmallGroupSkele />
+    </>
   }
 
   return (
