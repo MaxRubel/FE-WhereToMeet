@@ -66,7 +66,7 @@ export default function CreateGroupForm({ setIsViewing }: props) {
   return (
     // HEADER
     <div className="create-group-form-container">
-      <h2 className="text-left" >Create a Group</h2>
+      <h2 className="text-left" style={{ fontWeight: "300" }} >Create a Group</h2>
       <form className="create-group-form" onSubmit={handleSubmit} style={{ marginTop: '2em' }}>
 
         {/* NAME FIELD */}
@@ -83,7 +83,7 @@ export default function CreateGroupForm({ setIsViewing }: props) {
             className="form-input"
             required
             aria-required="true"
-            placeholder="The Taco Tuesday Crew"
+            placeholder="Taco Tuesday Crew"
           />
         </div>
 

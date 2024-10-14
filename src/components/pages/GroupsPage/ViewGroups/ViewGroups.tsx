@@ -11,9 +11,9 @@ export default function ViewGroups() {
   if (isLoading) {
     return (
       <>
+        {/* <SmallGroupSkele />
         <SmallGroupSkele />
-        <SmallGroupSkele />
-        <SmallGroupSkele />
+        <SmallGroupSkele /> */}
       </>
     );
   }
@@ -28,7 +28,8 @@ export default function ViewGroups() {
           />
         ))
       ) : (
-        <div>No groups have been created yet...</div>
+        <div className="text-left">
+          <h2 style={{ fontWeight: 300 }}>No groups have been created yet...</h2></div>
       )}
     </div>
   );
