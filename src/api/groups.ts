@@ -1,55 +1,110 @@
-import { Group } from "dataTypes";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
-//  Post new group
-export function createGroup(payload: Group) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups`, {
+//  Get Single Group By ID
+export function useGetSingleGroup(id: string) {
+  const [isEnabled, setIsEnabled] = useState(true);
+
+  const query = useQuery({
+    enabled: !!id && isEnabled,
+    queryKey: ['groups', id],
+    queryFn: async () => {
+      const response = await fetch(`${endpoint}/groups/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      return data;
+    },
+  });
+  return { ...query, setIsEnabled }
+}
+
+//  Get Groups of User
+export function useGetUserGroups(userId: string) {
+  return useQuery({
+    enabled: !!userId,
+    queryKey: ['groups'],
+    queryFn: () =>
+      fetch(`${endpoint}/groups?userId=${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((resp) => resp.json())
+  });
+}
+
+//  Create Group 
+export function useCreateGroup() {
+  const queryClient = useQueryClient();
+
+  function createGroup(payload: any) {
+    return fetch(`${endpoint}/groups`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
+      body: JSON.stringify(payload)
+    }).then((resp) => resp.json());
+  }
+
+  return useMutation(createGroup, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['groups']);
+    },
   });
 }
 
-//  Get Single Group By ID
-export function getSingleGroup(id: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
-  });
-}
+//  Update Group 
+export function useUpdateGroup() {
+  const queryClient = useQueryClient();
 
-//  Update Group
-export function updateGroup(payload: any, id: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups/${id}`, {
+  function updateGroup({ payload, id }: { payload: any; id: string }) {
+    return fetch(`${endpoint}/groups/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload)
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
-  })
+    }).then((resp) => resp.json());
+  }
+
+  return useMutation(updateGroup, {
+    onSuccess: (_, variables) => {
+      console.log("updated group ", variables.id)
+      queryClient.invalidateQueries(['groups', variables.id]);
+      queryClient.invalidateQueries(["groups"]);
+    },
+  });
 }
 
-//  Get User Groups
+//  Delete Group
+export function useDeleteGroup(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (id: string) => {
+      fetch(`${endpoint}/groups/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups', id]);
+      },
+    }
+  );
+}
+
 export function getUserGroups(userId: string) {
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/groups?userId=${userId}`, {
@@ -70,47 +125,23 @@ export type AddUserPayload = {
 }
 
 //  Add Member to Group
-export function addUserToGroup(payload: AddUserPayload) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups/add-member`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err))
-  })
-}
+export function useAddUserToGroup() {
+  const queryClient = useQueryClient();
 
-//  Remove Member of Group
-export function getMembersOfGroup(membersArray: string[]) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups/get-members`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+  return useMutation(
+    (payload: AddUserPayload) =>
+      fetch(`${endpoint}/groups/add-member`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }).then((resp) => resp.json()),
+    {
+      onSuccess: (_, variables) => {
+        queryClient.invalidateQueries(["groups", variables.groupId]);
+        queryClient.invalidateQueries(["groups"]);
       },
-      body: JSON.stringify(membersArray)
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err))
-  })
-}
-
-//  Delete a group
-export function deleteGroup(id: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
-      },
-    })
-      .then((resp) => resolve(resp))
-      .catch((err) => reject(err))
-  })
+    }
+  );
 }

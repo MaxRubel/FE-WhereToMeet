@@ -1,14 +1,13 @@
-import { deleteGroup, getMembersOfGroup, getSingleGroup, updateGroup } from "@/api/groups"
+import { useDeleteGroup, useGetSingleGroup, useUpdateGroup } from "@/api/groups"
 import { EditIcon } from "@/components/graphics/Graphics1"
-import { Group, UserDB } from "dataTypes"
-import { useState } from "react"
+import { Group } from "dataTypes"
+import { useEffect, useState } from "react"
 import { formatDate } from "../../../../../utils/formatDate"
 import styles from "./ViewSingleGroup.module.css"
 import GroupMemberAvatar from "../Components/GroupMemberAvatar"
 import AddMember from "../Components/AddMember"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQuery, useQueryClient } from "react-query"
 import { GridLoader } from "react-spinners"
 import { useAuth } from "@/context/auth/auth"
 import { useNavigate } from "react-router-dom"
@@ -28,93 +27,52 @@ type props = {
 }
 
 export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
-  const [members, setMembers] = useState<UserDB[]>([])
   const [isEditting, setIsEditting] = useState(false)
   const [inputVal, setInputVal] = useState("")
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const queryClient = useQueryClient();
+  const deleteGroupMutation = useDeleteGroup(groupId);
+  const updateGroupMutation = useUpdateGroup();
+  const { data, isLoading, setIsEnabled } = useGetSingleGroup(groupId);
 
-  const updateGroupMutation = useMutation(
-    ({ payload, id }: { payload: any; id: string }) => updateGroup(payload, id),
-    {
-      onSuccess: () => {
-        //@ts-expect-error will not be null
-        queryClient.invalidateQueries(['group', thisGroup._id]);
-      },
-    }
-  );
+  const group = data as Group
 
-  const deleteGroupMutation = useMutation(
-    (id: string) => deleteGroup(id),
-    {
+  useEffect(() => {
+    setInputVal(group?.name)
+  }, [group])
+
+  const handleDeleteGroup = () => {
+    setIsEnabled(false)
+    deleteGroupMutation.mutate(groupId, {
       onSuccess: () => {
-        queryClient.invalidateQueries(['group', groupId]);
-        queryClient.invalidateQueries(['groups', user._id]);
-        navigate('/groups');
+        navigate('/groups')
         setIsViewing("ViewGroups")
       },
       onError: (error) => {
-        console.error('Failed to delete group:', error);
-        // You might want to show an error message to the user here
-      }
-    }
-  );
-
-  const { data: thisGroup, isLoading: isGroupLoading } = useQuery<Group>(
-    ['group', groupId],
-    //@ts-ignore
-    () => getSingleGroup(groupId),
-    {
-      onSuccess: (data) => {
-        const typedata = data as Group
-        setInputVal(typedata?.name)
-
-        //fetch all the group members
-        const memberIds: string[] = []
-
-        typedata?.members.forEach((member: any) => {
-          memberIds.push(member._id)
-        })
-
-        getMembersOfGroup(memberIds).then((data) => {
-          const typedData = data as UserDB[]
-          setMembers(typedData)
-        })
-      }
-    }
-  );
-
-  const updateGroupName = async (e: React.FormEvent) => {
-    e.preventDefault()
-    //@ts-expect-error this will not be null
-    if (thisGroup?._id) {
-
-      updateGroupMutation.mutate({
-        payload: { name: inputVal },
-        //@ts-expect-error this will not be null
-        id: thisGroup._id
+        console.error("Failed to delete group:", error);
       },
-        {
-          onSuccess: () => {
-            setIsEditting(false)
-            queryClient.invalidateQueries(['groups', user._id])
-          }
-        }
-      );
-    }
-  }
-
-  const handleDeleteGroup = () => {
-    //@ts-ignore will not be null
-    if (thisGroup?._id) {
-      //@ts-ignore will not be null
-      deleteGroupMutation.mutate(thisGroup._id);
-    }
+    });
   };
 
-  if (!thisGroup || isGroupLoading) {
+  const handleUpdateGroup = (e: React.FormEvent) => {
+    e.preventDefault()
+    const payload = { name: inputVal }
+
+    updateGroupMutation.mutate(
+      { payload, id: groupId },
+      {
+        onSuccess: () => {
+          setIsEditting(false)
+        },
+        onError: (error: any) => {
+          console.error('Failed to update group:', error);
+        }
+      }
+    );
+  }
+
+  if (isLoading) {
     return <GridLoader />
   }
 
@@ -122,7 +80,7 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
     <div>
       <div id="header-fields" className="text-left">
         {isEditting ? (
-          <form className={styles.newNameForm} onSubmit={updateGroupName}>
+          <form className={styles.newNameForm} onSubmit={handleUpdateGroup}>
             <Input
               value={inputVal}
               className={styles.newInput}
@@ -144,35 +102,28 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
           </form>
         ) : (
           // NOT EDITTING:
-          //@ts-ignore
-          user._id === thisGroup?.ownerId
+          user._id === group?.ownerId
             ? (
               // THIS IS YOUR GROUP:
               <Button
                 onClick={() => setIsEditting(true)}
                 className="empty-button"
               >
-                {/* @ts-ignore */}
-                {thisGroup?.name}
-                {/* @ts-ignore */}
-                <EditIcon size={20} />
+                {data?.name}
+                <EditIcon size={"20"} />
               </Button>
             )
             : (
               //THIS IS NOT YOUR GROUP:
               <h2 className="text-left">
-                {/* @ts-ignore */}
-                {thisGroup?.name}
+                {data?.name}
               </h2>
             )
         )}
 
-
-        {/* @ts-ignore */}
-        {thisGroup?.dateCreated && (
+        {group?.dateCreated && (
           <div className="text-left light-font">
-            {/* @ts-ignore */}
-            created on: {formatDate(thisGroup.dateCreated)}
+            created on: {formatDate(group?.dateCreated)}
           </div>
         )}
       </div>
@@ -181,14 +132,12 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
       <div className={styles.membersSection}>
         <h3 className="">Members</h3>
         <div className={`light-font ${styles.membersContainer}`}>
-          {members.length ? (
-            members.map((member) => (
+          {group?.members?.length ? (
+            group?.members?.map((member) => (
               <GroupMemberAvatar
                 key={member._id}
                 member={member}
-                //@ts-ignore
-                group={thisGroup}
-
+                group={group}
               />
             ))
           ) :
@@ -200,10 +149,9 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
         {/* ----ADD MEMBER BUTTON---- */}
         <div className={styles.buttonRow}>
           {/* @ts-ignore "groupId is null checked" */}
-          <AddMember groupId={thisGroup._id} />
+          <AddMember groupId={group?._id} />
         </div>
 
-        {/* onClick={handleDeleteGroup} */}
         {/* ----DELETE BUTTON---- */}
         <Dialog>
           <DialogTrigger style={{ marginTop: "6em" }} asChild>
@@ -212,7 +160,7 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
+            <DialogHeader className="text-left">
               <DialogTitle>Are you absolutely sure?</DialogTitle>
               <DialogDescription>
                 This action cannot be undone. This will permanently delete your group and remove all of its events from our servers.
@@ -233,4 +181,5 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
       </div>
     </div >
   )
+
 }

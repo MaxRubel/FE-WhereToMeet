@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./GroupsPage.css"
 import { AddSymbol, ViewFolders } from "@/components/graphics/Graphics1";
 import ViewGroups from "./ViewGroups/ViewGroups";
@@ -7,17 +7,10 @@ import ViewSingleGroup from "./ViewSingleGroup/ViewSingleGroup";
 import CreateGroupForm from "./CreateGroup/CreateGroupForm";
 
 export default function GroupsPage() {
-  const [isViewing, setIsViewing] = useState("ViewGroups");
-  const [viewSingleId, setViewSingleId] = useState<null | string>(null)
   const { groupId } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (groupId) {
-      setIsViewing("ViewSingleGroup")
-      setViewSingleId(groupId)
-    };
-  }, [groupId])
+  const [isViewing, setIsViewing] = useState(groupId ? "ViewSingleGroup" : "ViewGroups");
 
   return (
     <div className="profile-page-layout">
@@ -63,9 +56,9 @@ export default function GroupsPage() {
       </div>
       <div className="profile-main-form">
         {isViewing == "ViewGroups" && <ViewGroups />}
-        {isViewing == "CreateGroupForm" && <CreateGroupForm />}
+        {isViewing == "CreateGroupForm" && <CreateGroupForm setIsViewing={setIsViewing} />}
         {/* @ts-expect-error -- groupId is already null checked */}
-        {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={viewSingleId} setIsViewing={setIsViewing} />}
+        {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={groupId} setIsViewing={setIsViewing} />}
       </div>
     </div>
   );

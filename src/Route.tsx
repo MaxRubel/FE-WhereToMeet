@@ -48,7 +48,8 @@ export default function Router() {
             <Route path="/edit-profile" element={<ProfilePage />} />
             <Route path="/events" element={<EventPage />} />
             <Route path="/groups" element={<GroupsPage />} />
-            <Route path="/groups/:groupId" element={<GroupsPage/>} />
+
+            <Route path="/groups/:groupId" element={<GroupsPage />} />
           </Routes>
         </div>
         <Toaster />

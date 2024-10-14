@@ -46,6 +46,7 @@
   width: 464px;
   max-height: 500px;
   overflow-y: auto;
+  text-align: left;
 }
 
 .userName {

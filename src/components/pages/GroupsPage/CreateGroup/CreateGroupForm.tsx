@@ -3,11 +3,10 @@ import { useAuth } from "@/context/auth/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { createGroup } from "@/api/groups";
+import { useCreateGroup } from "@/api/groups";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import "./GroupForm.css"
-import { useMutation, useQueryClient } from "react-query";
 
 export type GroupForm = {
   _id?: string; //primary key
@@ -17,7 +16,11 @@ export type GroupForm = {
   members: string[]; //array of _ids
 }
 
-export default function GroupForm() {
+type props = {
+  setIsViewing: (arg0: string) => void
+}
+
+export default function CreateGroupForm({ setIsViewing }: props) {
   const { user } = useAuth();
 
   const initFields: GroupForm = {
@@ -28,9 +31,8 @@ export default function GroupForm() {
   };
 
   const [formFields, setFormFields] = useState<GroupForm>(initFields);
-
+  const createGroupMutation = useCreateGroup()
   const navigate = useNavigate()
-  const queryClient = useQueryClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -40,51 +42,29 @@ export default function GroupForm() {
     }));
   }
 
-  // React Query Mutation for Caching / Syncing with Server
-  const createGroupMutation = useMutation<ResponseType, Error, typeof formFields>({
-    //@ts-ignore
-    mutationFn: createGroup,
-    onSuccess: (resp: any) => {
-      // Update cache here
-      queryClient.setQueryData(['groups', user._id], (oldData: any) => {
-        const newGroup = {
-          _id: resp.data.insertedId,
-          dateCreated: resp.data.dateCreated,
-          ...formFields
-        };
-        return oldData ? [...oldData, newGroup] : [newGroup];
-      });
-      queryClient.setQueryData(['group', resp.data._id], {
-        _id: resp.data.insertedId,
-        dateCreated: resp.data.dateCreated,
-        ...formFields
-      });
-      navigate(`/groups/${resp.data.insertedId}`);
-    },
-    onError: (error: Error) => {
-      console.error("Error submitting create group form: ", error);
-    },
-  });
-
-
-  // const handleSelectMembers = (selectedMembers: string[]) => {
-  //   setFormFields((prevFields) => ({
-  //     ...prevFields,
-  //     members: selectedMembers,
-  //   }))
-  // }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      createGroupMutation.mutate(formFields);
-    } catch (err) {
-      console.error("error submitting create group form: ", err)
+    type response = {
+      message: string
+      data: {
+        dateCreated: string
+        insertedId: string
+      }
     }
+
+    createGroupMutation.mutate(formFields, {
+      onSuccess: (data: unknown) => {
+        console.log(data)
+        const typedData = data as response
+        setIsViewing("ViewSingleGroup")
+        navigate(`/groups/${typedData.data.insertedId}`)
+      }
+    })
   }
 
   return (
+    // HEADER
     <div className="create-group-form-container">
       <h2 className="text-left" >Create a Group</h2>
       <form className="create-group-form" onSubmit={handleSubmit} style={{ marginTop: '2em' }}>
@@ -123,13 +103,7 @@ export default function GroupForm() {
           />
         </div>
 
-        {/* <div>
-          <MultiselectModal onSelectMembers={handleSelectMembers} />
-          {formFields.members.length > 0 && (
-            <p>{formFields.members.length} members selected</p>
-          )}
-        </div> */}
-
+        {/* SUBMIT BUTTON */}
         <Button style={{ marginTop: "1em" }} type="submit" disabled={createGroupMutation.isLoading}>
           Submit
         </Button>
