@@ -20,6 +20,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { Skeleton } from "@/components/ui/skeleton"
+import GroupSkelly from "./GroupSkelly"
 
 type props = {
   groupId: string
@@ -73,7 +75,9 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
   }
 
   if (isLoading) {
-    return <GridLoader />
+    return (
+      ""
+    )
   }
 
   return (
