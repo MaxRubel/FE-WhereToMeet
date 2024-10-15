@@ -9,7 +9,7 @@ export function useGetSingleGroup(id: string) {
 
   const query = useQuery({
     enabled: !!id && isEnabled,
-    queryKey: ['groups', id],
+    queryKey: ["groups", id],
     queryFn: async () => {
       const response = await fetch(`${endpoint}/groups/${id}`, {
         method: "GET",
@@ -21,25 +21,25 @@ export function useGetSingleGroup(id: string) {
       return data;
     },
   });
-  return { ...query, setIsEnabled }
+  return { ...query, setIsEnabled };
 }
 
 //  Get Groups of User
 export function useGetUserGroups(userId: string) {
   return useQuery({
     enabled: !!userId,
-    queryKey: ['groups'],
+    queryKey: ["groups"],
     queryFn: () =>
       fetch(`${endpoint}/groups?userId=${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((resp) => resp.json())
+      }).then((resp) => resp.json()),
   });
 }
 
-//  Create Group 
+//  Create Group
 export function useCreateGroup() {
   const queryClient = useQueryClient();
 
@@ -49,18 +49,18 @@ export function useCreateGroup() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     }).then((resp) => resp.json());
   }
 
   return useMutation(createGroup, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['groups']);
+      queryClient.invalidateQueries(["groups"]);
     },
   });
 }
 
-//  Update Group 
+//  Update Group
 export function useUpdateGroup() {
   const queryClient = useQueryClient();
 
@@ -70,14 +70,13 @@ export function useUpdateGroup() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     }).then((resp) => resp.json());
   }
 
   return useMutation(updateGroup, {
     onSuccess: (_, variables) => {
-      console.log("updated group ", variables.id)
-      queryClient.invalidateQueries(['groups', variables.id]);
+      queryClient.invalidateQueries(["groups", variables.id]);
       queryClient.invalidateQueries(["groups"]);
     },
   });
@@ -92,14 +91,13 @@ export function useDeleteGroup(id: string) {
       fetch(`${endpoint}/groups/${id}`, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => response.json())
+          "Content-Type": "application/json",
+        },
+      }).then((response) => response.json());
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['groups', id]);
+        queryClient.invalidateQueries(["groups", id]);
       },
     }
   );
@@ -115,14 +113,14 @@ export function getUserGroups(userId: string) {
     })
       .then((resp) => resp.json())
       .then((data) => resolve(data))
-      .catch((err) => reject(err))
+      .catch((err) => reject(err));
   });
 }
 
 export type AddUserPayload = {
   groupId: string;
-  memberId: string
-}
+  memberId: string;
+};
 
 //  Add Member to Group
 export function useAddUserToGroup() {
@@ -133,9 +131,31 @@ export function useAddUserToGroup() {
       fetch(`${endpoint}/groups/add-member`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+      }).then((resp) => resp.json()),
+    {
+      onSuccess: (_, variables) => {
+        queryClient.invalidateQueries(["groups", variables.groupId]);
+        queryClient.invalidateQueries(["groups"]);
+      },
+    }
+  );
+}
+
+//  Remove User From Group
+export function useRemoveGroupMember() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (payload: AddUserPayload) =>
+      fetch(`${endpoint}/groups/remove-member`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       }).then((resp) => resp.json()),
     {
       onSuccess: (_, variables) => {

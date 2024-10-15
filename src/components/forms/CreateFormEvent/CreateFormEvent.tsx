@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/auth/auth";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
@@ -9,7 +9,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -20,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 const emptyLocation = {
   name: "",
-  url: "xvideos.com",
+  url: "",
   address: {
     street: "",
     zipcode: 0,
@@ -43,19 +49,26 @@ export default function CreateEventForm() {
     groupId: "",
     description: "",
     suggestions: [],
-    messages: []
+    messages: [],
   });
 
   useEffect(() => {
-    getUserGroups(user._id).then((gp) => {
-      const groups = gp as any[];
-      setGroups(groups);
-    }).catch((error) => {
-      console.error("Error fetching user groups:", error);
-    });
+    getUserGroups(user._id)
+      .then((gp) => {
+        const groups = gp as any[];
+        setGroups(groups);
+      })
+      .catch((error) => {
+        console.error("Error fetching user groups:", error);
+      });
   }, [user._id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormFields((prevFields) => ({
       ...prevFields,
@@ -65,6 +78,7 @@ export default function CreateEventForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : ""; // Combine date and time
     const payload = {
       _id: "",
@@ -75,19 +89,23 @@ export default function CreateEventForm() {
       description: formFields.description,
       time: formattedDate,
       suggestions: [],
-      messages: []
+      messages: [],
     };
 
-    createEvent(payload).then((data) => {
-      console.log(data);
-      navigate('/');
+    type response = {
+      _id: string;
+    };
+
+    createEvent(payload).then((resp) => {
+      const typedresp = resp as response;
+      navigate(`/events/${typedresp._id}`);
     });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-left">Create An Event</h2>
-      <div className="form-group">
+      <div className="form-group" style={{ marginTop: "2em" }}>
         {/* Event Name */}
         <Label htmlFor="name" className="form-label">
           Name
@@ -98,11 +116,16 @@ export default function CreateEventForm() {
           name="name"
           value={formFields.name}
           onChange={handleChange}
-          className="form-input text-left w-full"
         />
 
         {/* Group Selection */}
-        <Label htmlFor="groupId" className="form-label mt-4"> {/* Added margin for spacing */}
+        <Label
+          htmlFor="groupId"
+          className="form-label"
+          style={{ marginTop: "2em" }}
+        >
+          {" "}
+          {/* Added margin for spacing */}
           Group
         </Label>
         <Select
@@ -125,7 +148,11 @@ export default function CreateEventForm() {
         </Select>
 
         {/* Event Description */}
-        <Label htmlFor="description" className="form-label mt-4">
+        <Label
+          htmlFor="description"
+          className="form-label mt-4"
+          style={{ marginTop: "2em" }}
+        >
           Description
         </Label>
         <Textarea
@@ -133,24 +160,28 @@ export default function CreateEventForm() {
           name="description"
           value={formFields.description}
           onChange={handleChange}
-          className="h-20 text-left mt-2 w-full" 
+          className="h-20 text-left mt-2 w-full"
           required
           aria-required="true"
           placeholder="Add the description"
         />
 
         {/* Date Picker */}
-        <div className="form-label">
+        <div className="form-label" style={{ marginTop: "2em" }}>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal mt-4", 
+                  "w-[240px] justify-start text-left font-normal mt-4"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4 text-black" />
-                {date ? format(date, "PPP") : <span className="text-black">Pick a date</span>}
+                {date ? (
+                  format(date, "PPP")
+                ) : (
+                  <span className="text-black">Pick a date</span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 text-black" align="start">
@@ -179,9 +210,11 @@ export default function CreateEventForm() {
           placeholder="Hours:Minutes:Seconds"
         />
       </div>
-      
+
       <div className="form-label">
-        <Button type="submit" className="mt-6">Create</Button> 
+        <Button type="submit" className="mt-6">
+          Create
+        </Button>
       </div>
     </form>
   );

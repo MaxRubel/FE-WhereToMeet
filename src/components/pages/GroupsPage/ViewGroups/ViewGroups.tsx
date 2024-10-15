@@ -2,7 +2,6 @@ import { useGetUserGroups } from "@/api/groups";
 import { useAuth } from "@/context/auth/auth";
 import { Group } from "dataTypes";
 import SmallGroupCard from "../Components/SmallGroupCard";
-import SmallGroupSkele from "../Components/SmallGroupSkele";
 
 export default function ViewGroups() {
   const { user } = useAuth();

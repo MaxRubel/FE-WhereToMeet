@@ -1,50 +1,26 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Event } from "dataTypes";
+import styles from "./EventStyles.module.css"
 
-const SafeRender = ({ value }) => {
-  if (value === null || value === undefined) return 'not available'
-
-  if (typeof value === 'object') return JSON.stringify(value);
-    return value.toString();
-}
-
-interface EventComponentProps {
+interface props {
   event: Event;
 }
 
-const EventComponent: React.FC<EventComponentProps> = ({ event }) => {
-
-  if (!event || typeof event !== 'object') {
-    return <p>Error: Invalid event data</p>;
-  }
+const EventComponent = ({ event }: props) => {
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className='group-title-row'>
-          <a href={`/events/${event?._id}`}>
-            {event.name || 'not avail'} 
-          </a>
-        </CardTitle>
-        {/* <CardDescription>Card Description</CardDescription> */}
-      </CardHeader>
-      <CardContent>
-        <p>Location: <SafeRender value={event.location?.name || event.location} /></p>
-        {event.location?.url && <p>URL: <SafeRender value={event.location.url} /></p>}
-      </CardContent>
-      <CardFooter>
-        <p>{event.time || 'not avail'}</p>
-      </CardFooter>
-  </Card>
+    <div className={styles.eventCard}>
 
-  )
-}
+      {/* CARD TITLE */}
+      <h2 className='group-title-row'>
+        <a href={`/events/${event._id}`}>
+          {event.name}
+        </a>
+      </h2>
+      <p style={{ fontSize: ".9em" }}>{event.time}</p>
+      <p style={{ marginTop: '1em' }}>{event.description}</p>
+    </div>
+  );
+};
 export default EventComponent;
 // export type Event = {
 //   _id: string; //primary key
