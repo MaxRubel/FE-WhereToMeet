@@ -32,11 +32,9 @@ export default function ViewSingleEvent() {
     }
   }, [eventId]);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!singleEvent) return <div>No event found</div>;
 
-  if (isLoading) {
+  if (isLoading || !singleEvent) {
     return "";
   }
 
