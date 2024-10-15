@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -7,55 +7,69 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Event, Suggestion } from "dataTypes"
-import { useState } from "react"
-import styles from "../EventStyles.module.css"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Event, Suggestion } from "dataTypes";
+import { useState } from "react";
+import styles from "../EventStyles.module.css";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/context/auth/auth";
+import { useUpdateEvent } from "@/api/events";
 
 type props = {
-  event: Event
-}
-
-export const initSuggestion: Suggestion = {
-  name: "",
-  description: "",
-  url: "",
-  address: {
-    street: "",
-    city: "",
-    zipcode: 0,
-    coordinates: {
-      lat: 0,
-      long: 0,
-    },
-  },
-  votes: []
-}
-
+  event: Event;
+};
 
 //@ts-ignore   event will be used shortly
 export default function SuggestionForm({ event }: props) {
-  const [formFields, setFormFields] = useState<Suggestion>(initSuggestion);
+  const { user } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const initSuggestion: Suggestion = {
+    name: "",
+    userId: user._id,
+    eventId: event._id,
+    description: "",
+    url: "",
+    address: {
+      street: "",
+      city: "",
+      zipcode: 0,
+      coordinates: {
+        lat: 0,
+        long: 0,
+      },
+    },
+    votes: [],
+  };
+
+  const [formFields, setFormFields] = useState<Suggestion>(initSuggestion);
+  const updateEvent = useUpdateEvent();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     if (name === "street" || name === "zipcode" || name === "city") {
       setFormFields((preVal) => ({
         ...preVal,
-        address: { ...preVal.address, [name]: value }
-      }))
+        address: { ...preVal.address, [name]: value },
+      }));
     } else {
-      setFormFields((preVal) => ({ ...preVal, [name]: value }))
+      setFormFields((preVal) => ({ ...preVal, [name]: value }));
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+
+    updateEvent.mutate(formFields, {
+      // onSuccess: (data) => {
+      //   console.log(data);
+      // },
+    });
+  };
 
   return (
     <Drawer>
@@ -66,24 +80,25 @@ export default function SuggestionForm({ event }: props) {
       <DrawerContent
         style={{
           padding: "2em 4em",
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <form onSubmit={handleSubmit}>
           <DrawerHeader>
-            <DrawerTitle style={{
-              fontWeight: "400",
-              textAlign: 'left',
-            }}>
+            <DrawerTitle
+              style={{
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+            >
               Add A Suggestion
             </DrawerTitle>
 
             <div style={{ textAlign: "left", minWidth: "350px" }}>
-
               <div style={{ marginTop: "1.5em" }}>
                 {/* ---Name Field--- */}
-                <Label htmlFor="name" style={{ textAlign: 'left' }}>
+                <Label htmlFor="name" style={{ textAlign: "left" }}>
                   Name
                 </Label>
                 <Input
@@ -98,10 +113,8 @@ export default function SuggestionForm({ event }: props) {
               </div>
 
               {/* ----Description---- */}
-              <div style={{ marginTop: '1em' }}>
-                <Label htmlFor="description">
-                  Description
-                </Label>
+              <div style={{ marginTop: "1em" }}>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
                   required
@@ -119,11 +132,13 @@ export default function SuggestionForm({ event }: props) {
               <Button type="submit">Submit</Button>
             </DrawerClose>
             <DrawerClose>
-              <Button type="button" className="secondary-button">Cancel</Button>
+              <Button type="button" className="secondary-button">
+                Cancel
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </form>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
