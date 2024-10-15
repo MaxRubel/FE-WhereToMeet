@@ -87,12 +87,13 @@ export type Location = {
 };
 
 export type Suggestion = {
-  _id: string;
+  _id?: string;
   name: string;
   description: string;
   url: string;
   address: {
     street: string;
+    city: string;
     zipcode: number;
     coordinates: {
       lat: number;
