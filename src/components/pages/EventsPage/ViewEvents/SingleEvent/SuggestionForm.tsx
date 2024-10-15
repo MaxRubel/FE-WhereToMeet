@@ -119,7 +119,7 @@ export default function SuggestionForm({ event }: props) {
               <Button type="submit">Submit</Button>
             </DrawerClose>
             <DrawerClose>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" className="secondary-button">Cancel</Button>
             </DrawerClose>
           </DrawerFooter>
         </form>

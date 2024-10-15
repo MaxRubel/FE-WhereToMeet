@@ -96,3 +96,12 @@
   border-radius: 50%;
   translate: transformY(-0px);
 }
+
+.logoHover {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.logoHover:hover {
+  color: rgb(226, 224, 224);
+}
