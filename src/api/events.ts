@@ -34,9 +34,9 @@ export function getUserEvents(userId: string) {
     });
 }
 
-export function getSingleEvent(id: string) {
+export function getSingleEvent(eventId: string) {
     return new Promise((resolve, reject) => {
-      fetch(`${endpoint}/events/${id}`, {
+      fetch(`${endpoint}/events/${eventId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
