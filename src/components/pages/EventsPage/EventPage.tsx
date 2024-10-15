@@ -3,9 +3,15 @@ import "./EventPage.css";
 import { useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
 import ViewEvents from "./ViewEvents/ViewEvents";
+import { useNavigate, useParams } from "react-router-dom";
+import ViewSingleEvent from "./ViewEvents/ViewSingleEvent";
 
 export default function EventPage() {
-  const [isViewing, setIsViewing] = useState("ViewEvents");
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const [isViewing, setIsViewing] = useState(
+    eventId ? "ViewSingleEvent" : "ViewEvents"
+  );
 
   return (
     <div className="profile-page-layout">
@@ -35,6 +41,7 @@ export default function EventPage() {
             }}
             onClick={() => {
               setIsViewing("ViewEvents");
+              navigate("/events");
             }}
           >
             <ViewFolders size="20" /> View Events
@@ -44,6 +51,10 @@ export default function EventPage() {
       <div className="profile-main-form">
         {isViewing == "CreateEventForm" && <CreateEventForm />}
         {isViewing == "ViewEvents" && <ViewEvents />}
+        {/* @ts-expect-error -- groupId is already null checked */}
+        {isViewing == "ViewSingleEvent" && (
+          <ViewSingleEvent eventId={eventId} setIsViewing={setIsViewing} />
+        )}
       </div>
     </div>
   );

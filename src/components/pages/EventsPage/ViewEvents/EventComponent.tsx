@@ -28,16 +28,14 @@ const EventComponent: React.FC<EventComponentProps> = ({ event }) => {
     <Card>
       <CardHeader>
         <CardTitle className='group-title-row'>
-          <a href={`/events/${event._id}`}>
+          <a href={`/events/${event?._id}`}>
             {event.name || 'not avail'} 
           </a>
         </CardTitle>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
       <CardContent>
-        <p>Description: <SafeRender value={event.description} /></p>
         <p>Location: <SafeRender value={event.location?.name || event.location} /></p>
-        <p>Time: <SafeRender value={event.time} /></p>
         {event.location?.url && <p>URL: <SafeRender value={event.location.url} /></p>}
       </CardContent>
       <CardFooter>
