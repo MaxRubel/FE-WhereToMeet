@@ -26,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 const emptyLocation = {
   name: "",
-  url: "xvideos.com",
+  url: "",
   address: {
     street: "",
     zipcode: 0,
@@ -78,6 +78,7 @@ export default function CreateEventForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : ""; // Combine date and time
     const payload = {
       _id: "",

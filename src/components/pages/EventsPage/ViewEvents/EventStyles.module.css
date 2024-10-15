@@ -1,0 +1,37 @@
+.eventCard {
+  text-align: left;
+  margin-bottom: 1em;
+  border: 1px solid rgb(237, 237, 237);
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.eventContainer {
+  min-height: 100vh;
+  padding: 3em;
+  text-align: left;
+}
+
+.suggestionsContainer {
+  border: 1px solid rgb(237, 237, 237);
+  min-height: 250px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 1em;
+  padding-top: 0em;
+}
+
+.headerContainer {
+  text-align: center;
+}
+
+.smallInput {
+  width: 500px;
+}
+
+.drawerFooter {
+  display: flex;
+  flex-direction: row;
+  background-color: red;
+}

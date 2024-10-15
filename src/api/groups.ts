@@ -76,7 +76,6 @@ export function useUpdateGroup() {
 
   return useMutation(updateGroup, {
     onSuccess: (_, variables) => {
-      console.log("updated group ", variables.id);
       queryClient.invalidateQueries(["groups", variables.id]);
       queryClient.invalidateQueries(["groups"]);
     },

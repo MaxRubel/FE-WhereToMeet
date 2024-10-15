@@ -4,7 +4,7 @@ import { useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
 import ViewEvents from "./ViewEvents/ViewEvents";
 import { useNavigate, useParams } from "react-router-dom";
-import ViewSingleEvent from "./ViewEvents/ViewSingleEvent";
+import ViewSingleEvent from "./ViewEvents/SingleEvent/ViewSingleEvent";
 
 export default function EventPage() {
   const { eventId } = useParams();
@@ -51,8 +51,8 @@ export default function EventPage() {
       <div className="profile-main-form">
         {isViewing == "CreateEventForm" && <CreateEventForm />}
         {isViewing == "ViewEvents" && <ViewEvents />}
-        {/* @ts-expect-error -- groupId is already null checked */}
         {isViewing == "ViewSingleEvent" && (
+          //@ts-ignore   will not be null
           <ViewSingleEvent eventId={eventId} setIsViewing={setIsViewing} />
         )}
       </div>
