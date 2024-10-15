@@ -23,7 +23,6 @@ export default function ViewEvents() {
         }
     };
 
-
     useEffect(() => {
         getTheEvents();
     }, [user._id])
