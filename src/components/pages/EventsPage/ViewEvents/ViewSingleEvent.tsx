@@ -1,58 +1,87 @@
 import { getSingleEvent } from "@/api/events";
+import { useAuth } from "@/context/auth/auth";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-type props = {
-    eventId: string
-    setIsViewing: (view: string) => void;
+export default function ViewSingleEvent() {
+  const [singleEvent, setSingleEvent] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const { eventId } = useParams();
+
+  console.log(eventId);
+
+  useEffect(() => {
+    if (eventId) {
+      setIsLoading(true);
+      setError(null);
+      console.log("fetching");
+      getSingleEvent(eventId)
+        .then((event) => {
+          //@ts-ignore
+          setSingleEvent(event);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching event:", err);
+          setError("Failed to fetch event details");
+          setIsLoading(false);
+        });
+    }
+  }, [eventId]);
+
+  const event = {
+    suggestions: [
+      { id: "123123", name: "suggestion1", votes: ["asdad, asdasd"] },
+      { id: "123124", name: "suggestion2", votes: ["asdad, asdasd"] },
+      { id: "123125", name: "suggestion3", votes: ["asdad, asdasd"] },
+      { id: "123126", name: "suggestion4", votes: ["asdad, asdasd"] },
+    ],
+  };
+
+  const addVote = () => {
+    const user = useAuth();
+
+    for (let i = 0; i < event.suggestions.length; i++) {
+      const suggestion = event.suggestions[i];
+      suggestion.votes.forEach((userId) => {
+        if (userId === user._id) {
+          console.log("Sorry! You have already voted.");
+          return;
+        }
+      });
+    }
+    // payload = {suggestionId: suggestionId}
+    // events/eventId/add-vote/userID
+    // POST
+    // body: suggestionID, userID
+    // query: go into the suggestions array, find the suggestion by Id,
+    // add UserID into the array
+    // refetch
+  };
+
+  const addVote2 = () => {
+    votes.forEach((vote) => {
+      if (vote.userId === user._id) {
+        return;
+      }
+    });
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!singleEvent) return <div>No event found</div>;
+
+  if (isLoading) {
+    return "";
   }
 
-export default function ViewSingleEvent({ eventId, setIsViewing }: props) {
-    const [singleEvent, setSingleEvent] = useState<Event | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (eventId) {
-            setIsViewing("ViewSingleEvent");
-            setIsLoading(true);
-            setError(null);
-            getSingleEvent(eventId)
-                .then((event) => {
-                    setSingleEvent(event);
-                    setIsLoading(false);
-                })
-                .catch((err) => {
-                    console.error("Error fetching event:", err);
-                    setError("Failed to fetch event details");
-                    setIsLoading(false);
-                });
-        }
-    }, [eventId, setIsViewing]);
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!singleEvent) return <div>No event found</div>;
-
-    return (
-        <div>
-            <p>{singleEvent?.name}</p>
-            <p>{singleEvent?.description}</p>
-            <p>{singleEvent?.time}</p>
-        </div>
-    )
-  
+  return (
+    <div>
+      <p>{singleEvent?.name}</p>
+      <p>{singleEvent?.description}</p>
+      <p>{singleEvent?.time}</p>
+    </div>
+  );
 }
-
-// export type Event = {
-//     _id: string; //primary key
-//     name: string;
-//     ownerId: string; //foreign key
-//     groupId: string; //foreign key
-  
-//     description: string;
-//     location: Location;
-//     time: string; // datetime string
-  
-//     suggestions: Location[];
-//     messages: Message[];
-//   };

@@ -1,50 +1,52 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 const SafeRender = ({ value }) => {
-  if (value === null || value === undefined) return 'not available'
+  if (value === null || value === undefined) return "not available";
 
-  if (typeof value === 'object') return JSON.stringify(value);
-    return value.toString();
-}
+  if (typeof value === "object") return JSON.stringify(value);
+  return value.toString();
+};
 
 interface EventComponentProps {
   event: Event;
 }
 
 const EventComponent: React.FC<EventComponentProps> = ({ event }) => {
-
-  if (!event || typeof event !== 'object') {
+  if (!event || typeof event !== "object") {
     return <p>Error: Invalid event data</p>;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='group-title-row'>
-          <a href={`/events/${event?._id}`}>
-            {event.name || 'not avail'} 
-          </a>
+        <CardTitle className="group-title-row">
+          <a href={`/events/${event?._id}`}>{event.name || "not avail"}</a>
         </CardTitle>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
       <CardContent>
-        <p>Location: <SafeRender value={event.location?.name || event.location} /></p>
-        {event.location?.url && <p>URL: <SafeRender value={event.location.url} /></p>}
+        <p>
+          Location:{" "}
+          <SafeRender value={event.location?.name || event.location} />
+        </p>
+        {event.location?.url && (
+          <p>
+            URL: <SafeRender value={event.location.url} />
+          </p>
+        )}
       </CardContent>
       <CardFooter>
-        <p>{event.time || 'not avail'}</p>
+        <p>{event.time || "not avail"}</p>
       </CardFooter>
-  </Card>
-
-  )
-}
+    </Card>
+  );
+};
 export default EventComponent;
 // export type Event = {
 //   _id: string; //primary key

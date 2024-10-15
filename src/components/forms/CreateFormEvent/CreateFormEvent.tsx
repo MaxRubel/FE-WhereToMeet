@@ -91,8 +91,13 @@ export default function CreateEventForm() {
       messages: [],
     };
 
-    createEvent(payload).then(() => {
-      navigate("/");
+    type response = {
+      _id: string;
+    };
+
+    createEvent(payload).then((resp) => {
+      const typedresp = resp as response;
+      navigate(`/events/${typedresp._id}`);
     });
   };
 

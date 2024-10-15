@@ -87,7 +87,9 @@ export type Location = {
 };
 
 export type Suggestion = {
+  _id: string;
   name: string;
+  description: string;
   url: string;
   address: {
     street: string;
@@ -97,7 +99,7 @@ export type Suggestion = {
       long: number;
     };
   };
-  votes: vote[];
+  votes: string[];
 };
 
 export type Message = {
