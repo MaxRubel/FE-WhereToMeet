@@ -3,55 +3,54 @@ import { useAuth } from "@/context/auth/auth";
 import { getUserEvents } from "@/api/events";
 import EventComponent from "./EventComponent";
 
-
 export default function ViewEvents() {
-    const [events, setEvents] = useState<Event[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [err, setErr] = useState<string | null>(null);
-    const { user } = useAuth();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+  const { user } = useAuth();
 
-    const getTheEvents = async () => {
-        try {
-            setIsLoading(true);
-            const resp = await getUserEvents(user._id);
-            //@ts-ignore
-            setEvents(resp.events)
-        } catch (err) {
-            setErr('Failed to load events, please try again');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getTheEvents();
-    }, [user._id])
-
-    if (isLoading) {
-        return (
-            // <div> 
-            //     <GridLoader />
-            // </div>
-            <></>
-        )
+  const getTheEvents = async () => {
+    try {
+      setIsLoading(true);
+      const resp = await getUserEvents(user._id);
+      //@ts-ignore
+      setEvents(resp.events);
+    } catch (err) {
+      setErr("Failed to load events, please try again");
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if (err) {
-        return <div>{err}</div>;
-    }
+  useEffect(() => {
+    getTheEvents();
+  }, [user._id]);
 
+  if (isLoading) {
     return (
-        <>
-            <div>
-                {events.length === 0 ? (
-                    <div>No events found.</div>
-                ) : (
-                    events.map((event) => (
-                        //@ts-ignore
-                        <EventComponent key={event._id} event={event} />
-                    ))
-                )}
-            </div>
-        </>
-    )
+      // <div>
+      //     <GridLoader />
+      // </div>
+      <></>
+    );
+  }
+
+  if (err) {
+    return <div>{err}</div>;
+  }
+
+  return (
+    <>
+      <div>
+        {events.length === 0 ? (
+          <div>No events found.</div>
+        ) : (
+          events.map((event) => (
+            //@ts-ignore
+            <EventComponent key={event._id} event={event} />
+          ))
+        )}
+      </div>
+    </>
+  );
 }

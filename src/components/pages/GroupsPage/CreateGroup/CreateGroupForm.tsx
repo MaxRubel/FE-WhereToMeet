@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useCreateGroup } from "@/api/groups";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
-import "./GroupForm.css"
+import "./GroupForm.css";
 
 export type GroupForm = {
   _id?: string; //primary key
@@ -14,11 +14,11 @@ export type GroupForm = {
   name: string;
   description: string;
   members: string[]; //array of _ids
-}
+};
 
 type props = {
-  setIsViewing: (arg0: string) => void
-}
+  setIsViewing: (arg0: string) => void;
+};
 
 export default function CreateGroupForm({ setIsViewing }: props) {
   const { user } = useAuth();
@@ -27,48 +27,64 @@ export default function CreateGroupForm({ setIsViewing }: props) {
     ownerId: user._id,
     name: "",
     description: "",
-    members: []
+    members: [],
   };
 
   const [formFields, setFormFields] = useState<GroupForm>(initFields);
-  const createGroupMutation = useCreateGroup()
-  const navigate = useNavigate()
+  const createGroupMutation = useCreateGroup();
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormFields((prevFields) => ({
       ...prevFields,
       [name]: value,
     }));
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     type response = {
-      message: string
+      message: string;
       data: {
-        dateCreated: string
-        insertedId: string
-      }
-    }
+        dateCreated: string;
+        insertedId: string;
+      };
+    };
 
-    createGroupMutation.mutate(formFields, {
+    const payload = {
+      ...formFields,
+      members: [
+        {
+          _id: user._id,
+          joined: new Date(),
+        },
+      ],
+    };
+
+    createGroupMutation.mutate(payload, {
       onSuccess: (data: unknown) => {
-        console.log(data)
-        const typedData = data as response
-        setIsViewing("ViewSingleGroup")
-        navigate(`/groups/${typedData.data.insertedId}`)
-      }
-    })
-  }
+        const typedData = data as response;
+        setIsViewing("ViewSingleGroup");
+        navigate(`/groups/${typedData.data.insertedId}`);
+      },
+    });
+  };
 
   return (
     // HEADER
     <div className="create-group-form-container">
-      <h2 className="text-left" style={{ fontWeight: "300" }} >Create a Group</h2>
-      <form className="create-group-form" onSubmit={handleSubmit} style={{ marginTop: '2em' }}>
-
+      <h2 className="text-left" style={{ fontWeight: "300" }}>
+        Create a Group
+      </h2>
+      <form
+        className="create-group-form"
+        onSubmit={handleSubmit}
+        style={{ marginTop: "2em" }}
+      >
         {/* NAME FIELD */}
         <div className="form-group">
           <Label htmlFor="name" className="form-label">
@@ -104,7 +120,11 @@ export default function CreateGroupForm({ setIsViewing }: props) {
         </div>
 
         {/* SUBMIT BUTTON */}
-        <Button style={{ marginTop: "1em" }} type="submit" disabled={createGroupMutation.isLoading}>
+        <Button
+          style={{ marginTop: "1em" }}
+          type="submit"
+          disabled={createGroupMutation.isLoading}
+        >
           Submit
         </Button>
       </form>

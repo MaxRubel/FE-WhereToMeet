@@ -24,9 +24,6 @@ export type UserDB = {
   friends: string[];
 };
 
-
-
-
 // -- init user --
 // -- this is an empty user object for initialising forms
 export const emptyUserDB = {
@@ -58,7 +55,7 @@ export type Group = {
   name: string;
   description: string;
   members: UserDB[]; //array of _ids
-  dateCreated?: string
+  dateCreated?: string;
 };
 
 export type Event = {
@@ -87,9 +84,21 @@ export type Location = {
       long: number;
     };
   };
-  votes: vote[];
 };
 
+export type Suggestion = {
+  name: string;
+  url: string;
+  address: {
+    street: string;
+    zipcode: number;
+    coordinates: {
+      lat: number;
+      long: number;
+    };
+  };
+  votes: vote[];
+};
 
 export type Message = {
   _id: string; //primary key
