@@ -68,7 +68,7 @@ export type Event = {
   location: Location;
   time: string; // datetime string
 
-  suggestions: Location[];
+  suggestions: Suggestion[];
   messages: Message[];
 };
 
@@ -88,6 +88,8 @@ export type Location = {
 
 export type Suggestion = {
   _id?: string;
+  userId: string; //mongo user._id
+  eventId: string; //foreign key for event
   name: string;
   description: string;
   url: string;
