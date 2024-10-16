@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth/auth";
 import { useRemoveSuggestion, useToggleVote } from "@/api/events";
 import type { RemoveSuggestionPayload } from "@/api/events";
-// import { useState } from "react";
 
 type props = {
   suggestion: Suggestion;
@@ -15,7 +14,7 @@ export default function SuggestionCard({ suggestion }: props) {
   const removeSuggestion = useRemoveSuggestion();
   const { mutate: toggleVote } = useToggleVote();
 
-  const hasVoted = suggestion.votes.some((vote) => vote.voter === user._id)
+  const hasVoted = suggestion.votes.some((vote: any) => vote.voter === user._id)
 
   const handleRemove = () => {
     if (!suggestion._id) {
@@ -55,7 +54,6 @@ export default function SuggestionCard({ suggestion }: props) {
               {hasVoted ? 'Remove Vote' : 'Add Vote'}
             </Button>
             <Button onClick={handleRemove}>Remove Suggestion</Button>
-
           </>
         )}
       </div>
