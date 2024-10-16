@@ -154,38 +154,6 @@ export function useRemoveSuggestion() {
   });
 }
 
-// export type AddVotePayload = {
-//   suggestionId: string;
-//   userId: string;
-// };
-
-// export function useAddVote() {
-//   const queryClient = useQueryClient();
-
-//   async function addVote(payload: AddVotePayload) {
-//     const response = await fetch(`${endpoint}/events/add-vote`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(payload),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to add vote");
-//     }
-
-//     return response.json();
-//   }
-
-//   return useMutation(addVote, {
-//     onSuccess: (_, payload) => {
-//       queryClient.invalidateQueries(["events", payload.suggestionId]);
-//       queryClient.invalidateQueries(["events"]);
-//     },
-//   });
-// }
-
 export interface ToggleVotePayload {
   suggestionId: string;
   userId: string;
