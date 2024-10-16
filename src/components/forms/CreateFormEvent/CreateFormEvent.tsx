@@ -84,12 +84,19 @@ export default function CreateEventForm() {
       _id: "",
       name: formFields.name,
       ownerId: user._id,
+      suggestionsEnabled: true,
+      votingOpen: true,
       groupId: formFields.groupId,
       location: emptyLocation,
       description: formFields.description,
       time: formattedDate,
       suggestions: [],
       messages: [],
+      address: {
+        street: "",
+        city: "",
+        zip: "",
+      },
     };
 
     type response = {

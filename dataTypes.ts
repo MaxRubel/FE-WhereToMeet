@@ -88,8 +88,8 @@ export type Location = {
 };
 
 export type Suggestion = {
-  _id?: string;
-  userId: string; //mongo user._id
+  _id?: string; // primary key
+  userId: string; //mongo user._id creator of the suggestion
   eventId: string; //foreign key for event
   name: string;
   description: string;
@@ -103,7 +103,7 @@ export type Suggestion = {
       long: number;
     };
   };
-  votes: string[];
+  votes: string[]; //user_ids
 };
 
 export type Message = {
