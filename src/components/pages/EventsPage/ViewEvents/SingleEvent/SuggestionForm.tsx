@@ -15,7 +15,7 @@ import { useState } from "react";
 import styles from "../EventStyles.module.css";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth/auth";
-import { useUpdateEvent } from "@/api/events";
+import { useAddSuggestion } from "@/api/events";
 import uniqid from "uniqid";
 
 type props = {
@@ -46,7 +46,7 @@ export default function SuggestionForm({ event }: props) {
   };
 
   const [formFields, setFormFields] = useState<Suggestion>(initFormFields);
-  const updateEvent = useUpdateEvent();
+  const updateEvent = useAddSuggestion();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
