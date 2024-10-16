@@ -16,6 +16,7 @@ import styles from "../EventStyles.module.css";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth/auth";
 import { useUpdateEvent } from "@/api/events";
+import uniqid from "uniqid";
 
 type props = {
   event: Event;
@@ -25,8 +26,9 @@ type props = {
 export default function SuggestionForm({ event }: props) {
   const { user } = useAuth();
 
-  const initSuggestion: Suggestion = {
+  const initFormFields: Suggestion = {
     name: "",
+    _id: uniqid(),
     userId: user._id,
     eventId: event._id,
     description: "",
@@ -43,7 +45,7 @@ export default function SuggestionForm({ event }: props) {
     votes: [],
   };
 
-  const [formFields, setFormFields] = useState<Suggestion>(initSuggestion);
+  const [formFields, setFormFields] = useState<Suggestion>(initFormFields);
   const updateEvent = useUpdateEvent();
 
   const handleChange = (
@@ -65,9 +67,9 @@ export default function SuggestionForm({ event }: props) {
     e.preventDefault();
 
     updateEvent.mutate(formFields, {
-      // onSuccess: (data) => {
-      //   console.log(data);
-      // },
+      onSuccess: () => {
+        setFormFields(initFormFields);
+      },
     });
   };
 
@@ -131,7 +133,7 @@ export default function SuggestionForm({ event }: props) {
             <DrawerClose asChild>
               <Button type="submit">Submit</Button>
             </DrawerClose>
-            <DrawerClose>
+            <DrawerClose asChild>
               <Button type="button" className="secondary-button">
                 Cancel
               </Button>

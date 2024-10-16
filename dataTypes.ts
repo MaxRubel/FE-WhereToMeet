@@ -63,6 +63,7 @@ export type Event = {
   name: string;
   ownerId: string; //foreign key
   groupId: string; //foreign key
+  votingOpen: boolean;
 
   description: string;
   location: Location;

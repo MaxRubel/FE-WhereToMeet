@@ -10,16 +10,11 @@ export default function ViewSingleEvent() {
     return "Error: No Event ID found";
   }
 
-  const {
-    data: singleEvent,
-    isLoading,
-    isError,
-    error,
-  } = useGetSingleEvent(eventId);
+  const { data: event, isLoading, isError, error } = useGetSingleEvent(eventId);
 
   if (isError) return <div>Error: {error.message}</div>;
 
-  if (isLoading || !singleEvent) {
+  if (isLoading || !event) {
     return "loading";
   }
 
@@ -27,19 +22,19 @@ export default function ViewSingleEvent() {
     <div className={styles.eventContainer}>
       {/* ---Event Name----*/}
       <div>
-        <h2>{singleEvent.name}</h2>
+        <h2>{event.name}</h2>
 
         {/* ---Description----*/}
-        <p style={{ marginTop: "2em" }}>{singleEvent.description}</p>
-        <p>{singleEvent.time}</p>
+        <p style={{ marginTop: "2em" }}>{event.description}</p>
+        <p>{event.time}</p>
       </div>
 
       <div style={{ marginTop: "3em" }}>
         {/* ----Add A Suggestion Button---- */}
-        <SuggestionForm event={singleEvent} />
+        <SuggestionForm event={event} />
 
         {/* ----Suggestions Container---- */}
-        <SuggestionsContainer event={singleEvent} />
+        <SuggestionsContainer event={event} />
       </div>
     </div>
   );
