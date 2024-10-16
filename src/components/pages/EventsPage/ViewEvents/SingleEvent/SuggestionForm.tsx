@@ -131,7 +131,7 @@ export default function SuggestionForm({ event }: props) {
             <DrawerClose asChild>
               <Button type="submit">Submit</Button>
             </DrawerClose>
-            <DrawerClose>
+            <DrawerClose asChild>
               <Button type="button" className="secondary-button">
                 Cancel
               </Button>
