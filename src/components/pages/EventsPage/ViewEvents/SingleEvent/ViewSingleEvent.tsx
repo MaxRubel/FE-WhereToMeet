@@ -1,4 +1,4 @@
-import { useGetSingleEvent } from "@/api/events";
+import { useGetSingleEvent, useUpdateEvent } from "@/api/events";
 import styles from "../EventStyles.module.css";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -18,12 +18,18 @@ export default function ViewSingleEvent() {
   }
 
   const { data: event, isLoading, error } = useGetSingleEvent(eventId);
+  const updateEvent = useUpdateEvent();
 
   if (error) return <div>Error: {error.message}</div>;
 
   if (isLoading || !event) {
     return "";
   }
+
+  const handleSwitch = (e: any) => {
+    setIsFormEnabled(e);
+    updateEvent.mutate({ ...event, suggestionsEnabled: e });
+  };
 
   return (
     <div className={styles.eventContainer}>
@@ -43,7 +49,7 @@ export default function ViewSingleEvent() {
           <div className="flex items-center space-x-2 mb-4">
             <Switch
               checked={isFormEnabled}
-              onCheckedChange={setIsFormEnabled}
+              onCheckedChange={handleSwitch}
               id="form-toggle"
             />
             <label htmlFor="form-toggle" className="text-sm font-medium">

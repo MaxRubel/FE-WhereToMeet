@@ -64,7 +64,7 @@ export type Event = {
   ownerId: string; //foreign key
   groupId: string; //foreign key
   votingOpen: boolean;
-
+  suggestionsEnabled: boolean;
   description: string;
   location: Location;
   time: string; // datetime string

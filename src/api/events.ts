@@ -26,6 +26,28 @@ export async function createEvent(payload: Event) {
   }
 }
 
+//  Add Suggestion To Event
+export function useUpdateEvent() {
+  const queryClient = useQueryClient();
+
+  function updateEvent(payload: Event) {
+    return fetch(`${endpoint}/events/${payload._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).then((resp) => resp.json());
+  }
+
+  return useMutation(updateEvent, {
+    onSuccess: (_, payload) => {
+      queryClient.invalidateQueries(["events", payload._id]);
+      queryClient.invalidateQueries(["events"]);
+    },
+  });
+}
+
 export function getUserEvents(userId: string) {
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/events/user-events/${userId}`, {
@@ -79,7 +101,7 @@ export function useGetSingleEvent(
 }
 
 //  Add Suggestion To Event
-export function useUpdateEvent() {
+export function useAddSuggestion() {
   const queryClient = useQueryClient();
 
   function updateEvent(payload: Suggestion) {
