@@ -35,7 +35,6 @@ export default function ViewSingleEvent() {
         <p style={{ marginTop: "2em" }}>{event.description}</p>
         <p>{event.time}</p>
 
-        <h2>{event.name}</h2>
         {/* ---Description----*/}
         <p style={{ marginTop: "2em" }}>{event.description}</p>
         <p>{event.time}</p>
