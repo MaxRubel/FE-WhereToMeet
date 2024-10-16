@@ -48,11 +48,11 @@ export default function SuggestionCard({ suggestion }: props) {
         <p>Votes: {suggestion.votes.length}</p> 
       </div>
       <div>
+        <Button onClick={handleVote}>
+          {hasVoted ? 'Remove Vote' : 'Add Vote'}
+        </Button>
         {user._id === suggestion.userId && (
           <>
-            <Button onClick={handleVote}>
-              {hasVoted ? 'Remove Vote' : 'Add Vote'}
-            </Button>
             <Button onClick={handleRemove}>Remove Suggestion</Button>
           </>
         )}
