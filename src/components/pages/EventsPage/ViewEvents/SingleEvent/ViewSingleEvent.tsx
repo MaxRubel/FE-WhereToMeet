@@ -1,6 +1,5 @@
 import { useGetSingleEvent, useUpdateEvent } from "@/api/events";
 import styles from "../EventStyles.module.css";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import SuggestionsContainer from "../SuggestionsContainer";
 import SuggestionForm from "./SuggestionForm";
@@ -8,7 +7,6 @@ import { useAuth } from "@/context/auth/auth";
 import { Switch } from "@/components/ui/switch";
 
 export default function ViewSingleEvent() {
-  const [isFormEnabled, setIsFormEnabled] = useState(false);
   const { user } = useAuth();
   const { eventId } = useParams();
 
@@ -26,8 +24,7 @@ export default function ViewSingleEvent() {
     return "";
   }
 
-  const handleSwitch = (e: any) => {
-    setIsFormEnabled(e);
+  const handleSwitch = (e: boolean) => {
     updateEvent.mutate({ ...event, suggestionsEnabled: e });
   };
 
@@ -36,29 +33,30 @@ export default function ViewSingleEvent() {
       {/* ---Event Name----*/}
       <div>
         <h2>{event.name}</h2>
+        <p>{event.time}</p>
 
         {/* ---Description----*/}
         <p style={{ marginTop: "2em" }}>{event.description}</p>
-        <p>{event.time}</p>
       </div>
 
       <div style={{ marginTop: "3em" }}>
         {/* ----Add A Suggestion Button---- */}
-
         {user._id === event.ownerId && (
           <div className="flex items-center space-x-2 mb-4">
             <Switch
-              checked={isFormEnabled}
+              checked={event.suggestionsEnabled}
               onCheckedChange={handleSwitch}
               id="form-toggle"
             />
             <label htmlFor="form-toggle" className="text-sm font-medium">
-              {isFormEnabled ? "Disable Suggestions" : "Enable Suggestions"}
+              {event.suggestionsEnabled
+                ? "Disable Suggestions"
+                : "Enable Suggestions"}
             </label>
           </div>
         )}
 
-        {isFormEnabled && <SuggestionForm event={event} />}
+        {event.suggestionsEnabled && <SuggestionForm event={event} />}
 
         {/* ----Suggestions Container---- */}
         <SuggestionsContainer event={event} />
