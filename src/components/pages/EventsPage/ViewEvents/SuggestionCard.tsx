@@ -2,9 +2,9 @@ import { Suggestion } from "dataTypes";
 import styles from "./EventStyles.module.css";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth/auth";
-import { useRemoveSuggestion, useAddVote } from "@/api/events";
+import { useRemoveSuggestion, useToggleVote } from "@/api/events";
 import type { RemoveSuggestionPayload } from "@/api/events";
-import { useState } from "react";
+// import { useState } from "react";
 
 type props = {
   suggestion: Suggestion;
@@ -13,10 +13,9 @@ type props = {
 export default function SuggestionCard({ suggestion }: props) {
   const { user } = useAuth();
   const removeSuggestion = useRemoveSuggestion();
-  const { mutate: addVote} = useAddVote();
+  const { mutate: toggleVote } = useToggleVote();
 
-
-  const [voteCount, setVoteCount] = useState(suggestion.votes.length);
+  const hasVoted = suggestion.votes.some((vote) => vote.voter === user._id)
 
   const handleRemove = () => {
     if (!suggestion._id) {
@@ -31,17 +30,13 @@ export default function SuggestionCard({ suggestion }: props) {
     removeSuggestion.mutate(payload);
   };
 
-  function handleVote(suggestionId: string, userId: string) {
-    addVote(
-      { suggestionId, userId },
-      {
-        onSuccess: (data) => {
-          setVoteCount(data.voteCount);
-        },
-      }
-    );
+  function handleVote() {
+    toggleVote({
+      suggestionId: suggestion._id!,
+      userId: user._id!
+    });
   }
-
+  
   return (
     <div className={styles.suggestionCardContainer}>
       <div>
@@ -51,17 +46,16 @@ export default function SuggestionCard({ suggestion }: props) {
         <p style={{ marginTop: "1em" }}>{suggestion.description}</p>
       </div>
       <div>
-        <p>Votes: {voteCount}</p> 
+        <p>Votes: {suggestion.votes.length}</p> 
       </div>
       <div>
         {user._id === suggestion.userId && (
           <>
-            <Button onClick={handleRemove}>Remove</Button>
-            {suggestion._id && user._id && (
-              <Button onClick={() => handleVote(suggestion._id!, user._id!)}>
-                Add a Vote
-              </Button>
-            )}
+            <Button onClick={handleVote}>
+              {hasVoted ? 'Remove Vote' : 'Add Vote'}
+            </Button>
+            <Button onClick={handleRemove}>Remove Suggestion</Button>
+
           </>
         )}
       </div>
