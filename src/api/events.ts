@@ -99,3 +99,35 @@ export function useUpdateEvent() {
     },
   });
 }
+
+export type RemoveSuggestionPayload = {
+  eventId: string;
+  suggestionId: string;
+};
+
+export function useRemoveSuggestion() {
+  const queryClient = useQueryClient();
+
+  async function removeSuggestion(payload: RemoveSuggestionPayload) {
+    const response = await fetch(`${endpoint}/events/remove-suggestion`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove suggestion");
+    }
+
+    return response.json();
+  }
+
+  return useMutation(removeSuggestion, {
+    onSuccess: (_, payload) => {
+      queryClient.invalidateQueries(["events", payload.eventId]);
+      queryClient.invalidateQueries(["events"]);
+    },
+  });
+}

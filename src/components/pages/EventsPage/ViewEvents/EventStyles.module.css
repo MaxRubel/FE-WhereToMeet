@@ -35,3 +35,26 @@
   flex-direction: row;
   background-color: red;
 }
+
+.flexSuggestions {
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+  padding: 2em 3em;
+}
+
+.suggestionCardContainer {
+  border-radius: 10px;
+  border: 1px solid rgb(237, 237, 237);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  height: 350px;
+  padding: 2em 1em;
+  background-color: white;
+  display: grid;
+  grid-template-rows: 1.5fr 6fr 1fr;
+}
+
+.suggestionnName {
+  font-weight: 400;
+}

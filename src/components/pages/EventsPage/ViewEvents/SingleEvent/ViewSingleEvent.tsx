@@ -9,7 +9,6 @@ import { useAuth } from "@/context/auth/auth";
 import { Switch } from "@radix-ui/react-switch";
 
 export default function ViewSingleEvent() {
-  const [singleEvent, setSingleEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormEnabled, setIsFormEnabled] = useState(false);
@@ -18,32 +17,16 @@ export default function ViewSingleEvent() {
   const { eventId } = useParams();
 
 
-  useEffect(() => {
-    if (eventId) {
-      setIsLoading(true);
-      setError(null);
-      getSingleEvent(eventId)
-        .then((event) => {
-          //@ts-ignore
-          setSingleEvent(event);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching event:", err);
-          setError("Failed to fetch event details");
-          setIsLoading(false);
-        });
-    }
-  }, [eventId]);
+  const { data: event, isLoading, isError, error } = useGetSingleEvent(eventId);
 
   if (error) return <div>Error: {error}</div>;
 
-  if (isLoading || !singleEvent) {
+
+  if (isLoading || !event) {
     return "";
-  }
 
   const isEventCreator = () => {
-    if (user._id === singleEvent.ownerId) {
+    if (user._id === event.ownerId) {
       return true;
     }
   }
@@ -53,6 +36,13 @@ export default function ViewSingleEvent() {
 
       {/* ---Event Name----*/}
       <div>
+
+        <h2>{event.name}</h2>
+
+        {/* ---Description----*/}
+        <p style={{ marginTop: "2em" }}>{event.description}</p>
+        <p>{event.time}</p>
+
         <h2 >{singleEvent?.name}</h2>
 
         {/* ---Description----*/}
@@ -60,10 +50,14 @@ export default function ViewSingleEvent() {
           {singleEvent?.description}
         </p>
         <p>{singleEvent?.time}</p>
+
       </div>
 
       <div style={{ marginTop: '3em' }}>
         {/* ----Add A Suggestion Button---- */}
+
+        <SuggestionForm event={event} />
+
         {isEventCreator() ? (
           <div className="flex items-center space-x-2 mb-4">
             <Switch
@@ -79,8 +73,9 @@ export default function ViewSingleEvent() {
 
         {isFormEnabled && <SuggestionForm event={singleEvent} />}
 
+
         {/* ----Suggestions Container---- */}
-        <SuggestionsContainer event={singleEvent} />
+        <SuggestionsContainer event={event} />
       </div>
 
     </div>
