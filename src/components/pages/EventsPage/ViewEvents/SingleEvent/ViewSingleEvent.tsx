@@ -43,9 +43,11 @@ export default function ViewSingleEvent() {
       </div>
 
       <div style={{ marginTop: "3em" }}>
-        {/* ----Add A Suggestion Button---- */}
+
+        {/* ----Admin Toggle Switch---- */}
         {user._id === event.ownerId && (
-          <div className="flex items-center space-x-2 mb-4">
+          <div className="flex items-center space-x-2 mb-4"
+            style={{ marginBottom: "3em" }}>
             <Switch
               checked={event.suggestionsEnabled}
               onCheckedChange={handleSwitch}
@@ -59,6 +61,7 @@ export default function ViewSingleEvent() {
           </div>
         )}
 
+        {/* ----Add A Suggestion Button---- */}
         {event.suggestionsEnabled &&
           <SuggestionForm event={event} />}
 
