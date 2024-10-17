@@ -31,7 +31,6 @@ export default function Chat({ eventId }: props) {
     const handleMessageUpdate = (snapshot: any) => {
       const data = snapshot.val();
       if (data) setMessages(Object.values(data))
-      console.log("received :", Object.values(data))
     };
 
     onValue(messageQuery, handleMessageUpdate);
@@ -47,8 +46,8 @@ export default function Chat({ eventId }: props) {
     const payload: MessagePayload = {
       eventId, message, userId: user._id
     }
-    try {
 
+    try {
       SendMessage(payload)
     } catch (err) {
       console.error(err)
