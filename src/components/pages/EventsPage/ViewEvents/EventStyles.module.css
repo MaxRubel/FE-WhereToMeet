@@ -45,15 +45,23 @@
 
 .suggestionCardContainer {
   border-radius: 10px;
-  border: 1px solid rgb(237, 237, 237);
+  border: 2px solid rgb(237, 237, 237);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 250px;
   height: 350px;
   padding: 2em 1em;
-  background-color: white;
+  /* background-image: radial-gradient(circle, #380221, #350629, #300b31, #291139, #1f163f, #1b1747, #13194f, #001b57, #001964, #001571, #000e7c, #060087); */
+  color: black;
   display: grid;
   grid-template-rows: 50px 6fr 1fr;
   position: relative;
+}
+
+.buttonBox {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: .8em
 }
 
 .suggestionnName {

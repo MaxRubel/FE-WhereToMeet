@@ -46,6 +46,7 @@ export default function SuggestionCard({
         {suggestion.votes.length}
         {suggestion.votes.length === 1 ? " vote" : " votes"}
       </div>
+
       {/* ----Name header---- */}
       <div>
         <h2 className={styles.suggestionnName}>
@@ -87,7 +88,9 @@ export default function SuggestionCard({
 
         {user._id === suggestion.userId && (
           <Button onClick={handleRemove}
-            style={{ color: "rgb(245, 66, 90)" }} className="secondary-button">
+            className="secondary-button"
+            style={{ color: "rgb(245, 66, 90)" }}
+          >
             Remove Your Suggestion
           </Button>
         )}
