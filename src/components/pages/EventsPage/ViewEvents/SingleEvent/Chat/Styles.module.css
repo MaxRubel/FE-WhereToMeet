@@ -1,0 +1,27 @@
+.chatContainer {
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chatHeader {
+  border-bottom: 1px solid lightgray;
+  padding-bottom: .5em;
+}
+
+.messageContainer {
+  height: 100%;
+}
+
+.textDiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1em
+}
+
+.submitButton {
+  background-color: transparent;
+  color: black;
+}
