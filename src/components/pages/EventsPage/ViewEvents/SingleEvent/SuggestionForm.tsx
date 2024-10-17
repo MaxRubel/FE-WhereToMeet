@@ -76,7 +76,7 @@ export default function SuggestionForm({ event }: props) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button>Add Suggestion</Button>
+        <Button className="secondary-button">Add A Suggestion</Button>
       </DrawerTrigger>
 
       <DrawerContent
