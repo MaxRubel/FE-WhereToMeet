@@ -42,6 +42,8 @@ export default function SuggestionCard({
 
   return (
     <div className={styles.suggestionCardContainer}>
+
+      {/* ----Votes Box---- */}
       <div className={styles.voteBox}>
         {suggestion.votes.length}
         {suggestion.votes.length === 1 ? " vote" : " votes"}
@@ -62,12 +64,7 @@ export default function SuggestionCard({
       </div>
 
       {/* ----Button Box ---- */}
-      <div style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        flexDirection: 'column',
-        gap: ".8em",
-      }}>
+      <div className={styles.buttonBox}>
 
         {!iHaveVoted &&
           <Button onClick={handleVote}
