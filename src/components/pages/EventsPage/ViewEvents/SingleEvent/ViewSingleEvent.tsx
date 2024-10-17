@@ -61,12 +61,13 @@ export default function ViewSingleEvent() {
           </div>
         )}
 
-        {/* ----Add A Suggestion Button---- */}
+        {/* ----Suggestions Container--- */}
         {event.suggestionsEnabled &&
-          <SuggestionForm event={event} />}
-
-        {/* ----Suggestions Container---- */}
-        <SuggestionsContainer event={event} />
+          <>
+            <SuggestionForm event={event} /> {/* Add A Suggestion button lives here*/}
+            <SuggestionsContainer event={event} />
+          </>
+        }
       </div>
     </div>
   );
