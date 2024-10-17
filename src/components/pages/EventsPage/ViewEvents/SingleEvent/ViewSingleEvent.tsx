@@ -30,13 +30,16 @@ export default function ViewSingleEvent() {
 
   return (
     <div className={styles.eventContainer}>
+
       {/* ---Event Name----*/}
       <div>
         <h2>{event.name}</h2>
         <p>{event.time}</p>
 
         {/* ---Description----*/}
-        <p style={{ marginTop: "2em" }}>{event.description}</p>
+        <p style={{ marginTop: "2em" }}>
+          {event.description}
+        </p>
       </div>
 
       <div style={{ marginTop: "3em" }}>
@@ -56,7 +59,8 @@ export default function ViewSingleEvent() {
           </div>
         )}
 
-        {event.suggestionsEnabled && <SuggestionForm event={event} />}
+        {event.suggestionsEnabled &&
+          <SuggestionForm event={event} />}
 
         {/* ----Suggestions Container---- */}
         <SuggestionsContainer event={event} />

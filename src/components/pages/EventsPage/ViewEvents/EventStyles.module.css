@@ -52,9 +52,22 @@
   padding: 2em 1em;
   background-color: white;
   display: grid;
-  grid-template-rows: 1.5fr 6fr 1fr;
+  grid-template-rows: 50px 6fr 1fr;
+  position: relative;
 }
 
 .suggestionnName {
   font-weight: 400;
+}
+
+.voteBox {
+  position: absolute;
+  top: -1em;
+  right: -.2em;
+  z-index: 1;
+  background-color: white;
+  border: 1px solid rgb(237, 237, 237);
+  padding: .3em .8em;
+  border-radius: 18px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
