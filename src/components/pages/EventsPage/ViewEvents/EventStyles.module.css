@@ -22,6 +22,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 1em;
   padding-top: 0em;
+  margin-bottom: 1em;
 }
 
 .headerContainer {
@@ -36,6 +37,11 @@
   display: flex;
   flex-direction: row;
   background-color: red;
+}
+
+.suggestionsHeader {
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 0.5em;
 }
 
 .flexSuggestions {
@@ -64,7 +70,7 @@
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  gap: .8em
+  gap: 0.8em;
 }
 
 .suggestionnName {
@@ -74,11 +80,11 @@
 .voteBox {
   position: absolute;
   top: -1em;
-  right: -.2em;
+  right: -0.2em;
   z-index: 1;
   background-color: white;
   border: 1px solid rgb(237, 237, 237);
-  padding: .3em .8em;
+  padding: 0.3em 0.8em;
   border-radius: 18px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
