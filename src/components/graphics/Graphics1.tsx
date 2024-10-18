@@ -30,10 +30,11 @@ export function EditIcon({ size }: props) {
       height={size}
       fill="currentColor"
       className="bi bi-pen"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
     </svg>
-  )
+  );
 }
 
 export function PartyIcon({ size }: props) {
@@ -53,12 +54,14 @@ export function PartyIcon({ size }: props) {
 
 export function GroupIcon({ size }: props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
       fill="currentColor"
       className="bi bi-people-fill"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
     </svg>
   );
@@ -66,12 +69,14 @@ export function GroupIcon({ size }: props) {
 
 export function CreateGroup({ size }: props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
       fill="currentColor"
       className="bi bi-person-fill-add"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
       <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
     </svg>
@@ -80,40 +85,50 @@ export function CreateGroup({ size }: props) {
 
 export function ViewFolders({ size }: props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
       fill="currentColor"
       className="bi bi-collection"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z" />
     </svg>
-  )
+  );
 }
 
 export function AddSymbol({ size }: props) {
-  return (<svg xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    fill="currentColor"
-    className="bi bi-plus-lg"
-    viewBox="0 0 16 16">
-    <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-  </svg>
-  )
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      fill="currentColor"
+      className="bi bi-plus-lg"
+      viewBox="0 0 16 16"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+      />
+    </svg>
+  );
 }
 
 export function CheckIcon({ size }: props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
       fill="green"
       className="bi bi-check2"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
     </svg>
-  )
+  );
 }
 
 export function UpArrow({ size }: props) {
@@ -124,8 +139,25 @@ export function UpArrow({ size }: props) {
       height={size}
       fill="currentColor"
       className="bi bi-arrow-up-square-fill"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0" />
     </svg>
-  )
+  );
+}
+
+export function CancelButton({ size }: props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      fill="currentColor"
+      className="bi bi-x-square"
+      viewBox="0 0 16 16"
+    >
+      <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+    </svg>
+  );
 }

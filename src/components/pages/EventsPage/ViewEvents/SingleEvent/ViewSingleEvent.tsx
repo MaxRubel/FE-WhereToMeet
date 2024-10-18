@@ -53,8 +53,8 @@ export default function ViewSingleEvent() {
             <div>
               {/* suggestions switch */}
               <div
-                className="flex items-center space-x-2 mb-4"
-                style={{ marginBottom: "3em" }}
+                className="flex items-center space-x-2"
+                style={{ marginBottom: "1em" }}
               >
                 <Switch
                   checked={event.suggestionsEnabled}
