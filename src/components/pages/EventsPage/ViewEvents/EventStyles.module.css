@@ -11,8 +11,8 @@
   min-height: 100vh;
   padding: 3em;
   text-align: left;
-  display: grid;
-  grid-template-columns: 3fr 2fr;
+  /* display: grid; */
+  /* grid-template-columns: 3fr 2fr; */
 }
 
 .suggestionsContainer {
@@ -42,6 +42,8 @@
   display: flex;
   gap: 2em;
   flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
   padding: 2em;
 }
 
@@ -52,7 +54,6 @@
   width: 250px;
   height: 350px;
   padding: 2em 1em;
-  /* background-image: radial-gradient(circle, #380221, #350629, #300b31, #291139, #1f163f, #1b1747, #13194f, #001b57, #001964, #001571, #000e7c, #060087); */
   color: black;
   display: grid;
   grid-template-rows: 50px 6fr 1fr;

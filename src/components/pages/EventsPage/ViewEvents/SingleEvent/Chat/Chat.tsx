@@ -72,17 +72,33 @@ export default function Chat({ eventId }: props) {
       </div>
 
       {/* ----Text Area---- */}
-      <form className={styles.textDiv} onSubmit={handleSendMessage}>
-        <Textarea
-          placeholder="Say something..."
-          onChange={(e) => { setMessage(e.target.value) }}
-        />
-        <Button
-          style={{ display: 'flex', gap: '15px' }}
-        >
-          Submit <UpArrow size="20" />
-        </Button>
-      </form>
+      <div className={styles.formWrapper}>
+        <form
+          className={styles.textDiv}
+          onSubmit={handleSendMessage}>
+          <Textarea
+            placeholder="Say something..."
+            onChange={(e) => { setMessage(e.target.value) }}
+            style={{
+              paddingRight: "80px",
+              height: "7em"
+            }}
+          />
+          <Button
+            style={{
+              display: 'flex',
+              gap: '15px',
+              position: "absolute",
+              top: "50%",
+              transform: "translateY(-50%)",
+              right: "1.5em",
+              height: "55px"
+            }}
+          >
+            <UpArrow size="20" />
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }

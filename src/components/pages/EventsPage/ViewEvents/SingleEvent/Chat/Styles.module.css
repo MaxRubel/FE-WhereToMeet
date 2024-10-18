@@ -1,8 +1,10 @@
 .chatContainer {
-  height: 85vh;
+  min-height: 400px;
+  max-height: 600px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  position: relative;
+  /* justify-content: space-between; */
 }
 
 .chatHeader {
@@ -24,4 +26,11 @@
 .submitButton {
   background-color: transparent;
   color: black;
+}
+
+.formWrapper {
+  position: absolute;
+  width: calc(100% - 2em);
+  left: 1em;
+  bottom: 1em;
 }

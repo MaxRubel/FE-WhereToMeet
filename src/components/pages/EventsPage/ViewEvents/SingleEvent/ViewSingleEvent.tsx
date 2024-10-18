@@ -17,6 +17,7 @@ export default function ViewSingleEvent() {
     return null;
   }
 
+  //React Query
   const { data: event, isLoading, error } = useGetSingleEvent(eventId);
   const updateEvent = useUpdateEvent();
 
@@ -26,8 +27,12 @@ export default function ViewSingleEvent() {
     return null;
   }
 
-  const handleSwitch = (e: boolean) => {
+  const toggleSuggestions = (e: boolean) => {
     updateEvent.mutate({ ...event, suggestionsEnabled: e });
+  };
+
+  const toggleChat = (e: boolean) => {
+    updateEvent.mutate({ ...event, chatEnabled: e });
   };
 
   return (
@@ -46,22 +51,47 @@ export default function ViewSingleEvent() {
         </div>
 
         <div style={{ marginTop: "3em" }}>
-          {/* ----Admin Toggle Switch---- */}
+
+          {/* ----Admin Toggle Switches---- */}
+          {/* only admin creator can toggle switches */}
           {user._id === event.ownerId && (
-            <div className="flex items-center space-x-2 mb-4"
-              style={{ marginBottom: "3em" }}>
-              <Switch
-                checked={event.suggestionsEnabled}
-                onCheckedChange={handleSwitch}
-                id="form-toggle"
-              />
-              <label htmlFor="form-toggle" className="text-sm font-medium">
-                {event.suggestionsEnabled
-                  ? "Disable Suggestions"
-                  : "Enable Suggestions"}
-              </label>
+            <div>
+
+              {/* suggestions switch */}
+              <div className="flex items-center space-x-2 mb-4"
+                style={{ marginBottom: "3em" }}>
+                <Switch
+                  checked={event.suggestionsEnabled}
+                  onCheckedChange={toggleSuggestions}
+                  id="toggle-suggestions"
+                />
+                <label htmlFor="toggle-suggestions" className="text-sm font-medium">
+                  {event.suggestionsEnabled
+                    ? "Disable Suggestions"
+                    : "Enable Suggestions"}
+                </label>
+              </div>
+
+              {/* chat switch */}
+              <div className="flex items-center space-x-2 mb-4"
+                style={{ marginBottom: "3em" }}>
+                <Switch
+                  checked={event.chatEnabled}
+                  onCheckedChange={toggleChat}
+                  id="toggle-suggestions"
+                />
+                <label htmlFor="toggle-suggestions" className="text-sm font-medium">
+                  {event.chatEnabled
+                    ? "Disable Chat"
+                    : "Enable Chat"}
+                </label>
+              </div>
             </div>
           )}
+
+
+          {/* ----Chat Container---- */}
+          {event.chatEnabled && <Chat eventId={eventId} />}
 
           {/* ----Suggestions Container--- */}
           {event.suggestionsEnabled &&
@@ -70,12 +100,12 @@ export default function ViewSingleEvent() {
               <SuggestionsContainer event={event} />
             </>
           }
+
         </div>
       </div>
 
-      <div className="col-2">
-        <Chat eventId={eventId} />
-      </div>
+
+
     </div>
   );
 }

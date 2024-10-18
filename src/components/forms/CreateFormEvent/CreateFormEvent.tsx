@@ -85,7 +85,7 @@ export default function CreateEventForm() {
       name: formFields.name,
       ownerId: user._id,
       suggestionsEnabled: true,
-      votingOpen: true,
+      chatEnabled: false,
       groupId: formFields.groupId,
       location: emptyLocation,
       description: formFields.description,
