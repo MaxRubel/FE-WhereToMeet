@@ -27,12 +27,7 @@ export default function ViewEvents() {
   }, [user._id]);
 
   if (isLoading) {
-    return (
-      // <div>
-      //     <GridLoader />
-      // </div>
-      <></>
-    );
+    return null;
   }
 
   if (err) {

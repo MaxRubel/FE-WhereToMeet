@@ -13,8 +13,8 @@ export type AvatarPayload = {
 };
 
 export type FindUserPayload = {
-  value: string
-}
+  value: string;
+};
 
 export function checkUser(payload: checkUserType) {
   return new Promise((resolve, reject) => {
@@ -104,11 +104,30 @@ export function findUser(searchValue: string) {
     fetch(`${endpoint}/users/find-user/${searchValue}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
       .then((resp) => resp.json())
       .then((data) => resolve(data))
-      .catch((err) => reject(err))
-  })
+      .catch((err) => reject(err));
+  });
+}
+
+type chatUsersPayload = {
+  users: string[];
+};
+
+export function getChatUsers(payload: chatUsersPayload) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users/get-chat-users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resp.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err));
+  });
 }

@@ -1,6 +1,6 @@
 .chatContainer {
-  min-height: 400px;
-  max-height: 600px;
+  min-height: 600px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -9,18 +9,24 @@
 
 .chatHeader {
   border-bottom: 1px solid lightgray;
-  padding-bottom: .5em;
+  padding-bottom: 0.5em;
 }
 
 .messageContainer {
   height: 100%;
+  padding-top: 1em;
+  padding-bottom: 8em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  overflow-y: auto;
 }
 
 .textDiv {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1em
+  gap: 1em;
 }
 
 .submitButton {
@@ -33,4 +39,34 @@
   width: calc(100% - 2em);
   left: 1em;
   bottom: 1em;
+  height: 7em;
+  z-index: 2;
+  background-color: rgb(250, 250, 250, 0.9);
+}
+
+.messageCardContainer {
+  width: 60%;
+  min-width: 300px;
+}
+
+.avatarHeader {
+  display: grid;
+  grid-template-columns: 55px 1fr;
+}
+
+.lilDate {
+  font-size: small;
+  font-weight: 400;
+}
+
+.messageText {
+  margin-top: 0.5em;
+  padding-left: 55px;
+}
+
+.avatarPhoto {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  translate: transformY(-0px);
 }

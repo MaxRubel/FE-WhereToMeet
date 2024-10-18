@@ -1,5 +1,5 @@
 import { Suggestion } from "dataTypes";
-import styles from "./EventStyles.module.css";
+import styles from "../../EventStyles.module.css";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth/auth";
 import { useRemoveSuggestion, useToggleVote } from "@/api/events";

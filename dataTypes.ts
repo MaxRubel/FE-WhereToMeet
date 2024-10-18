@@ -64,7 +64,7 @@ export type Event = {
   ownerId: string; //foreign key
   groupId: string; //foreign key
   suggestionsEnabled: boolean;
-  chatEnabled: boolean
+  chatEnabled: boolean;
   description: string;
   location: Location;
   time: string; // datetime string
@@ -106,13 +106,13 @@ export type Suggestion = {
 };
 
 export type Message = {
-  _id: string; //primary key
-  uid: string;
-  name: string;
-  email: string;
+  id?: string | null; //primary key
+  userId: string;
   message: string;
-  created: string; // datetime string
-  updated: string | null; // datetime string
+  user?: UserDB;
+  eventId: string;
+  created: Date;
+  updated: Date | null; // datetime string
 };
 
 export type vote = {
