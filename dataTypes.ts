@@ -32,6 +32,7 @@ export const emptyUserDB = {
   name: "",
   phone: "",
   email: "",
+  avatarUrl: "",
   address: {
     street: "",
     zip: 0,
@@ -47,7 +48,11 @@ export const emptyUserDB = {
 };
 
 //this is the full user type stored in auth context
-export type UserType = (UserDB & FirebaseUser) | null | "notLoggedIn";
+export type UserType =
+  | null // for loading page
+  | "notLoggedIn" // for not logged in
+  | (UserDB & FirebaseUser) // for logged in
+  | { _id: string }; //for guest
 
 export type Group = {
   _id?: string; //primary key
@@ -63,6 +68,7 @@ export type Event = {
   name: string;
   ownerId: string; //foreign key
   groupId: string; //foreign key
+  private: boolean; //if event is viewable by anyone or just group members
   suggestionsEnabled: boolean;
   chatEnabled: boolean;
   description: string;

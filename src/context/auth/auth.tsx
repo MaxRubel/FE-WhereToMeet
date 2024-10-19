@@ -9,12 +9,16 @@ import {
 } from "react";
 
 import { checkUser } from "../../api/users";
-import type { UserType } from "../../../dataTypes"
+import { UserType } from "dataTypes";
 
 type AuthContextType = {
   user: any;
   setUser: Dispatch<SetStateAction<any>>;
   checkUserFunc: () => void;
+  isPublicRoute: boolean;
+  setIsPublicRoute: Dispatch<SetStateAction<boolean>>;
+  isGuest: boolean;
+  setIsGuest: Dispatch<SetStateAction<boolean>>;
 };
 
 type AuthContextProviderProps = {
@@ -23,19 +27,33 @@ type AuthContextProviderProps = {
 
 const authContext = createContext<AuthContextType>({
   user: null,
-  setUser: () => { },
-  checkUserFunc: () => { },
+  setUser: () => {},
+  checkUserFunc: () => {},
+  isPublicRoute: false,
+  setIsPublicRoute: () => {},
+  isGuest: false,
+  setIsGuest: () => {},
 });
 
 export default function AuthContextProvider({
   children,
 }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserType>(null);
-  const [checkUserCount, setCheckUserCount] = useState(0)
+  const [checkUserCount, setCheckUserCount] = useState(0);
+  const [isPublicRoute, setIsPublicRoute] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const params = urlParams.get("guest");
+
+    if (params === "true") setIsGuest(true);
+  }, []);
 
   const checkUserFunc = () => {
-    setCheckUserCount((preVal) => preVal + 1)
-  }
+    setCheckUserCount((preVal) => preVal + 1);
+  };
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -48,7 +66,7 @@ export default function AuthContextProvider({
       checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
           if (resp.userExists) {
-            const storeUser = { ...parsedUser, ...resp.user, };
+            const storeUser = { ...parsedUser, ...resp.user };
             setUser(storeUser);
             localStorage.setItem("user", JSON.stringify(storeUser));
           }
@@ -61,13 +79,25 @@ export default function AuthContextProvider({
         });
 
       // no local storage item found:
-    } else {
+    } else if (!isGuest) {
       setUser("notLoggedIn");
+    } else if (isGuest) {
+      setUser({ _id: "guest" });
     }
   }, [checkUserCount]);
 
   return (
-    <authContext.Provider value={{ user, setUser, checkUserFunc }}>
+    <authContext.Provider
+      value={{
+        user,
+        setUser,
+        checkUserFunc,
+        isPublicRoute,
+        setIsPublicRoute,
+        isGuest,
+        setIsGuest,
+      }}
+    >
       {children}
     </authContext.Provider>
   );
@@ -76,4 +106,22 @@ export default function AuthContextProvider({
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(authContext);
+}
+
+export function usePublicRoute(privateData: boolean) {
+  const { setIsPublicRoute, setIsGuest } = useAuth();
+
+  useEffect(() => {
+    if (privateData) {
+      setIsPublicRoute(false);
+      setIsGuest(false);
+    } else {
+      setIsPublicRoute(true);
+      setIsGuest(true);
+    }
+    return () => {
+      setIsGuest(false);
+      setIsPublicRoute(false);
+    };
+  }, [privateData]);
 }

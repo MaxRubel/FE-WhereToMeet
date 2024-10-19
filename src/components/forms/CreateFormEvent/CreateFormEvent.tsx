@@ -19,26 +19,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Location } from "dataTypes";
 import { getUserGroups } from "@/api/groups";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import "./EventForm.css";
-
-const emptyLocation: Location = {
-  name: "",
-  url: "",
-  address: {
-    street: "",
-    zipcode: 0,
-    coordinates: {
-      lat: 0,
-      long: 0,
-    },
-  },
-};
 
 interface CreateEventFormProps {
   isModal?: boolean;
@@ -51,9 +42,9 @@ interface CreateEventFormProps {
 export default function CreateEventForm({
   isModal = false,
   isOpen = false,
-  onClose, 
+  onClose,
   event,
-  onUpdate
+  onUpdate,
 }: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -130,6 +121,7 @@ export default function CreateEventForm({
       suggestionsEnabled: event?.suggestionsEnabled ?? true,
       chatEnabled: event?.chatEnabled ?? false,
       groupId: formFields.groupId,
+      private: false,
       location: {
         name: formFields.locationName,
         url: formFields.locationUrl,
@@ -169,16 +161,15 @@ export default function CreateEventForm({
   };
 
   const formContent = (
-    <form 
-      onSubmit={handleSubmit} 
-      className={cn(
-        !isModal && "create-event-form",
-        isModal && "modal-form"
-      )}
+    <form
+      onSubmit={handleSubmit}
+      className={cn(!isModal && "create-event-form", isModal && "modal-form")}
       style={!isModal ? { marginTop: "2em" } : undefined}
     >
       <div className="form-group">
-        <Label htmlFor="name" className="form-label">Name</Label>
+        <Label htmlFor="name" className="form-label">
+          Name
+        </Label>
         <Input
           id="name"
           name="name"
@@ -192,7 +183,9 @@ export default function CreateEventForm({
       </div>
 
       <div className="form-group">
-        <Label htmlFor="groupId" className="form-label">Group</Label>
+        <Label htmlFor="groupId" className="form-label">
+          Group
+        </Label>
         <Select
           name="groupId"
           value={formFields.groupId}
@@ -214,7 +207,9 @@ export default function CreateEventForm({
       </div>
 
       <div className="form-group">
-        <Label htmlFor="description" className="form-label">Description</Label>
+        <Label htmlFor="description" className="form-label">
+          Description
+        </Label>
         <Textarea
           id="description"
           name="description"
@@ -230,7 +225,10 @@ export default function CreateEventForm({
         <Label className="form-label">Date</Label>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className={cn("form-input justify-start text-left font-normal")}>
+            <Button
+              variant="outline"
+              className={cn("form-input justify-start text-left font-normal")}
+            >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {date ? format(date, "PPP") : <span>Pick a date</span>}
             </Button>
@@ -247,7 +245,9 @@ export default function CreateEventForm({
       </div>
 
       <div className="form-group">
-        <Label htmlFor="time" className="form-label">Time</Label>
+        <Label htmlFor="time" className="form-label">
+          Time
+        </Label>
         <Input
           type="time"
           name="time"
@@ -259,7 +259,9 @@ export default function CreateEventForm({
 
       <Label className="form-label">Location</Label>
       <div className="form-group">
-        <Label htmlFor="locationName" className="form-label">Name</Label>
+        <Label htmlFor="locationName" className="form-label">
+          Name
+        </Label>
         <Input
           type="text"
           name="locationName"
@@ -269,7 +271,9 @@ export default function CreateEventForm({
         />
       </div>
       <div className="form-group">
-        <Label htmlFor="locationUrl" className="form-label">Website</Label>
+        <Label htmlFor="locationUrl" className="form-label">
+          Website
+        </Label>
         <Input
           type="url"
           name="locationUrl"
@@ -279,7 +283,9 @@ export default function CreateEventForm({
         />
       </div>
       <div className="form-group">
-        <Label htmlFor="locationStreet" className="form-label">Street</Label>
+        <Label htmlFor="locationStreet" className="form-label">
+          Street
+        </Label>
         <Input
           type="text"
           name="locationStreet"
@@ -289,7 +295,9 @@ export default function CreateEventForm({
         />
       </div>
       <div className="form-group">
-        <Label htmlFor="locationZipcode" className="form-label">Zipcode</Label>
+        <Label htmlFor="locationZipcode" className="form-label">
+          Zipcode
+        </Label>
         <Input
           type="number"
           name="locationZipcode"
@@ -299,7 +307,9 @@ export default function CreateEventForm({
         />
       </div>
       <div className="form-group">
-        <Label htmlFor="locationLat" className="form-label">Latitude</Label>
+        <Label htmlFor="locationLat" className="form-label">
+          Latitude
+        </Label>
         <Input
           type="number"
           name="locationLat"
@@ -309,7 +319,9 @@ export default function CreateEventForm({
         />
       </div>
       <div className="form-group">
-        <Label htmlFor="locationLong" className="form-label">Longitude</Label>
+        <Label htmlFor="locationLong" className="form-label">
+          Longitude
+        </Label>
         <Input
           type="number"
           name="locationLong"
@@ -319,10 +331,7 @@ export default function CreateEventForm({
         />
       </div>
 
-      <Button 
-        type="submit"
-        style={{ marginTop: "1em" }}
-      >
+      <Button type="submit" style={{ marginTop: "1em" }}>
         {event ? "Update Event" : "Create Event"}
       </Button>
     </form>
