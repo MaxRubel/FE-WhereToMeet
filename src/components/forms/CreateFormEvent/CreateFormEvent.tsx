@@ -23,6 +23,8 @@ import { getUserGroups } from "@/api/groups";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import "./EventForm.css";
 
 const emptyLocation = {
   name: "",
@@ -38,11 +40,25 @@ const emptyLocation = {
   votes: [],
 };
 
-export default function CreateEventForm() {
+interface CreateEventFormProps {
+  isModal?: boolean;
+  isOpen?: boolean;
+  onClose?: () => void;
+  event?: any;
+  onUpdate?: (eventData: any) => void;
+}
+
+export default function CreateEventForm({
+  isModal = false,
+  isOpen = false,
+  onClose, 
+  event,
+  onUpdate
+}: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
-  const [time, setTime] = useState<string>(""); // New state for time
+  const [time, setTime] = useState<string>("");
   const [groups, setGroups] = useState<any[]>([]);
   const [formFields, setFormFields] = useState({
     name: "",
@@ -51,6 +67,21 @@ export default function CreateEventForm() {
     suggestions: [],
     messages: [],
   });
+
+  useEffect(() => {
+    if (event) {
+      const eventTime = event.time ? new Date(event.time) : undefined;
+      setDate(eventTime);
+      setTime(eventTime ? format(eventTime, "HH:mm") : "");
+      setFormFields({
+        name: event.name || "",
+        groupId: event.groupId || "",
+        description: event.description || "",
+        suggestions: event.suggestions || [],
+        messages: event.messages || [],
+      });
+    }
+  }, [event]);
 
   useEffect(() => {
     getUserGroups(user._id)
@@ -79,62 +110,66 @@ export default function CreateEventForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : ""; // Combine date and time
+    const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : "";
     const payload = {
-      _id: "",
+      _id: event?._id || "",
       name: formFields.name,
-      ownerId: user._id,
-      suggestionsEnabled: true,
-      chatEnabled: false,
+      ownerId: event?.ownerId || user._id,
+      suggestionsEnabled: event?.suggestionsEnabled ?? true,
+      chatEnabled: event?.chatEnabled ?? false,
       groupId: formFields.groupId,
-      location: emptyLocation,
+      location: event?.location || emptyLocation,
       description: formFields.description,
       time: formattedDate,
-      suggestions: [],
-      messages: [],
-      address: {
+      suggestions: formFields.suggestions,
+      messages: formFields.messages,
+      address: event?.address || {
         street: "",
         city: "",
         zip: "",
       },
     };
 
-    type response = {
-      _id: string;
-    };
+    if (isModal && onUpdate) {
+      onUpdate(payload);
+      onClose?.();
+    } else {
+      type response = {
+        _id: string;
+      };
 
-    createEvent(payload).then((resp) => {
-      const typedresp = resp as response;
-      navigate(`/events/${typedresp._id}`);
-    });
+      createEvent(payload).then((resp) => {
+        const typedresp = resp as response;
+        navigate(`/events/${typedresp._id}`);
+      });
+    }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-left">Create An Event</h2>
-      <div className="form-group" style={{ marginTop: "2em" }}>
-        {/* Event Name */}
-        <Label htmlFor="name" className="form-label">
-          Name
-        </Label>
+  const formContent = (
+    <form 
+      onSubmit={handleSubmit} 
+      className={cn(
+        !isModal && "create-event-form",
+        isModal && "modal-form"
+      )}
+      style={!isModal ? { marginTop: "2em" } : undefined}
+    >
+      <div className="form-group">
+        <Label htmlFor="name" className="form-label">Name</Label>
         <Input
-          type="text"
-          placeholder="Add the name of the event"
+          id="name"
           name="name"
           value={formFields.name}
           onChange={handleChange}
+          placeholder="Birthday Party"
+          className="form-input"
+          required
+          aria-required="true"
         />
+      </div>
 
-        {/* Group Selection */}
-        <Label
-          htmlFor="groupId"
-          className="form-label"
-          style={{ marginTop: "2em" }}
-        >
-          {" "}
-          {/* Added margin for spacing */}
-          Group
-        </Label>
+      <div className="form-group">
+        <Label htmlFor="groupId" className="form-label">Group</Label>
         <Select
           name="groupId"
           value={formFields.groupId}
@@ -142,7 +177,7 @@ export default function CreateEventForm() {
             setFormFields((prevFields) => ({ ...prevFields, groupId: value }))
           }
         >
-          <SelectTrigger className="form-select w-full">
+          <SelectTrigger className="form-input">
             <SelectValue placeholder="Select a group" />
           </SelectTrigger>
           <SelectContent>
@@ -153,76 +188,80 @@ export default function CreateEventForm() {
             ))}
           </SelectContent>
         </Select>
+      </div>
 
-        {/* Event Description */}
-        <Label
-          htmlFor="description"
-          className="form-label mt-4"
-          style={{ marginTop: "2em" }}
-        >
-          Description
-        </Label>
+      <div className="form-group">
+        <Label htmlFor="description" className="form-label">Description</Label>
         <Textarea
           id="description"
           name="description"
           value={formFields.description}
           onChange={handleChange}
-          className="h-20 text-left mt-2 w-full"
-          required
-          aria-required="true"
-          placeholder="Add the description"
+          placeholder="Join us for a celebration!"
+          className="form-input"
+          aria-required="false"
         />
+      </div>
 
-        {/* Date Picker */}
-        <div className="form-label" style={{ marginTop: "2em" }}>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal mt-4"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4 text-black" />
-                {date ? (
-                  format(date, "PPP")
-                ) : (
-                  <span className="text-black">Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 text-black" align="start">
-              <div className="bg-white rounded-lg shadow-lg p-4">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+      <div className="form-group">
+        <Label className="form-label">Date</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className={cn("form-input justify-start text-left font-normal")}>
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
 
-        {/* Time Picker */}
-        <Label htmlFor="time" className="form-label mt-4">
-          Select Time:
-        </Label>
+      <div className="form-group">
+        <Label htmlFor="time" className="form-label">Time</Label>
         <Input
           type="time"
           name="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          className="form-input text-left w-48"
-          placeholder="Hours:Minutes:Seconds"
+          className="form-input w-[240px]"
         />
       </div>
 
-      <div className="form-label">
-        <Button type="submit" className="mt-6">
-          Create
-        </Button>
-      </div>
+      <Button 
+        type="submit"
+        style={{ marginTop: "1em" }}
+      >
+        {event ? "Update Event" : "Create Event"}
+      </Button>
     </form>
+  );
+
+  if (isModal) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Update Event</DialogTitle>
+          </DialogHeader>
+          {formContent}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <div className="create-event-form-container">
+      <h2 className="text-left" style={{ fontWeight: "300" }}>
+        Create an Event
+      </h2>
+      {formContent}
+    </div>
   );
 }
