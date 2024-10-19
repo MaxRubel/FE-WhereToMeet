@@ -1,9 +1,13 @@
-import { useDeleteEvent, useGetSingleEvent, useUpdateEvent } from "@/api/events";
+import {
+  useDeleteEvent,
+  useGetSingleEvent,
+  useUpdateEvent,
+} from "@/api/events";
 import styles from "../EventStyles.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import SuggestionsContainer from "./Suggestions/SuggestionsContainer";
 import SuggestionForm from "./Suggestions/SuggestionForm";
-import { useAuth } from "@/context/auth/auth";
+import { useAuth, usePublicRoute } from "@/context/auth/auth";
 import { Switch } from "@/components/ui/switch";
 import Chat from "./Chat/Chat";
 import { Button } from "@/components/ui/button";
@@ -26,7 +30,6 @@ export default function ViewSingleEvent() {
   const navigate = useNavigate();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-
   if (!eventId) {
     console.error("no event id");
     return null;
@@ -35,10 +38,9 @@ export default function ViewSingleEvent() {
   //React Query
   const { data: event, isLoading, setIsEnabled } = useGetSingleEvent(eventId);
   const updateEvent = useUpdateEvent();
-
   const delEventMutation = useDeleteEvent(eventId);
 
-  // if (error) return <div>Error: {error.message}</div>;
+  usePublicRoute(event?.private);
 
   if (isLoading || !event) {
     return null;
@@ -67,6 +69,10 @@ export default function ViewSingleEvent() {
     });
   };
 
+  const togglePrivate = (e: boolean) => {
+    updateEvent.mutate({ ...event, private: e });
+  };
+
   const toggleSuggestions = (e: boolean) => {
     updateEvent.mutate({ ...event, suggestionsEnabled: e });
   };
@@ -80,62 +86,75 @@ export default function ViewSingleEvent() {
       <div className="col1">
         {/* Event Title Section */}
         {user._id === event.ownerId ? (
-            <div className="flex items-start justify-between">
-              <div>
-                <Button 
-                  className="empty-button text-left" 
-                  onClick={() => setIsUpdateModalOpen(true)}
-                >
-                  <h2 className="text-xl font-bold">{event.name}</h2>
-                  <EditIcon size={"20"} />
-                </Button>
-                <p className="text-gray-600">{event.time}</p>
-                <p className="mt-4">{event.description}</p>
-              </div>
-              
-              {/* Delete Button */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="destructive" className="mt-2">
-                    Delete Event
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader className="text-left">
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete your
-                      event.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="text-left flex gap-4">
-                    <Button
-                      variant="destructive"
-                      onClick={handleDeleteEvent}
-                    >
-                      Yes, Delete
-                    </Button>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          ) : (
+          <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-bold">{event.name}</h2>
+              <Button
+                className="empty-button text-left"
+                onClick={() => setIsUpdateModalOpen(true)}
+              >
+                <h2 className="text-xl font-bold">{event.name}</h2>
+                <EditIcon size={"20"} />
+              </Button>
               <p className="text-gray-600">{event.time}</p>
               <p className="mt-4">{event.description}</p>
             </div>
-          )}
+
+            {/* Delete Button */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="destructive" className="mt-2">
+                  Delete Event
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader className="text-left">
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your event.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="text-left flex gap-4">
+                  <Button variant="destructive" onClick={handleDeleteEvent}>
+                    Yes, Delete
+                  </Button>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-xl font-bold">{event.name}</h2>
+            <p className="text-gray-600">{event.time}</p>
+            <p className="mt-4">{event.description}</p>
+          </div>
+        )}
 
         <div style={{ marginTop: "3em" }}>
           {/* ----Admin Toggle Switches---- */}
           {/* only admin creator can toggle switches */}
+
+          {/* ---private event switch--- */}
           {user._id === event.ownerId && (
             <div>
-              {/* suggestions switch */}
+              <div
+                className="flex items-center space-x-2"
+                style={{ marginBottom: "1em" }}
+              >
+                <Switch
+                  checked={event.private}
+                  onCheckedChange={togglePrivate}
+                  id="toggle-private"
+                />
+                <label htmlFor="toggle-private" className="text-sm font-medium">
+                  Private Event
+                </label>
+              </div>
+
+              {/* ---suggestions switch--- */}
               <div
                 className="flex items-center space-x-2"
                 style={{ marginBottom: "1em" }}
@@ -143,12 +162,9 @@ export default function ViewSingleEvent() {
                 <Switch
                   checked={event.suggestionsEnabled}
                   onCheckedChange={toggleSuggestions}
-                  id="toggle-suggestions"
+                  id="toggle-private"
                 />
-                <label
-                  htmlFor="toggle-suggestions"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="toggle-private" className="text-sm font-medium">
                   {event.suggestionsEnabled
                     ? "Disable Suggestions"
                     : "Enable Suggestions"}
@@ -163,12 +179,9 @@ export default function ViewSingleEvent() {
                 <Switch
                   checked={event.chatEnabled}
                   onCheckedChange={toggleChat}
-                  id="toggle-suggestions"
+                  id="toggle-chat"
                 />
-                <label
-                  htmlFor="toggle-suggestions"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="toggle-chat" className="text-sm font-medium">
                   {event.chatEnabled ? "Disable Chat" : "Enable Chat"}
                 </label>
               </div>
