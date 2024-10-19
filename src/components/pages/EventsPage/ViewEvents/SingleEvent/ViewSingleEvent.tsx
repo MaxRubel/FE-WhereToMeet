@@ -1,15 +1,27 @@
-import { useGetSingleEvent, useUpdateEvent } from "@/api/events";
+import { useDeleteEvent, useGetSingleEvent, useUpdateEvent } from "@/api/events";
 import styles from "../EventStyles.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SuggestionsContainer from "./Suggestions/SuggestionsContainer";
 import SuggestionForm from "./Suggestions/SuggestionForm";
 import { useAuth } from "@/context/auth/auth";
 import { Switch } from "@/components/ui/switch";
 import Chat from "./Chat/Chat";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+
 
 export default function ViewSingleEvent() {
   const { user } = useAuth();
   const { eventId } = useParams();
+  const navigate = useNavigate();
 
   if (!eventId) {
     console.error("no event id");
@@ -17,14 +29,28 @@ export default function ViewSingleEvent() {
   }
 
   //React Query
-  const { data: event, isLoading, error } = useGetSingleEvent(eventId);
+  const { data: event, isLoading, setIsEnabled } = useGetSingleEvent(eventId);
   const updateEvent = useUpdateEvent();
 
-  if (error) return <div>Error: {error.message}</div>;
+  const delEventMutation = useDeleteEvent(eventId);
+
+  // if (error) return <div>Error: {error.message}</div>;
 
   if (isLoading || !event) {
     return null;
   }
+
+  const handleDeleteEvent = () => {
+    setIsEnabled(false);
+    delEventMutation.mutate(eventId, {
+      onSuccess: () => {
+        navigate("/events");
+      },
+      onError: (error) => {
+        console.error("Failed to delete event:", error);
+      },
+    });
+  };
 
   const toggleSuggestions = (e: boolean) => {
     updateEvent.mutate({ ...event, suggestionsEnabled: e });
@@ -45,6 +71,36 @@ export default function ViewSingleEvent() {
           {/* ---Description----*/}
           <p style={{ marginTop: "2em" }}>{event.description}</p>
         </div>
+        {user._id === event.ownerId && (
+          <div>
+            {/* ----DELETE BUTTON---- */}
+            <Dialog>
+              <DialogTrigger style={{ marginTop: "6em" }} asChild>
+                <Button className="deleteButton">Delete This Event</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader className="text-left">
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete your
+                    event.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="text-left flex gap-4">
+                  <Button
+                    style={{ backgroundColor: "red" }}
+                    onClick={handleDeleteEvent}
+                  >
+                    Yes, Delete
+                  </Button>
+                  <DialogClose asChild>
+                    <Button className="secondary-button">Cancel</Button>
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
 
         <div style={{ marginTop: "3em" }}>
           {/* ----Admin Toggle Switches---- */}
