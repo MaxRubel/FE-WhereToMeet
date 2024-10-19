@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { Location } from "dataTypes";
 import { getUserGroups } from "@/api/groups";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "@/api/events";
@@ -26,7 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import "./EventForm.css";
 
-const emptyLocation = {
+const emptyLocation: Location = {
   name: "",
   url: "",
   address: {
@@ -37,7 +38,6 @@ const emptyLocation = {
       long: 0,
     },
   },
-  votes: [],
 };
 
 interface CreateEventFormProps {
@@ -66,6 +66,12 @@ export default function CreateEventForm({
     description: "",
     suggestions: [],
     messages: [],
+    locationName: "",
+    locationUrl: "",
+    locationStreet: "",
+    locationZipcode: 0,
+    locationLat: 0,
+    locationLong: 0,
   });
 
   useEffect(() => {
@@ -79,6 +85,12 @@ export default function CreateEventForm({
         description: event.description || "",
         suggestions: event.suggestions || [],
         messages: event.messages || [],
+        locationName: event.location?.name || "",
+        locationUrl: event.location?.url || "",
+        locationStreet: event.location?.address.street || "",
+        locationZipcode: event.location?.address.zipcode || 0,
+        locationLat: event.location?.address.coordinates.lat || 0,
+        locationLong: event.location?.address.coordinates.long || 0,
       });
     }
   }, [event]);
@@ -118,7 +130,18 @@ export default function CreateEventForm({
       suggestionsEnabled: event?.suggestionsEnabled ?? true,
       chatEnabled: event?.chatEnabled ?? false,
       groupId: formFields.groupId,
-      location: event?.location || emptyLocation,
+      location: {
+        name: formFields.locationName,
+        url: formFields.locationUrl,
+        address: {
+          street: formFields.locationStreet,
+          zipcode: formFields.locationZipcode,
+          coordinates: {
+            lat: formFields.locationLat,
+            long: formFields.locationLong,
+          },
+        },
+      },
       description: formFields.description,
       time: formattedDate,
       suggestions: formFields.suggestions,
@@ -231,6 +254,68 @@ export default function CreateEventForm({
           value={time}
           onChange={(e) => setTime(e.target.value)}
           className="form-input w-[240px]"
+        />
+      </div>
+
+      <Label className="form-label">Location</Label>
+      <div className="form-group">
+        <Label htmlFor="locationName" className="form-label">Name</Label>
+        <Input
+          type="text"
+          name="locationName"
+          value={formFields.locationName}
+          onChange={handleChange}
+          className="form-input"
+        />
+      </div>
+      <div className="form-group">
+        <Label htmlFor="locationUrl" className="form-label">Website</Label>
+        <Input
+          type="url"
+          name="locationUrl"
+          value={formFields.locationUrl}
+          onChange={handleChange}
+          className="form-input"
+        />
+      </div>
+      <div className="form-group">
+        <Label htmlFor="locationStreet" className="form-label">Street</Label>
+        <Input
+          type="text"
+          name="locationStreet"
+          value={formFields.locationStreet}
+          onChange={handleChange}
+          className="form-input"
+        />
+      </div>
+      <div className="form-group">
+        <Label htmlFor="locationZipcode" className="form-label">Zipcode</Label>
+        <Input
+          type="number"
+          name="locationZipcode"
+          value={formFields.locationZipcode}
+          onChange={handleChange}
+          className="form-input"
+        />
+      </div>
+      <div className="form-group">
+        <Label htmlFor="locationLat" className="form-label">Latitude</Label>
+        <Input
+          type="number"
+          name="locationLat"
+          value={formFields.locationLat}
+          onChange={handleChange}
+          className="form-input"
+        />
+      </div>
+      <div className="form-group">
+        <Label htmlFor="locationLong" className="form-label">Longitude</Label>
+        <Input
+          type="number"
+          name="locationLong"
+          value={formFields.locationLong}
+          onChange={handleChange}
+          className="form-input"
         />
       </div>
 
