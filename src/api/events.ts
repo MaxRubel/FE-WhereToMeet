@@ -1,9 +1,9 @@
 import { Event, Suggestion} from "dataTypes";
+import { useState } from "react";
 import {
   useMutation,
   useQuery,
   useQueryClient,
-  UseQueryResult,
 } from "react-query";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
@@ -77,28 +77,51 @@ export function getSingleEvent(eventId: string) {
 }
 
 //  Get Single Event
-export function useGetSingleEvent(
-  eventId: string
-): UseQueryResult<Event, Error> {
-  return useQuery<Event, Error>({
-    queryKey: ["events", eventId],
-    queryFn: async () => {
-      const response = await fetch(`${endpoint}/events/${eventId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+export function useGetSingleEvent(id: string) {
+    const [isEnabled, setIsEnabled] = useState(true);
+
+    const query = useQuery({
+        enabled: !!id && isEnabled,
+        queryKey: ["events", id],
+
+        queryFn: async () => {
+          const response = await fetch(`${endpoint}/events/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        
+          const data = await response.json();
+          return data;
         },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      return response.json();
-    },
-    enabled: !!eventId,
-  });
+    });
+    return { ...query, setIsEnabled};
 }
+
+export function useDeleteEvent(id: string) {
+    const queryClient = useQueryClient();
+  
+    return useMutation(
+      async (id: string) => {
+        fetch(`${endpoint}/events/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((response) => response.json());
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["events", id]);
+        },
+      }
+    );
+  }
 
 //  Add Suggestion To Event
 export function useAddSuggestion() {
