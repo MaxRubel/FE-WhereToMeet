@@ -16,12 +16,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
-
+import { useState } from "react";
+import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
+import { EditIcon } from "@/components/graphics/Graphics1";
 
 export default function ViewSingleEvent() {
   const { user } = useAuth();
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
 
   if (!eventId) {
     console.error("no event id");
@@ -52,6 +56,17 @@ export default function ViewSingleEvent() {
     });
   };
 
+  const handleUpdateEvent = (eventData: any) => {
+    updateEvent.mutate(eventData, {
+      onSuccess: () => {
+        setIsUpdateModalOpen(false);
+      },
+      onError: (error) => {
+        console.error("Failed to update your event", error);
+      },
+    });
+  };
+
   const toggleSuggestions = (e: boolean) => {
     updateEvent.mutate({ ...event, suggestionsEnabled: e });
   };
@@ -63,44 +78,57 @@ export default function ViewSingleEvent() {
   return (
     <div className={styles.eventContainer}>
       <div className="col1">
-        {/* ---Event Name----*/}
-        <div>
-          <h2>{event.name}</h2>
-          <p>{event.time}</p>
-
-          {/* ---Description----*/}
-          <p style={{ marginTop: "2em" }}>{event.description}</p>
-        </div>
-        {user._id === event.ownerId && (
-          <div>
-            {/* ----DELETE BUTTON---- */}
-            <Dialog>
-              <DialogTrigger style={{ marginTop: "6em" }} asChild>
-                <Button className="deleteButton">Delete This Event</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader className="text-left">
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete your
-                    event.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="text-left flex gap-4">
-                  <Button
-                    style={{ backgroundColor: "red" }}
-                    onClick={handleDeleteEvent}
-                  >
-                    Yes, Delete
+        {/* Event Title Section */}
+        {user._id === event.ownerId ? (
+            <div className="flex items-start justify-between">
+              <div>
+                <Button 
+                  className="empty-button text-left" 
+                  onClick={() => setIsUpdateModalOpen(true)}
+                >
+                  <h2 className="text-xl font-bold">{event.name}</h2>
+                  <EditIcon size={"20"} />
+                </Button>
+                <p className="text-gray-600">{event.time}</p>
+                <p className="mt-4">{event.description}</p>
+              </div>
+              
+              {/* Delete Button */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive" className="mt-2">
+                    Delete Event
                   </Button>
-                  <DialogClose asChild>
-                    <Button className="secondary-button">Cancel</Button>
-                  </DialogClose>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="text-left">
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete your
+                      event.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="text-left flex gap-4">
+                    <Button
+                      variant="destructive"
+                      onClick={handleDeleteEvent}
+                    >
+                      Yes, Delete
+                    </Button>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-xl font-bold">{event.name}</h2>
+              <p className="text-gray-600">{event.time}</p>
+              <p className="mt-4">{event.description}</p>
+            </div>
+          )}
 
         <div style={{ marginTop: "3em" }}>
           {/* ----Admin Toggle Switches---- */}
@@ -146,6 +174,15 @@ export default function ViewSingleEvent() {
               </div>
             </div>
           )}
+
+          {/* Update Event Modal */}
+          <CreateEventForm
+            isModal={true}
+            isOpen={isUpdateModalOpen}
+            onClose={() => setIsUpdateModalOpen(false)}
+            event={event}
+            onUpdate={handleUpdateEvent}
+          />
 
           {/* ----Suggestions Container--- */}
           {event.suggestionsEnabled && (
