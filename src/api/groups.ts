@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Group } from "dataTypes";
-import { useAuth } from "@/context/auth/auth";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -47,7 +46,7 @@ export function useGetUserGroups(userId: string) {
   }
 
   return useQuery<Group[], Error>({
-    queryKey: ["groups", userId],
+    queryKey: ["groups"],
     queryFn,
     enabled: !!userId,
   });
@@ -56,7 +55,6 @@ export function useGetUserGroups(userId: string) {
 // Create Group
 export function useCreateGroup() {
   const queryClient = useQueryClient();
-  const { user } = useAuth()
 
   return useMutation<Group, Error, Group>({
     mutationFn: async (payload) => {
@@ -76,7 +74,7 @@ export function useCreateGroup() {
 }
 
 // Update Group
-export function useUpdateGroup(userId: string) {
+export function useUpdateGroup() {
   const queryClient = useQueryClient();
 
   return useMutation<Group, Error, { payload: any; id: string }>({
@@ -100,7 +98,6 @@ export function useUpdateGroup(userId: string) {
 // Delete Group
 export function useDeleteGroup() {
   const queryClient = useQueryClient();
-  const { user } = useAuth()
 
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
@@ -121,7 +118,6 @@ export function useDeleteGroup() {
 // Add Member to Group
 export function useAddUserToGroup() {
   const queryClient = useQueryClient();
-  const { user } = useAuth()
   return useMutation<Group, Error, AddUserPayload>({
     mutationFn: async (payload) => {
       const response = await fetch(`${endpoint}/groups/add-member`, {
@@ -143,7 +139,6 @@ export function useAddUserToGroup() {
 // Remove User From Group
 export function useRemoveGroupMember() {
   const queryClient = useQueryClient();
-  const { user } = useAuth()
 
   return useMutation<Group, Error, AddUserPayload>({
     mutationFn: async (payload) => {

@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createEvent } from "@/api/events";
+import { useCreateEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
@@ -63,6 +63,8 @@ export default function CreateEventForm({
     locationLat: 0,
     locationLong: 0,
   });
+
+  const createEvent = useCreateEvent()
 
   useEffect(() => {
     if (event) {
@@ -143,10 +145,12 @@ export default function CreateEventForm({
         _id: string;
       };
 
-      createEvent(payload).then((resp) => {
-        const typedresp = resp as response;
-        navigate(`/events/${typedresp._id}`);
-      });
+      createEvent.mutate(payload, {
+        onSuccess: (resp) => {
+          const typedresp = resp as response;
+          navigate(`/events/${typedresp._id}`);
+        }
+      })
     }
   };
 

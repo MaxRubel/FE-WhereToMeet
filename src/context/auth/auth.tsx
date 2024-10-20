@@ -45,7 +45,7 @@ export default function AuthContextProvider({
   const [checkUserCount, setCheckUserCount] = useState(0);
   const [isPublicRoute, setIsPublicRoute] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
-  console.log('rerender')
+
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -86,7 +86,6 @@ export default function AuthContextProvider({
     } else if (isGuest) {
       setUser({ _id: "guest" });
     }
-
   }, [checkUserCount, isGuest]);
 
   const memoizedContextValue = useMemo(() => ({
@@ -97,7 +96,7 @@ export default function AuthContextProvider({
     setIsPublicRoute,
     isGuest,
     setIsGuest,
-  }), [user, checkUserFunc, isPublicRoute, isGuest]);
+  }), [user, isPublicRoute, isGuest]);
 
   return (
     <authContext.Provider
@@ -122,7 +121,6 @@ export function usePublicRoute(privateData: boolean) {
       setIsGuest(false);
     } else {
       setIsPublicRoute(true);
-      setIsGuest(true);
     }
     return () => {
       setIsGuest(false);

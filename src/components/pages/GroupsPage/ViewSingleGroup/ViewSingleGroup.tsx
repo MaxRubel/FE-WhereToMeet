@@ -182,7 +182,7 @@ export default function ViewSingleGroup() {
           <DialogTrigger style={{ marginTop: "6em" }} asChild>
             <Button className="deleteButton">Delete This Group</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent aria-describedby="dialog-content">
             <DialogHeader className="text-left">
               <DialogTitle>Are you absolutely sure?</DialogTitle>
               <DialogDescription>

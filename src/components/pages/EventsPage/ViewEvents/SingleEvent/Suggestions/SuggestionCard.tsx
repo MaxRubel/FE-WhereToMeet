@@ -2,7 +2,7 @@ import { Suggestion } from "dataTypes";
 import styles from "../../EventStyles.module.css";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth/auth";
-import { useRemoveSuggestion, useToggleVote } from "@/api/events";
+import { useToggleVote, useRemoveSuggestion } from "@/api/events";
 import type { RemoveSuggestionPayload } from "@/api/events";
 
 type props = {
@@ -10,13 +10,12 @@ type props = {
   iHaveVoted: boolean
 };
 
-export default function SuggestionCard({
-  suggestion, iHaveVoted }: props) {
+export default function SuggestionCard({ suggestion, iHaveVoted }: props) {
   const { user } = useAuth();
   const removeSuggestion = useRemoveSuggestion();
-  const { mutate: toggleVote } = useToggleVote();
+  const toggleVote = useToggleVote();
 
-  const votedForthis =
+  const votedForthis = //checks if user has voted for this suggestion
     suggestion.votes.some((vote: any) => vote.voter === user._id)
 
   const handleRemove = () => {
@@ -34,10 +33,12 @@ export default function SuggestionCard({
   };
 
   function handleVote() {
-    toggleVote({
-      suggestionId: suggestion._id!,
-      userId: user._id!
-    });
+    toggleVote.mutate({
+      eventId: suggestion.eventId,
+      userId: user._id,
+      //@ts-ignore suggestion will have ID
+      suggestionId: suggestion._id
+    })
   }
 
   return (
