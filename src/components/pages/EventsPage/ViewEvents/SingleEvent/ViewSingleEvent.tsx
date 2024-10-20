@@ -52,9 +52,10 @@ export default function ViewSingleEvent() {
 
   const { data: event, isLoading, setIsEnabled } = useGetSingleEvent(eventId);
 
+  //@ts-ignore
   usePublicRoute(event?.private)
   const updateEvent = useUpdateEvent();
-  const delEventMutation = useDeleteEvent(eventId);
+  const delEventMutation = useDeleteEvent();
 
   if (isLoading || !event) {
     return null;
@@ -66,7 +67,7 @@ export default function ViewSingleEvent() {
       onSuccess: () => {
         navigate("/events");
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error("Failed to delete event:", error);
       },
     });
@@ -77,7 +78,7 @@ export default function ViewSingleEvent() {
       onSuccess: () => {
         setIsUpdateModalOpen(false);
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error("Failed to update your event", error);
       },
     });

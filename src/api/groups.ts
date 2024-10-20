@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Group } from "dataTypes";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
-//  Get Single Group By ID
+export type AddUserPayload = {
+  groupId: string;
+  memberId: string;
+};
+
+// Get Single Group By ID
 export function useGetSingleGroup(id: string) {
   const [isEnabled, setIsEnabled] = useState(true);
 
-  const query = useQuery({
-    enabled: !!id && isEnabled,
+  const query = useQuery<Group, Error>({
     queryKey: ["groups", id],
     queryFn: async () => {
       const response = await fetch(`${endpoint}/groups/${id}`, {
@@ -17,151 +22,155 @@ export function useGetSingleGroup(id: string) {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.json();
-      return data;
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
     },
+    enabled: !!id && isEnabled,
   });
+
   return { ...query, setIsEnabled };
 }
 
-//  Get Groups of User
+// Get Groups of User
 export function useGetUserGroups(userId: string) {
-  return useQuery({
-    enabled: !!userId,
-    queryKey: ["groups"],
-    queryFn: () =>
-      fetch(`${endpoint}/groups?userId=${userId}`, {
+  return useQuery<Group[], Error>({
+    queryKey: ["groups", userId],
+    queryFn: async () => {
+      const response = await fetch(`${endpoint}/groups?userId=${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((resp) => resp.json()),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
+    enabled: !!userId,
   });
 }
 
-//  Create Group
+// Create Group
 export function useCreateGroup() {
   const queryClient = useQueryClient();
 
-  function createGroup(payload: any) {
-    return fetch(`${endpoint}/groups`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((resp) => resp.json());
-  }
-
-  return useMutation(createGroup, {
+  return useMutation<Group, Error, Group>({
+    mutationFn: async (payload) => {
+      const response = await fetch(`${endpoint}/groups`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["groups"]);
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
 }
 
-//  Update Group
+// Update Group
 export function useUpdateGroup() {
   const queryClient = useQueryClient();
 
-  function updateGroup({ payload, id }: { payload: any; id: string }) {
-    return fetch(`${endpoint}/groups/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((resp) => resp.json());
-  }
-
-  return useMutation(updateGroup, {
+  return useMutation<Group, Error, { payload: any; id: string }>({
+    mutationFn: async ({ payload, id }) => {
+      const response = await fetch(`${endpoint}/groups/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(["groups", variables.id]);
-      queryClient.invalidateQueries(["groups"]);
+      queryClient.invalidateQueries({ queryKey: ["groups", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
 }
 
-//  Delete Group
-export function useDeleteGroup(id: string) {
+// Delete Group
+export function useDeleteGroup() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    async (id: string) => {
-      fetch(`${endpoint}/groups/${id}`, {
+  return useMutation<void, Error, string>({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`${endpoint}/groups/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((response) => response.json());
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["groups", id]);
-      },
-    }
-  );
-}
-
-export function getUserGroups(userId: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/groups?userId=${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ["groups", id] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
   });
 }
 
-export type AddUserPayload = {
-  groupId: string;
-  memberId: string;
-};
-
-//  Add Member to Group
+// Add Member to Group
 export function useAddUserToGroup() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (payload: AddUserPayload) =>
-      fetch(`${endpoint}/groups/add-member`, {
+  return useMutation<Group, Error, AddUserPayload>({
+    mutationFn: async (payload) => {
+      const response = await fetch(`${endpoint}/groups/add-member`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      }).then((resp) => resp.json()),
-    {
-      onSuccess: (_, variables) => {
-        queryClient.invalidateQueries(["groups", variables.groupId]);
-        queryClient.invalidateQueries(["groups"]);
-      },
-    }
-  );
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["groups", variables.groupId] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
 }
 
-//  Remove User From Group
+// Remove User From Group
 export function useRemoveGroupMember() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (payload: AddUserPayload) =>
-      fetch(`${endpoint}/groups/remove-member`, {
+  return useMutation<Group, Error, AddUserPayload>({
+    mutationFn: async (payload) => {
+      const response = await fetch(`${endpoint}/groups/remove-member`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      }).then((resp) => resp.json()),
-    {
-      onSuccess: (_, variables) => {
-        queryClient.invalidateQueries(["groups", variables.groupId]);
-        queryClient.invalidateQueries(["groups"]);
-      },
-    }
-  );
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["groups", variables.groupId] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
 }

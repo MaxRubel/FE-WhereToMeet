@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { getUserGroups } from "@/api/groups";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +29,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import "./EventForm.css";
+import { useGetUserGroups } from "@/api/groups";
 
 interface CreateEventFormProps {
   isModal?: boolean;
@@ -50,7 +50,6 @@ export default function CreateEventForm({
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState<string>("");
-  const [groups, setGroups] = useState<any[]>([]);
   const [formFields, setFormFields] = useState({
     name: "",
     groupId: "",
@@ -86,16 +85,7 @@ export default function CreateEventForm({
     }
   }, [event]);
 
-  useEffect(() => {
-    getUserGroups(user._id)
-      .then((gp) => {
-        const groups = gp as any[];
-        setGroups(groups);
-      })
-      .catch((error) => {
-        console.error("Error fetching user groups:", error);
-      });
-  }, [user._id]);
+  const { data: groups, isLoading } = useGetUserGroups(user._id)
 
   const handleChange = (
     e:
@@ -160,6 +150,10 @@ export default function CreateEventForm({
     }
   };
 
+  if (isLoading) {
+    return <></>
+  }
+
   const formContent = (
     <form
       onSubmit={handleSubmit}
@@ -197,7 +191,9 @@ export default function CreateEventForm({
             <SelectValue placeholder="Select a group" />
           </SelectTrigger>
           <SelectContent>
-            {groups.map((group) => (
+
+            {groups?.map((group) => (
+              //@ts-ignore will not be undefined
               <SelectItem key={group._id} value={group._id}>
                 {group.name}
               </SelectItem>
