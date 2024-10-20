@@ -146,7 +146,7 @@ export default function CreateEventForm({
       };
 
       createEvent.mutate(payload, {
-        onSuccess: (resp) => {
+        onSuccess: (resp:any) => {
           const typedresp = resp as response;
           navigate(`/events/${typedresp._id}`);
         }
@@ -196,7 +196,7 @@ export default function CreateEventForm({
           </SelectTrigger>
           <SelectContent>
 
-            {groups?.map((group) => (
+            {groups?.map((group:any) => (
               //@ts-ignore will not be undefined
               <SelectItem key={group._id} value={group._id}>
                 {group.name}
