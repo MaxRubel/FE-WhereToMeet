@@ -6,6 +6,8 @@ import {
   Dispatch,
   SetStateAction,
   ReactNode,
+  useCallback,
+  useMemo,
 } from "react";
 
 import { checkUser } from "../../api/users";
@@ -27,13 +29,14 @@ type AuthContextProviderProps = {
 
 const authContext = createContext<AuthContextType>({
   user: null,
-  setUser: () => {},
-  checkUserFunc: () => {},
+  setUser: () => { },
+  checkUserFunc: () => { },
   isPublicRoute: false,
-  setIsPublicRoute: () => {},
+  setIsPublicRoute: () => { },
   isGuest: false,
-  setIsGuest: () => {},
+  setIsGuest: () => { },
 });
+
 
 export default function AuthContextProvider({
   children,
@@ -42,22 +45,21 @@ export default function AuthContextProvider({
   const [checkUserCount, setCheckUserCount] = useState(0);
   const [isPublicRoute, setIsPublicRoute] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
-
+  console.log('rerender')
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const params = urlParams.get("guest");
-
     if (params === "true") setIsGuest(true);
   }, []);
 
-  const checkUserFunc = () => {
+
+  const checkUserFunc = useCallback(() => {
     setCheckUserCount((preVal) => preVal + 1);
-  };
+  }, [])
 
   useEffect(() => {
     const user = localStorage.getItem("user");
-
     // local storage item found:
     if (user) {
       const parsedUser = JSON.parse(user);
@@ -84,19 +86,22 @@ export default function AuthContextProvider({
     } else if (isGuest) {
       setUser({ _id: "guest" });
     }
-  }, [checkUserCount]);
+
+  }, [checkUserCount, isGuest]);
+
+  const memoizedContextValue = useMemo(() => ({
+    user,
+    setUser,
+    checkUserFunc,
+    isPublicRoute,
+    setIsPublicRoute,
+    isGuest,
+    setIsGuest,
+  }), [user, checkUserFunc, isPublicRoute, isGuest]);
 
   return (
     <authContext.Provider
-      value={{
-        user,
-        setUser,
-        checkUserFunc,
-        isPublicRoute,
-        setIsPublicRoute,
-        isGuest,
-        setIsGuest,
-      }}
+      value={memoizedContextValue}
     >
       {children}
     </authContext.Provider>

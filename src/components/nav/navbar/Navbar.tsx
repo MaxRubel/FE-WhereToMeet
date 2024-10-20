@@ -4,6 +4,7 @@ import { auth } from "../../../context/auth/firebase";
 import { useAuth } from "../../../context/auth/auth";
 import { useNavigate } from "react-router-dom";
 import styles from "./navbar.module.css";
+import { Link } from 'react-router-dom';
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -43,69 +44,71 @@ export default function NavBar() {
       aria-label="Main Navigation"
     >
       <div className="logo" role="banner">
-        <a href="/" className={styles.logoHover}>
+        <Link to="/" className={styles.logoHover}>
           Where To Meet
           {/* <span style={{ fontSize: "1.5rem", margin: "8px" }}>🍻</span> */}
-        </a>
+        </Link>
       </div>
 
       <ul className={styles.navList}>
         <li>
-          <a href="/groups" className={styles.navLink}>
+          <Link to="/groups" className={styles.navLink}>
             Groups
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="/events" className={styles.navLink}>
+          <Link to="/events" className={styles.navLink}>
             Events
-          </a>
+          </Link>
         </li>
       </ul>
 
-      <div className={styles.navbarRight}>
-        <button
-          id="nav-button"
-          className={`clear-button ${styles.greyHover}`}
-          aria-haspopup="true"
-          aria-expanded={settingsOpen}
-          aria-controls="settings-menu"
-          onClick={() => setSettingsOpen((prevVal) => !prevVal)}
-        >
-          <img
-            className={styles.avatarPhoto}
-            style={{ pointerEvents: "none" }}
-            src={user.avatarUrl ? user.avatarUrl : user.photoURL}
-            alt="avatar photo"
-          />
-
-          <span className="visually-hidden">User Settings</span>
-        </button>
-        {settingsOpen && (
-          <div
-            id="settings-menu"
-            className={styles.settingsMenuNav}
-            role="menu"
-            aria-labelledby="nav-button"
+      {user && user !== "guest" && (
+        <div className={styles.navbarRight}>
+          <button
+            id="nav-button"
+            className={`clear-button ${styles.greyHover}`}
+            aria-haspopup="true"
+            aria-expanded={settingsOpen}
+            aria-controls="settings-menu"
+            onClick={() => setSettingsOpen((prevVal) => !prevVal)}
           >
-            <button
-              id="edit-profile-button"
-              className={styles.navButton}
-              role="menuitem"
-              onClick={() => navigate("/edit-profile")}
+            <img
+              className={styles.avatarPhoto}
+              style={{ pointerEvents: "none" }}
+              src={user.avatarUrl ? user.avatarUrl : user.photoURL}
+              alt="avatar photo"
+            />
+
+            <span className="visually-hidden">User Settings</span>
+          </button>
+          {settingsOpen && (
+            <div
+              id="settings-menu"
+              className={styles.settingsMenuNav}
+              role="menu"
+              aria-labelledby="nav-button"
             >
-              Edit Profile
-            </button>
-            <button
-              id="sign-out-button"
-              className={styles.navButton}
-              onClick={signOut}
-              role="menuitem"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                id="edit-profile-button"
+                className={styles.navButton}
+                role="menuitem"
+                onClick={() => navigate("/edit-profile")}
+              >
+                Edit Profile
+              </button>
+              <button
+                id="sign-out-button"
+                className={styles.navButton}
+                onClick={signOut}
+                role="menuitem"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>)
+      }
     </nav>
   );
 }

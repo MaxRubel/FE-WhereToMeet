@@ -1,10 +1,11 @@
-import { Event, Suggestion} from "dataTypes";
+import { Event, Suggestion } from "dataTypes";
 import { useState } from "react";
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from "react-query";
+
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -78,50 +79,49 @@ export function getSingleEvent(eventId: string) {
 
 //  Get Single Event
 export function useGetSingleEvent(id: string) {
-    const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
 
-    const query = useQuery({
-        enabled: !!id && isEnabled,
-        queryKey: ["events", id],
-
-        queryFn: async () => {
-          const response = await fetch(`${endpoint}/events/${id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-        
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-        
-          const data = await response.json();
-          return data;
+  const query = useQuery({
+    enabled: !!id && isEnabled,
+    queryKey: ["events", id],
+    queryFn: async () => {
+      const response = await fetch(`${endpoint}/events/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-    });
-    return { ...query, setIsEnabled};
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      return data;
+    },
+  });
+  return { ...query, setIsEnabled };
 }
 
 export function useDeleteEvent(id: string) {
-    const queryClient = useQueryClient();
-  
-    return useMutation(
-      async (id: string) => {
-        fetch(`${endpoint}/events/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }).then((response) => response.json());
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["events", id]);
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (id: string) => {
+      fetch(`${endpoint}/events/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }
-    );
-  }
+      }).then((response) => response.json());
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["events", id]);
+      },
+    }
+  );
+}
 
 //  Add Suggestion To Event
 export function useAddSuggestion() {
@@ -189,7 +189,7 @@ export function useToggleVote() {
     const response = await fetch(`${endpoint}/events/add-vote`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",        
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
@@ -217,8 +217,8 @@ export function useToggleVote() {
                 ...suggestion,
                 votes: hasVoted
                   ? suggestion.votes.filter(
-                      (vote: any) => vote.voter !== payload.userId
-                    )
+                    (vote: any) => vote.voter !== payload.userId
+                  )
                   : [...suggestion.votes, { voter: payload.userId }]
               };
             }
@@ -243,4 +243,18 @@ export function useToggleVote() {
       queryClient.invalidateQueries(["events"]);
     },
   });
+}
+
+export async function checkEventPrivacy(id: string) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/events/check-privacy/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err))
+  })
 }

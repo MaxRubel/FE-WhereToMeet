@@ -4,6 +4,7 @@ import AddMember from './AddMember';
 import { useAuth } from '@/context/auth/auth';
 import { CheckIcon } from '@/components/graphics/Graphics1';
 import GroupMemberAvatar from './GroupMemberAvatar';
+import { Link } from "react-router-dom";
 
 export interface GroupMemberSmall {
   _id: string;
@@ -25,9 +26,9 @@ export default function SmallGroupCard({ group }: SingleGroupProps) {
 
         {/* CARD TITLE */}
         <h2 className='group-title-row'>
-          <a href={`/groups/${group._id}`}>
+          <Link to={`/groups/${group._id}`}>
             {group.name}
-          </a>
+          </Link>
           {group.ownerId === user._id && <CheckIcon size='20' />}
         </h2>
 

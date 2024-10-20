@@ -3,7 +3,6 @@ import "./GroupsPage.css"
 import { AddSymbol, ViewFolders } from "@/components/graphics/Graphics1";
 import ViewGroups from "./ViewGroups/ViewGroups";
 import { useNavigate, useParams } from "react-router-dom";
-import ViewSingleGroup from "./ViewSingleGroup/ViewSingleGroup";
 import CreateGroupForm from "./CreateGroup/CreateGroupForm";
 
 export default function GroupsPage() {
@@ -57,8 +56,6 @@ export default function GroupsPage() {
       <div className="profile-main-form">
         {isViewing == "ViewGroups" && <ViewGroups />}
         {isViewing == "CreateGroupForm" && <CreateGroupForm setIsViewing={setIsViewing} />}
-        {/* @ts-expect-error -- groupId is already null checked */}
-        {isViewing == "ViewSingleGroup" && <ViewSingleGroup groupId={groupId} setIsViewing={setIsViewing} />}
       </div>
     </div>
   );

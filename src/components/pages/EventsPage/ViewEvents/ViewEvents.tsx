@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth/auth";
 import { getUserEvents } from "@/api/events";
-import EventComponent from "./EventComponent";
+import SmallEventCard from "./EventComponent";
 
 export default function ViewEvents() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -42,7 +42,7 @@ export default function ViewEvents() {
         ) : (
           events.map((event) => (
             //@ts-ignore
-            <EventComponent key={event._id} event={event} />
+            <SmallEventCard key={event._id} event={event} />
           ))
         )}
       </div>
