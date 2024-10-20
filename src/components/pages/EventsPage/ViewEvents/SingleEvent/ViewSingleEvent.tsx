@@ -1,4 +1,5 @@
 import {
+  checkEventPrivacy,
   useDeleteEvent,
   useGetSingleEvent,
   useUpdateEvent,
@@ -20,12 +21,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
 import { EditIcon } from "@/components/graphics/Graphics1";
 
 export default function ViewSingleEvent() {
-  const { user } = useAuth();
+
+  const { user, setIsGuest, setIsPublicRoute } = useAuth()
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -35,12 +37,24 @@ export default function ViewSingleEvent() {
     return null;
   }
 
-  //React Query
+  useEffect(() => {
+    checkEventPrivacy(eventId).then((data: any) => {
+      if (!user) return
+      if (data.isPrivate && (!user._id || user._id === "guest")) {
+        setIsEnabled(false)
+        setIsGuest(false);
+        setIsPublicRoute(false)
+      } else {
+        setIsEnabled(true)
+      }
+    })
+  }, [user, eventId])
+
   const { data: event, isLoading, setIsEnabled } = useGetSingleEvent(eventId);
+
+  usePublicRoute(event?.private)
   const updateEvent = useUpdateEvent();
   const delEventMutation = useDeleteEvent(eventId);
-
-  usePublicRoute(event?.private);
 
   if (isLoading || !event) {
     return null;

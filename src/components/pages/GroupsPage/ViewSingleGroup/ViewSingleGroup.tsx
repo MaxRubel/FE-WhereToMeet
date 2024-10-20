@@ -13,7 +13,7 @@ import AddMember from "../Components/AddMember";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/auth/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -27,18 +27,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 // import GroupSkelly from "./GroupSkelly";
 
-type props = {
-  groupId: string;
-  setIsViewing: (view: string) => void;
-};
 
-export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
+export default function ViewSingleGroup() {
   const [isEditting, setIsEditting] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [descInput, setDescInput] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const { groupId } = useParams()
+  if (!groupId) {
+    throw new Error("No group id passed in query param")
+  }
   const deleteGroupMutation = useDeleteGroup(groupId);
   const updateGroupMutation = useUpdateGroup();
   const { data, isLoading, setIsEnabled } = useGetSingleGroup(groupId);
@@ -56,7 +56,6 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
     deleteGroupMutation.mutate(groupId, {
       onSuccess: () => {
         navigate("/groups");
-        setIsViewing("ViewGroups");
       },
       onError: (error) => {
         console.error("Failed to delete group:", error);
@@ -87,7 +86,7 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
   }
 
   return (
-    <div>
+    <div style={{ padding: '3em' }}>
       <div id="header-fields" className="text-left">
         {isEditting ? (
           <form className={styles.newNameForm} onSubmit={handleUpdateGroup}>
@@ -114,16 +113,16 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
             </div>
           </form>
         ) : // NOT EDITTING:
-        user._id === group?.ownerId ? (
-          // THIS IS YOUR GROUP:
-          <Button onClick={() => setIsEditting(true)} className="empty-button">
-            {data?.name}
-            <EditIcon size={"20"} />
-          </Button>
-        ) : (
-          //THIS IS NOT YOUR GROUP:
-          <h2 className="text-left">{data?.name}</h2>
-        )}
+          user._id === group?.ownerId ? (
+            // THIS IS YOUR GROUP:
+            <Button onClick={() => setIsEditting(true)} className="empty-button">
+              {data?.name}
+              <EditIcon size={"20"} />
+            </Button>
+          ) : (
+            //THIS IS NOT YOUR GROUP:
+            <h2 className="text-left">{data?.name}</h2>
+          )}
         {!isEditting && (
           <div className="text-left light-font">
             {/* @ts-ignore */}
@@ -163,12 +162,12 @@ export default function ViewSingleGroup({ groupId, setIsViewing }: props) {
         <div className={`light-font ${styles.membersContainer}`}>
           {group?.members?.length
             ? group?.members?.map((member) => (
-                <GroupMemberAvatar
-                  key={member._id}
-                  member={member}
-                  group={group}
-                />
-              ))
+              <GroupMemberAvatar
+                key={member._id}
+                member={member}
+                group={group}
+              />
+            ))
             : "No members have been added yet..."}
         </div>
 

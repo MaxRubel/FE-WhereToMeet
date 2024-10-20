@@ -9,6 +9,7 @@ import { createContext, ReactNode, useContext, useEffect } from "react";
 import { useToast } from "./hooks/use-toast";
 import ViewSingleEvent from "./components/pages/EventsPage/ViewEvents/SingleEvent/ViewSingleEvent";
 import { useAuth } from "./context/auth/auth";
+import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 // import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 
 // Create the context
@@ -44,7 +45,7 @@ type ChildrenProp = { children: ReactNode };
 // confirms routes are public by checking the against URL
 // another check is performed inside the component as well
 const PublicRouteChecker = ({ children }: ChildrenProp) => {
-  const { setIsPublicRoute, setIsGuest } = useAuth();
+  const { setIsPublicRoute } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -53,10 +54,6 @@ const PublicRouteChecker = ({ children }: ChildrenProp) => {
 
     if (location.pathname.includes("/events") && isPublic) {
       setIsPublicRoute(true);
-    } else {
-      //not a valid path
-      setIsGuest(false);
-      setIsPublicRoute(false);
     }
   }, [location, setIsPublicRoute]);
 
@@ -76,7 +73,7 @@ export default function Router() {
               <Route path="/events" element={<EventPage />} />
               <Route path="/events/:eventId" element={<ViewSingleEvent />} />
               <Route path="/groups" element={<GroupsPage />} />
-              <Route path="/groups/:groupId" element={<GroupsPage />} />
+              <Route path="/groups/:groupId" element={<ViewSingleGroup />} />
             </Routes>
           </div>
           <Toaster />
