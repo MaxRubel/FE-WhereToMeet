@@ -1,10 +1,10 @@
 import { useGetUserGroups } from "@/api/groups";
-import { useAuth } from "@/context/auth/auth";
 import { Group } from "dataTypes";
 import SmallGroupCard from "../Components/SmallGroupCard";
+import { useAuth } from "@/context/auth/auth";
 
 export default function ViewGroups() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const { data: groups, isLoading } = useGetUserGroups(user._id);
 
   if (isLoading) {
