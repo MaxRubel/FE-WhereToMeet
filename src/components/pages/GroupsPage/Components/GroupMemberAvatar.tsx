@@ -41,8 +41,8 @@ export default function GroupMemberAvatar({ member, group }: props) {
         <TooltipTrigger asChild>
           <div className="inline-block">
             <img
-              src={member.avatarUrl}
-              alt="Avatar"
+              src={member.avatarUrl ? member.avatarUrl : user.photoURL}
+              alt={"Avatar"}
               className="h-12 w-12 rounded-full object-cover cursor-pointer bg-background"
             />
           </div>
@@ -50,7 +50,7 @@ export default function GroupMemberAvatar({ member, group }: props) {
         <TooltipContent className="bg-white text-black shadow-md rounded-md p-2">
           <p style={{ fontWeight: "600" }}>{member.name}</p>
           <p>{member.email}</p>
-          {group.ownerId === user._id && (
+          {group.ownerId === user._id && group.ownerId !== member._id && (
             <Button
               style={{
                 backgroundColor: "rgb(176, 4, 4)",

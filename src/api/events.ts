@@ -4,85 +4,73 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from "react-query";
-
+} from '@tanstack/react-query';
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
-export async function createEvent(payload: Event) {
-  try {
-    const data = await fetch(`${endpoint}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+export const useCreateEvent = () => {
+  const queryClient = useQueryClient()
 
-    const json = await data.json();
+  return useMutation({
+    mutationFn: async (payload: Event) => {
+      const response = await fetch(`${endpoint}/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] })
+    }
+  });
+};
 
-    return json;
-  } catch (error) {
-    console.error("the error is:", error);
-  }
-}
-
-//  Add Suggestion To Event
+// Update Event - Migrated to v4
 export function useUpdateEvent() {
   const queryClient = useQueryClient();
 
-  function updateEvent(payload: Event) {
-    return fetch(`${endpoint}/events/${payload._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((resp) => resp.json());
-  }
-
-  return useMutation(updateEvent, {
+  return useMutation<Event, Error, Event>({
+    mutationFn: (payload) =>
+      fetch(`${endpoint}/events/${payload._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }).then((resp) => resp.json()),
     onSuccess: (_, payload) => {
-      queryClient.invalidateQueries(["events", payload._id]);
-      queryClient.invalidateQueries(["events"]);
+      queryClient.invalidateQueries({ queryKey: ["events", payload._id] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }
 
-export function getUserEvents(userId: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/events/user-events/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
+const fetchUserEvents = async (userId: string): Promise<Event[]> => {
+  const response = await fetch(`${endpoint}/events/user-events/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.json();
+};
+
+export function useGetUserEvents(userId: string) {
+  return useQuery<Event[], Error>({
+    queryKey: ['events', userId],
+    queryFn: () => fetchUserEvents(userId),
+    enabled: !!userId,
   });
 }
 
-export function getSingleEvent(eventId: string) {
-  return new Promise((resolve, reject) => {
-    fetch(`${endpoint}/events/${eventId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => resp.json())
-      .then((data) => resolve(data))
-      .catch((err) => reject(err));
-  });
-}
-
-//  Get Single Event
+// Get Single Event
 export function useGetSingleEvent(id: string) {
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const query = useQuery({
-    enabled: !!id && isEnabled,
+  const query = useQuery<Event, Error>({
     queryKey: ["events", id],
     queryFn: async () => {
       const response = await fetch(`${endpoint}/events/${id}`, {
@@ -91,56 +79,50 @@ export function useGetSingleEvent(id: string) {
           "Content-Type": "application/json",
         },
       });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      return data;
+      return response.json();
     },
+    enabled: !!id && isEnabled,
   });
   return { ...query, setIsEnabled };
 }
 
-export function useDeleteEvent(id: string) {
+// Delete Event - Migrated to v4
+export function useDeleteEvent() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    async (id: string) => {
-      fetch(`${endpoint}/events/${id}`, {
+  return useMutation<void, Error, string>({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`${endpoint}/events/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((response) => response.json());
+      });
+      return response.json()
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["events", id]);
-      },
-    }
-  );
+    onSuccess: (_, id) => {
+      console.log("deleted")
+      queryClient.invalidateQueries({ queryKey: ["events", id] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
 }
 
-//  Add Suggestion To Event
+// Add Suggestion To Event - Migrated to v4
 export function useAddSuggestion() {
   const queryClient = useQueryClient();
 
-  function updateEvent(payload: Suggestion) {
-    return fetch(`${endpoint}/events/add-suggestion`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((resp) => resp.json());
-  }
-
-  return useMutation(updateEvent, {
+  return useMutation<Event, Error, Suggestion>({
+    mutationFn: (payload) =>
+      fetch(`${endpoint}/events/add-suggestion`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }).then((resp) => resp.json()),
     onSuccess: (_, payload) => {
-      queryClient.invalidateQueries(["events", payload.eventId]);
-      queryClient.invalidateQueries(["events"]);
+      queryClient.invalidateQueries({ queryKey: ["events", payload.eventId] });
     },
   });
 }
@@ -150,29 +132,23 @@ export type RemoveSuggestionPayload = {
   suggestionId: string;
 };
 
+// Remove Suggestion - Migrated to v4
 export function useRemoveSuggestion() {
   const queryClient = useQueryClient();
 
-  async function removeSuggestion(payload: RemoveSuggestionPayload) {
-    const response = await fetch(`${endpoint}/events/remove-suggestion`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to remove suggestion");
-    }
-
-    return response.json();
-  }
-
-  return useMutation(removeSuggestion, {
+  return useMutation<Event, Error, RemoveSuggestionPayload>({
+    mutationFn: async (payload) => {
+      const response = await fetch(`${endpoint}/events/remove-suggestion`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      return response.json();
+    },
     onSuccess: (_, payload) => {
-      queryClient.invalidateQueries(["events", payload.eventId]);
-      queryClient.invalidateQueries(["events"]);
+      queryClient.invalidateQueries({ queryKey: ["events", payload.eventId] });
     },
   });
 }
@@ -180,10 +156,11 @@ export function useRemoveSuggestion() {
 export interface ToggleVotePayload {
   suggestionId: string;
   userId: string;
+  eventId: string;
 }
 
 export function useToggleVote() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   async function toggleVote(payload: ToggleVotePayload) {
     const response = await fetch(`${endpoint}/events/add-vote`, {
@@ -192,18 +169,19 @@ export function useToggleVote() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-    });
+    })
     if (!response.ok) {
       throw new Error("failed to vote")
     }
-    return response.json();
+    return response.json()
   }
-  return useMutation(toggleVote, {
-    onMutate: async (payload) => {
-      await queryClient.cancelQueries(["events", payload.suggestionId]);
-      await queryClient.cancelQueries(["events"]);
 
-      const previousEvent = queryClient.getQueryData<any>(["events"]);
+  return useMutation({
+    mutationFn: toggleVote,
+    onMutate: async (payload) => {
+      await queryClient.cancelQueries({ queryKey: ["events", payload.eventId] })
+
+      const previousEvent = queryClient.getQueryData<any>(["events"])
 
       if (previousEvent) {
         const updatedEvent = {
@@ -212,7 +190,7 @@ export function useToggleVote() {
             if (suggestion._id === payload.suggestionId) {
               const hasVoted = suggestion.votes.some(
                 (vote: any) => vote.voter === payload.userId
-              );
+              )
               return {
                 ...suggestion,
                 votes: hasVoted
@@ -220,29 +198,26 @@ export function useToggleVote() {
                     (vote: any) => vote.voter !== payload.userId
                   )
                   : [...suggestion.votes, { voter: payload.userId }]
-              };
+              }
             }
-            return suggestion;
+            return suggestion
           })
-        };
+        }
 
-        queryClient.setQueryData(["events"], updatedEvent);
+        queryClient.setQueryData(["events"], updatedEvent)
       }
 
-      return { previousEvent };
+      return { previousEvent }
     },
-
-
     onError: (_err, _payload, context) => {
       if (context?.previousEvent) {
-        queryClient.setQueryData(["events"], context.previousEvent);
+        queryClient.setQueryData(["events"], context.previousEvent)
       }
     },
     onSettled: (_, __, payload) => {
-      queryClient.invalidateQueries(["events", payload.suggestionId]);
-      queryClient.invalidateQueries(["events"]);
+      queryClient.invalidateQueries({ queryKey: ["events", payload.eventId] })
     },
-  });
+  })
 }
 
 export async function checkEventPrivacy(id: string) {

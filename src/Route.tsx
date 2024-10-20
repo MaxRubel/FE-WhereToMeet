@@ -10,7 +10,6 @@ import { useToast } from "./hooks/use-toast";
 import ViewSingleEvent from "./components/pages/EventsPage/ViewEvents/SingleEvent/ViewSingleEvent";
 import { useAuth } from "./context/auth/auth";
 import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
-// import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 
 // Create the context
 const ToastContext = createContext<((props: any) => void) | undefined>(
@@ -26,7 +25,6 @@ export const useToastContext = (): ((props: any) => void) => {
   return context;
 };
 
-// Props type for ToastProvider
 interface ToastProviderProps {
   children: ReactNode;
 }

@@ -39,7 +39,7 @@ export default function ViewSingleGroup() {
   if (!groupId) {
     throw new Error("No group id passed in query param")
   }
-  const deleteGroupMutation = useDeleteGroup(groupId);
+  const deleteGroupMutation = useDeleteGroup();
   const updateGroupMutation = useUpdateGroup();
   const { data, isLoading, setIsEnabled } = useGetSingleGroup(groupId);
 
@@ -57,7 +57,7 @@ export default function ViewSingleGroup() {
       onSuccess: () => {
         navigate("/groups");
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error("Failed to delete group:", error);
       },
     });
@@ -182,7 +182,7 @@ export default function ViewSingleGroup() {
           <DialogTrigger style={{ marginTop: "6em" }} asChild>
             <Button className="deleteButton">Delete This Group</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent aria-describedby="dialog-content">
             <DialogHeader className="text-left">
               <DialogTitle>Are you absolutely sure?</DialogTitle>
               <DialogDescription>
