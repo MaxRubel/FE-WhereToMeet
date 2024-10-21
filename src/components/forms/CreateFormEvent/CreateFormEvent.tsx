@@ -18,75 +18,59 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateEvent } from "@/api/events";
+import { useCreateEvent, useUpdateEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import "./EventForm.css";
 import { useGetUserGroups } from "@/api/groups";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Event } from "dataTypes";
 
 interface CreateEventFormProps {
-  isModal?: boolean;
-  isOpen?: boolean;
-  onClose?: () => void;
-  event?: any;
-  onUpdate?: (eventData: any) => void;
+  event?: Event;
+  setIsViewing?: Dispatch<SetStateAction<string>>;
 }
 
-export default function CreateEventForm({
-  isModal = false,
-  isOpen = false,
-  onClose,
-  event,
-  onUpdate,
-}: CreateEventFormProps) {
+export default function CreateEventForm({ event, setIsViewing }: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [date, setDate] = useState<Date>();
-  const [time, setTime] = useState<string>("");
-  const [formFields, setFormFields] = useState({
+  const [dateOpen, setDateOpen] = useState(false)
+  const initEvent: Event = {
+    _id: "",
     name: "",
+    ownerId: user._id,
     groupId: "",
+    private: false,
+    suggestionsEnabled: true,
+    chatEnabled: true,
     description: "",
+    location: {
+      name: "",
+      url: "",
+      address: {
+        street: "",
+        city: "",
+        state: "",
+        zipcode: 0,
+        coordinates: {
+          lat: 0,
+          long: 0
+        }
+      }
+    },
+    date: null,
+    time: "",
     suggestions: [],
-    messages: [],
-    locationName: "",
-    locationUrl: "",
-    locationStreet: "",
-    locationZipcode: 0,
-    locationLat: 0,
-    locationLong: 0,
-  });
+    messages: []
+  };
 
-  const createEvent = useCreateEvent()
-
-  useEffect(() => {
-    if (event) {
-      const eventTime = event.time ? new Date(event.time) : undefined;
-      setDate(eventTime);
-      setTime(eventTime ? format(eventTime, "HH:mm") : "");
-      setFormFields({
-        name: event.name || "",
-        groupId: event.groupId || "",
-        description: event.description || "",
-        suggestions: event.suggestions || [],
-        messages: event.messages || [],
-        locationName: event.location?.name || "",
-        locationUrl: event.location?.url || "",
-        locationStreet: event.location?.address.street || "",
-        locationZipcode: event.location?.address.zipcode || 0,
-        locationLat: event.location?.address.coordinates.lat || 0,
-        locationLong: event.location?.address.coordinates.long || 0,
-      });
-    }
-  }, [event]);
-
+  const [formFields, setFormFields] = useState<Event>(event ? event : initEvent);
   const { data: groups, isLoading } = useGetUserGroups(user._id)
 
   const handleChange = (
@@ -95,60 +79,72 @@ export default function CreateEventForm({
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
+
     const { name, value } = e.target;
+
+    if (
+      name === "street"
+      || name === "city"
+      || name === "state"
+      || name === "zipcode"
+    ) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        location: {
+          ...preVal.location,
+          address: { ...preVal.location.address, [name]: value }
+        }
+      }))
+
+    } else if (name === "url") {
+      setFormFields((preVal) => ({
+        ...preVal, location: { ...preVal.location, url: value }
+      }))
+
+    } else if (name === "locationName") {
+      setFormFields((preVal) => ({
+        ...preVal, location: { ...preVal.location, name: value }
+      }))
+    }
+
+    else {
+      setFormFields((prevFields) => ({
+        ...prevFields,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleDate = (newDate: Date | undefined) => {
     setFormFields((prevFields) => ({
       ...prevFields,
-      [name]: value,
+      date: newDate || null,
     }));
+    setDateOpen(false);
   };
+
+  const handleTime = (e: any) => {
+    setFormFields((preVal) => ({
+      ...preVal, time: e.target.value
+    }))
+  }
+
+  const createEvent = useCreateEvent()
+  const updateEvent = useUpdateEvent()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formattedDate = date ? `${format(date, "yyyy-MM-dd")}T${time}` : "";
-    const payload = {
-      _id: event?._id || "",
-      name: formFields.name,
-      ownerId: event?.ownerId || user._id,
-      suggestionsEnabled: event?.suggestionsEnabled ?? true,
-      chatEnabled: event?.chatEnabled ?? false,
-      groupId: formFields.groupId,
-      private: false,
-      location: {
-        name: formFields.locationName,
-        url: formFields.locationUrl,
-        address: {
-          street: formFields.locationStreet,
-          zipcode: formFields.locationZipcode,
-          coordinates: {
-            lat: formFields.locationLat,
-            long: formFields.locationLong,
-          },
-        },
-      },
-      description: formFields.description,
-      time: formattedDate,
-      suggestions: formFields.suggestions,
-      messages: formFields.messages,
-      address: event?.address || {
-        street: "",
-        city: "",
-        zip: "",
-      },
-    };
-
-    if (isModal && onUpdate) {
-      onUpdate(payload);
-      onClose?.();
-    } else {
-      type response = {
-        _id: string;
-      };
-
-      createEvent.mutate(payload, {
-        onSuccess: (resp:any) => {
-          const typedresp = resp as response;
-          navigate(`/events/${typedresp._id}`);
+    if (event && setIsViewing) {  //  update
+      updateEvent.mutate(formFields, {
+        onSuccess: () => {
+          setIsViewing("singleEvent")
+        }
+      })
+    } else {  //  create
+      createEvent.mutate(formFields, {
+        onSuccess: (response) => {
+          navigate(`/events/${response._id}`)
         }
       })
     }
@@ -161,8 +157,8 @@ export default function CreateEventForm({
   const formContent = (
     <form
       onSubmit={handleSubmit}
-      className={cn(!isModal && "create-event-form", isModal && "modal-form")}
-      style={!isModal ? { marginTop: "2em" } : undefined}
+      className="create-event-form"
+      style={{ marginTop: "2em" }}
     >
       <div className="form-group">
         <Label htmlFor="name" className="form-label">
@@ -177,6 +173,21 @@ export default function CreateEventForm({
           className="form-input"
           required
           aria-required="true"
+        />
+      </div>
+
+      <div className="form-group">
+        <Label htmlFor="description" className="form-label">
+          Description
+        </Label>
+        <Textarea
+          id="description"
+          name="description"
+          value={formFields.description}
+          onChange={handleChange}
+          placeholder="Join us for a celebration!"
+          className="form-input"
+          aria-required="false"
         />
       </div>
 
@@ -196,7 +207,7 @@ export default function CreateEventForm({
           </SelectTrigger>
           <SelectContent>
 
-            {groups?.map((group:any) => (
+            {groups?.map((group: any) => (
               //@ts-ignore will not be undefined
               <SelectItem key={group._id} value={group._id}>
                 {group.name}
@@ -207,37 +218,25 @@ export default function CreateEventForm({
       </div>
 
       <div className="form-group">
-        <Label htmlFor="description" className="form-label">
-          Description
-        </Label>
-        <Textarea
-          id="description"
-          name="description"
-          value={formFields.description}
-          onChange={handleChange}
-          placeholder="Join us for a celebration!"
-          className="form-input"
-          aria-required="false"
-        />
-      </div>
-
-      <div className="form-group">
         <Label className="form-label">Date</Label>
-        <Popover>
+        <Popover open={dateOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn("form-input justify-start text-left font-normal")}
+              onClick={() => { setDateOpen(true) }}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
+              {formFields.date
+                ? format(formFields.date, "PPP")
+                : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={setDate}
+              selected={formFields.date || undefined}
+              onSelect={handleDate}
               initialFocus
             />
           </PopoverContent>
@@ -251,104 +250,118 @@ export default function CreateEventForm({
         <Input
           type="time"
           name="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
+          value={formFields.time}
+          onChange={handleTime}
           className="form-input w-[240px]"
         />
       </div>
 
-      <Label className="form-label">Location</Label>
-      <div className="form-group">
-        <Label htmlFor="locationName" className="form-label">
-          Name
-        </Label>
-        <Input
-          type="text"
-          name="locationName"
-          value={formFields.locationName}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-      <div className="form-group">
-        <Label htmlFor="locationUrl" className="form-label">
-          Website
-        </Label>
-        <Input
-          type="url"
-          name="locationUrl"
-          value={formFields.locationUrl}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-      <div className="form-group">
-        <Label htmlFor="locationStreet" className="form-label">
-          Street
-        </Label>
-        <Input
-          type="text"
-          name="locationStreet"
-          value={formFields.locationStreet}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-      <div className="form-group">
-        <Label htmlFor="locationZipcode" className="form-label">
-          Zipcode
-        </Label>
-        <Input
-          type="number"
-          name="locationZipcode"
-          value={formFields.locationZipcode}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-      <div className="form-group">
-        <Label htmlFor="locationLat" className="form-label">
-          Latitude
-        </Label>
-        <Input
-          type="number"
-          name="locationLat"
-          value={formFields.locationLat}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-      <div className="form-group">
-        <Label htmlFor="locationLong" className="form-label">
-          Longitude
-        </Label>
-        <Input
-          type="number"
-          name="locationLong"
-          value={formFields.locationLong}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Add Location?</AccordionTrigger>
+          <AccordionContent>
+
+            <div className="form-group">
+              <Label style={{ marginTop: '1em' }} htmlFor="locationName" className="form-label">
+                Name
+              </Label>
+              <Input
+                type="text"
+                id="locationName"
+                name="locationName"
+                // value={formFields.locationName}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+
+            <div className="form-group">
+              <Label htmlFor="url" className="form-label">
+                Website
+              </Label>
+              <Input
+                type="url"
+                id="url"
+                name="url"
+                value={formFields.location.url}
+                onChange={handleChange}
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <Label htmlFor="street" className="form-label">
+                Street
+              </Label>
+              <Input
+                type="text"
+                id="street"
+                name="street"
+                // value={formFields.locationStreet}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <Label htmlFor="city" className="form-label">
+                City
+              </Label>
+              <Input
+                type="text"
+                id="city"
+                name="city"
+                // value={formFields.locationCity}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <Label htmlFor="state" className="form-label">
+                State
+              </Label>
+              <Input
+                type="text"
+                id="state"
+                name="state"
+                // value={formFields.locationState}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <Label htmlFor="zipcode" className="form-label">
+                Zipcode
+              </Label>
+              <Input
+                type="number"
+                id="zipcode"
+                name="zipcode"
+                // value={formFields.locationZipcode}
+                onChange={handleChange}
+                className="form-input"
+                pattern="[0-9]*"
+                inputMode="numeric"
+                required
+              />
+            </div>
+
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <Button type="submit" style={{ marginTop: "1em" }}>
         {event ? "Update Event" : "Create Event"}
       </Button>
     </form>
   );
-
-  if (isModal) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Update Event</DialogTitle>
-          </DialogHeader>
-          {formContent}
-        </DialogContent>
-      </Dialog>
-    );
-  }
 
   return (
     <div className="create-event-form-container">

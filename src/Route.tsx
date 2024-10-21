@@ -7,8 +7,8 @@ import EventPage from "./components/pages/EventsPage/EventPage";
 import GroupsPage from "./components/pages/GroupsPage/GroupsPage";
 import { createContext, ReactNode, useContext, useEffect } from "react";
 import { useToast } from "./hooks/use-toast";
-import ViewSingleEvent from "./components/pages/EventsPage/ViewEvents/SingleEvent/ViewSingleEvent";
 import { useAuth } from "./context/auth/auth";
+import SingleEventLayout from "./components/pages/EventsPage/ViewEvents/SingleEvent/SingleEventLayout";
 import ViewSingleGroup from "./components/pages/GroupsPage/ViewSingleGroup/ViewSingleGroup";
 
 // Create the context
@@ -69,7 +69,7 @@ export default function Router() {
               <Route path="/" element={<Home />} />
               <Route path="/edit-profile" element={<ProfilePage />} />
               <Route path="/events" element={<EventPage />} />
-              <Route path="/events/:eventId" element={<ViewSingleEvent />} />
+              <Route path="/events/:eventId" element={<SingleEventLayout />} />
               <Route path="/groups" element={<GroupsPage />} />
               <Route path="/groups/:groupId" element={<ViewSingleGroup />} />
             </Routes>
