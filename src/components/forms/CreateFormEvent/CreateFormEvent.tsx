@@ -378,9 +378,9 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
     <>
       <div className="create-event-form-container">
 
-        {/* ---button row--- */}
+        {/* ---top button row--- */}
         {event && setIsViewing &&
-          <div style={{ marginBottom: '1em' }}>
+          <div style={{ marginBottom: '2em' }}>
             <Button
               className="secondary-button"
               onClick={() => { setIsViewing('singleEvent') }}
