@@ -87,12 +87,9 @@ export default function SuggestionForm({ event }: props) {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <DrawerHeader>
+          <DrawerHeader style={{ backgroundColor: 'red' }}>
             <DrawerTitle
-              style={{
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+              style={{ fontWeight: "400" }}
             >
               Add A Suggestion
             </DrawerTitle>
