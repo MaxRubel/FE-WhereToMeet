@@ -112,7 +112,7 @@ export default function SingleEventLayout() {
         <SingleEventComponent event={event} />
       }
 
-      {isViewing === "editEvent" && <CreateEventForm />}
+      {isViewing === "editEvent" && <CreateEventForm event={event} setIsViewing={setIsViewing} />}
     </div>
   );
 }

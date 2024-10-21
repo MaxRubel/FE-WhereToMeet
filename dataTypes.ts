@@ -73,7 +73,8 @@ export type Event = {
   chatEnabled: boolean;
   description: string;
   location: Location;
-  time: string; // datetime string
+  date: Date | null;
+  time: string;
   suggestions: Suggestion[];
   messages: Message[];
 };
@@ -84,6 +85,8 @@ export type Location = {
   url: string;
   address: {
     street: string;
+    city: string;
+    state: string;
     zipcode: number;
     coordinates: {
       lat: number;
