@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { BackArrow, EditIcon2, ModeratorIcon } from "@/components/graphics/Graphics1";
 import SingleEventComponent from "./SingleEventComponent";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
+import ModeratorSettings from "./ModeratorSettings";
 
 export default function SingleEventLayout() {
 
@@ -40,8 +41,6 @@ export default function SingleEventLayout() {
 
   //@ts-ignore
   usePublicRoute(event?.private)
-  // const updateEvent = useUpdateEvent();
-  // const delEventMutation = useDeleteEvent();
 
   if (isLoading || !event) {
     return null;
@@ -55,17 +54,6 @@ export default function SingleEventLayout() {
   //     },
   //     onError: (error: any) => {
   //       console.error("Failed to delete event:", error);
-  //     },
-  //   });
-  // };
-
-  // const handleUpdateEvent = (eventData: any) => {
-  //   updateEvent.mutate(eventData, {
-  //     onSuccess: () => {
-  //       setIsUpdateModalOpen(false);
-  //     },
-  //     onError: (error: any) => {
-  //       console.error("Failed to update your event", error);
   //     },
   //   });
   // };
@@ -88,6 +76,11 @@ export default function SingleEventLayout() {
           <button
             className="clear-button side-list-item"
             onClick={() => { setIsViewing('editEvent') }}
+            style={{
+              backgroundColor: isViewing === "editEvent"
+                ? "rgb(245,245,245)"
+                : "white"
+            }}
           >
             <EditIcon2 size="18" />
             Edit Event
@@ -96,9 +89,7 @@ export default function SingleEventLayout() {
           {/* ---Edit Event Button--- */}
           <button
             className="clear-button side-list-item"
-            onClick={() => {
-              navigate('/events')
-            }}
+            onClick={() => { setIsViewing('moderatorSettings') }}
           >
             <ModeratorIcon size="18" />
             Moderator Settings
@@ -112,7 +103,13 @@ export default function SingleEventLayout() {
         <SingleEventComponent event={event} />
       }
 
-      {isViewing === "editEvent" && <CreateEventForm event={event} setIsViewing={setIsViewing} />}
+      {isViewing === "editEvent" &&
+        <CreateEventForm
+          event={event}
+          setIsViewing={setIsViewing}
+        />}
+      {isViewing === "moderatorSettings" &&
+        <ModeratorSettings />}
     </div>
   );
 }

@@ -31,6 +31,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Event } from "dataTypes";
+import { BackArrow } from "@/components/graphics/Graphics1";
 
 interface CreateEventFormProps {
   event?: Event;
@@ -150,6 +151,16 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
     }
   };
 
+  //basic form validation:
+  const { street, city, state, zipcode } = formFields.location.address;
+
+  let hasEnteredAddress;
+  street || city || state || zipcode ? hasEnteredAddress = true : hasEnteredAddress = false;
+
+  let needsRestOfAddress;
+  street ? needsRestOfAddress = true : needsRestOfAddress = false;
+
+
   if (isLoading) {
     return <></>
   }
@@ -258,7 +269,7 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
 
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger>Add Location?</AccordionTrigger>
+          <AccordionTrigger>Add Location +</AccordionTrigger>
           <AccordionContent>
 
             <div className="form-group">
@@ -272,7 +283,7 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 // value={formFields.locationName}
                 onChange={handleChange}
                 className="form-input"
-                required
+                required={hasEnteredAddress}
               />
             </div>
 
@@ -288,6 +299,7 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 value={formFields.location.url}
                 onChange={handleChange}
                 className="form-input"
+                aria-required="false"
               />
             </div>
 
@@ -299,10 +311,9 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 type="text"
                 id="street"
                 name="street"
-                // value={formFields.locationStreet}
+                value={formFields.location.address.street}
                 onChange={handleChange}
                 className="form-input"
-                required
               />
             </div>
 
@@ -314,10 +325,10 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 type="text"
                 id="city"
                 name="city"
-                // value={formFields.locationCity}
+                value={formFields.location.address.city}
                 onChange={handleChange}
                 className="form-input"
-                required
+                required={needsRestOfAddress}
               />
             </div>
 
@@ -329,10 +340,10 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 type="text"
                 id="state"
                 name="state"
-                // value={formFields.locationState}
+                value={formFields.location.address.state}
                 onChange={handleChange}
                 className="form-input"
-                required
+                required={needsRestOfAddress}
               />
             </div>
 
@@ -344,12 +355,12 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 type="number"
                 id="zipcode"
                 name="zipcode"
-                // value={formFields.locationZipcode}
+                value={formFields.location.address.zipcode ? formFields.location.address.zipcode : ""}
                 onChange={handleChange}
                 className="form-input"
                 pattern="[0-9]*"
                 inputMode="numeric"
-                required
+                required={needsRestOfAddress}
               />
             </div>
 
@@ -364,11 +375,28 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
   );
 
   return (
-    <div className="create-event-form-container">
-      <h2 className="text-left" style={{ fontWeight: "300" }}>
-        Create an Event
-      </h2>
-      {formContent}
-    </div>
+    <>
+      <div className="create-event-form-container">
+
+        {/* ---button row--- */}
+        {event && setIsViewing &&
+          <div style={{ marginBottom: '1em' }}>
+            <Button
+              className="secondary-button"
+              onClick={() => { setIsViewing('singleEvent') }}
+              style={{ display: 'flex', gap: '1em' }}
+            >
+              <BackArrow size="16" />
+              Back to your event
+            </Button>
+          </div>
+        }
+
+        <h2 className="text-left" style={{ fontWeight: "300" }}>
+          {event ? "Edit Event" : "Create an Event"}
+        </h2>
+        {formContent}
+      </div>
+    </>
   );
 }
