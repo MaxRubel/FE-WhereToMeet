@@ -1,0 +1,10 @@
+.splitRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4em;
+}
+
+.optional {
+  margin-left: 10px;
+  font-style: italic;
+}

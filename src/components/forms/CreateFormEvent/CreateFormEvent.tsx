@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/accordion";
 import { Event } from "dataTypes";
 import { BackArrow } from "@/components/graphics/Graphics1";
+import styles from "./styles.module.css";
 
 interface CreateEventFormProps {
   event?: Event;
@@ -45,6 +46,7 @@ export default function CreateEventForm({
   const { user } = useAuth();
   const navigate = useNavigate();
   const [dateOpen, setDateOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
   const initEvent: Event = {
     _id: "",
     name: "",
@@ -156,13 +158,31 @@ export default function CreateEventForm({
     }
   };
 
-  //basic form validation:
-  const { street, city, state, zipcode } = formFields.location.address;
+  const handleAccordian = () => {
+    if (locationOpen) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        location: {
+          name: "",
+          url: "",
+          address: {
+            street: "",
+            city: "",
+            state: "",
+            zipcode: 0,
+            coordinates: {
+              lat: 0,
+              long: 0,
+            },
+          },
+        },
+      }));
+    }
+    setLocationOpen((preVal) => !preVal);
+  };
 
-  let hasEnteredAddress;
-  street || city || state || zipcode
-    ? (hasEnteredAddress = true)
-    : (hasEnteredAddress = false);
+  //basic form validation:
+  const { street } = formFields.location.address;
 
   let needsRestOfAddress;
   street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
@@ -270,16 +290,20 @@ export default function CreateEventForm({
         <Input
           type="time"
           name="time"
+          id="time"
           value={formFields.time}
           onChange={handleTime}
           className="form-input w-[240px]"
         />
       </div>
 
+      {/* ---Location Section--- */}
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger>Add Location +</AccordionTrigger>
-          <AccordionContent>
+          <AccordionTrigger onClick={handleAccordian}>
+            {locationOpen ? "Remove Location -" : "Add Location +"}
+          </AccordionTrigger>
+          <AccordionContent style={{ padding: "1px" }}>
             <div className="form-group">
               <Label
                 style={{ marginTop: "1em" }}
@@ -292,16 +316,16 @@ export default function CreateEventForm({
                 type="text"
                 id="locationName"
                 name="locationName"
-                // value={formFields.locationName}
+                value={formFields.location.name}
                 onChange={handleChange}
                 className="form-input"
-                required={hasEnteredAddress}
+                required={locationOpen}
               />
             </div>
 
             <div className="form-group">
               <Label htmlFor="url" className="form-label">
-                Website
+                Website <span className={styles.optional}>optional</span>
               </Label>
               <Input
                 type="url"
@@ -313,70 +337,77 @@ export default function CreateEventForm({
                 aria-required="false"
               />
             </div>
+            <div className={styles.splitRow}>
+              <div className="form-group">
+                <Label htmlFor="street" className="form-label">
+                  Street
+                </Label>
+                <Input
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={formFields.location.address.street}
+                  onChange={handleChange}
+                  className="form-input"
+                />
+              </div>
 
-            <div className="form-group">
-              <Label htmlFor="street" className="form-label">
-                Street
-              </Label>
-              <Input
-                type="text"
-                id="street"
-                name="street"
-                value={formFields.location.address.street}
-                onChange={handleChange}
-                className="form-input"
-              />
+              <div className="form-group">
+                <Label htmlFor="city" className="form-label">
+                  City
+                </Label>
+                <Input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formFields.location.address.city}
+                  onChange={handleChange}
+                  className="form-input"
+                  required={needsRestOfAddress}
+                />
+              </div>
             </div>
 
-            <div className="form-group">
-              <Label htmlFor="city" className="form-label">
-                City
-              </Label>
-              <Input
-                type="text"
-                id="city"
-                name="city"
-                value={formFields.location.address.city}
-                onChange={handleChange}
-                className="form-input"
-                required={needsRestOfAddress}
-              />
-            </div>
+            <div className={styles.splitRow}>
+              <div className="form-group">
+                <Label htmlFor="state" className="form-label">
+                  State
+                </Label>
+                <Input
+                  type="text"
+                  id="state"
+                  name="state"
+                  maxLength={2}
+                  style={{ width: "80px" }}
+                  value={formFields.location.address.state}
+                  onChange={handleChange}
+                  className="form-input"
+                  required={needsRestOfAddress}
+                />
+              </div>
 
-            <div className="form-group">
-              <Label htmlFor="state" className="form-label">
-                State
-              </Label>
-              <Input
-                type="text"
-                id="state"
-                name="state"
-                value={formFields.location.address.state}
-                onChange={handleChange}
-                className="form-input"
-                required={needsRestOfAddress}
-              />
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="zipcode" className="form-label">
-                Zipcode
-              </Label>
-              <Input
-                type="number"
-                id="zipcode"
-                name="zipcode"
-                value={
-                  formFields.location.address.zipcode
-                    ? formFields.location.address.zipcode
-                    : ""
-                }
-                onChange={handleChange}
-                className="form-input"
-                pattern="[0-9]*"
-                inputMode="numeric"
-                required={needsRestOfAddress}
-              />
+              <div className="form-group">
+                <Label htmlFor="zipcode" className="form-label">
+                  Zipcode
+                </Label>
+                <Input
+                  type="number"
+                  id="zipcode"
+                  name="zipcode"
+                  value={
+                    formFields.location.address.zipcode
+                      ? formFields.location.address.zipcode
+                      : ""
+                  }
+                  style={{ width: "200px" }}
+                  onChange={handleChange}
+                  className="form-input"
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  maxLength={5}
+                  required={needsRestOfAddress}
+                />
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
