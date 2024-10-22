@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Event, Suggestion } from "dataTypes";
 import { useState } from "react";
-import styles from "../../EventStyles.module.css"
+import styles from "../../EventStyles.module.css";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth/auth";
 import { useAddSuggestion } from "@/api/events";
@@ -87,10 +87,8 @@ export default function SuggestionForm({ event }: props) {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <DrawerHeader style={{ backgroundColor: 'red' }}>
-            <DrawerTitle
-              style={{ fontWeight: "400" }}
-            >
+          <DrawerHeader>
+            <DrawerTitle style={{ fontWeight: "400" }}>
               Add A Suggestion
             </DrawerTitle>
 

@@ -1,0 +1,10 @@
+.titleRow {
+  display: flex;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.address {
+  padding-left: 30px;
+  padding-top: 10px;
+}

@@ -163,6 +163,7 @@ export default function Chat({ eventId }: props) {
           <Textarea
             placeholder="Say something..."
             value={message}
+            id="chat-textarea"
             onChange={(e) => {
               setMessage(e.target.value);
             }}

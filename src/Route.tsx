@@ -49,9 +49,10 @@ const PublicRouteChecker = ({ children }: ChildrenProp) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const isPublic = searchParams.get("public") === "true";
-
     if (location.pathname.includes("/events") && isPublic) {
       setIsPublicRoute(true);
+    } else {
+      setIsPublicRoute(false);
     }
   }, [location, setIsPublicRoute]);
 
