@@ -70,3 +70,10 @@
   border-radius: 50%;
   translate: transformY(-0px);
 }
+
+.chatHeaderWithIcon {
+  font-weight: 500;
+  font-size: 1.2em;
+  display: flex;
+  gap: 10px;
+}

@@ -11,7 +11,6 @@ type Props = {
 export default function SingleEventComponent({ event }: Props) {
   return (
     <div style={{ padding: "0em 3em" }}>
-
       {/* Event Title Section */}
       <div className="flex flex-col items-start justify-between mb-10">
         <h2 className="text-xl font-bold mb-8">{event.name}</h2>
@@ -21,21 +20,17 @@ export default function SingleEventComponent({ event }: Props) {
       {/* ---Event Details--- */}
       <div style={{ marginTop: "3em" }}>
         <CalendarCard event={event} />
-        <div style={{ marginTop: '1em' }}><LocationCard location={event.location} /></div>
+        <div style={{ marginTop: "1em" }}>
+          <LocationCard location={event.location} />
+        </div>
       </div>
 
-
-
-      <div style={{ marginTop: "2em" }}>
-
+      <div style={{ marginTop: "1em" }}>
         {/* ----Chat Container---- */}
         {event.chatEnabled && <Chat eventId={event._id} />}
 
         {/* ----Suggestions Container--- */}
-        {event.suggestionsEnabled && (
-          <SuggestionsContainer event={event} />
-        )}
-
+        {event.suggestionsEnabled && <SuggestionsContainer event={event} />}
       </div>
     </div>
   );
