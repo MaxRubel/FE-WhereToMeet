@@ -46,7 +46,6 @@ export default function CreateEventForm({
   const { user } = useAuth();
   const navigate = useNavigate();
   const [dateOpen, setDateOpen] = useState(false);
-  const [locationOpen, setLocationOpen] = useState(false);
   const initEvent: Event = {
     _id: "",
     name: "",
@@ -78,6 +77,9 @@ export default function CreateEventForm({
 
   const [formFields, setFormFields] = useState<Event>(
     event ? event : initEvent
+  );
+  const [locationOpen, setLocationOpen] = useState(
+    event?.location.name ? true : false
   );
   const { data: groups, isLoading } = useGetUserGroups(user._id);
 
@@ -159,7 +161,13 @@ export default function CreateEventForm({
   };
 
   const handleAccordian = () => {
-    if (locationOpen) {
+    if (
+      locationOpen &&
+      formFields.location.name &&
+      window.confirm(
+        "Are you sure you want to remove this location from the event?"
+      )
+    ) {
       setFormFields((preVal) => ({
         ...preVal,
         location: {
@@ -177,8 +185,11 @@ export default function CreateEventForm({
           },
         },
       }));
+      setLocationOpen(false);
     }
-    setLocationOpen((preVal) => !preVal);
+    if (!locationOpen) {
+      setLocationOpen(true);
+    }
   };
 
   //basic form validation:
@@ -298,7 +309,7 @@ export default function CreateEventForm({
       </div>
 
       {/* ---Location Section--- */}
-      <Accordion type="single" collapsible>
+      <Accordion type="single" collapsible value={locationOpen ? "item-1" : ""}>
         <AccordionItem value="item-1">
           <AccordionTrigger onClick={handleAccordian}>
             {locationOpen ? "Remove Location -" : "Add Location +"}

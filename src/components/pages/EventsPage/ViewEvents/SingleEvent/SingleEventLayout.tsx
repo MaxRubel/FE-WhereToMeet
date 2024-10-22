@@ -77,19 +77,21 @@ export default function SingleEventLayout() {
           </button>
 
           {/* ---Edit Event Button--- */}
-          <button
-            className="clear-button side-list-item"
-            onClick={() => {
-              setIsViewing("editEvent");
-            }}
-            style={{
-              backgroundColor:
-                isViewing === "editEvent" ? "rgb(245,245,245)" : "white",
-            }}
-          >
-            <EditIcon2 size="18" />
-            Edit Event
-          </button>
+          {user._id === event.ownerId && setIsViewing && (
+            <button
+              className="clear-button side-list-item"
+              onClick={() => {
+                setIsViewing("editEvent");
+              }}
+              style={{
+                backgroundColor:
+                  isViewing === "editEvent" ? "rgb(245,245,245)" : "white",
+              }}
+            >
+              <EditIcon2 size="18" />
+              Edit Event
+            </button>
+          )}
 
           {/* ---Moderator Button--- */}
           {user._id === event.ownerId && (

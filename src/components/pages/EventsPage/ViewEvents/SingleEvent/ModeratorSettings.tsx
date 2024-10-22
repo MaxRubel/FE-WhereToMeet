@@ -73,6 +73,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
               checked={event.private}
               onCheckedChange={togglePrivate}
               id="toggle-private"
+              style={{ padding: "0px" }}
             />
             <label htmlFor="toggle-private" className="text-sm font-medium">
               Private Event
@@ -91,6 +92,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
               checked={event.suggestionsEnabled}
               onCheckedChange={toggleSuggestions}
               id="toggle-suggestions"
+              style={{ padding: "0px" }}
             />
             <label htmlFor="toggle-suggestions" className="text-sm font-medium">
               {event.suggestionsEnabled
@@ -111,6 +113,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
               checked={event.chatEnabled}
               onCheckedChange={toggleChat}
               id="toggle-chat"
+              style={{ padding: "0px" }}
             />
             <label htmlFor="toggle-chat" className="text-sm font-medium">
               {event.chatEnabled ? "Disable Chat" : "Enable Chat"}
