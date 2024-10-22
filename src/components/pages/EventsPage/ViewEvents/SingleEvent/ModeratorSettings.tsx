@@ -81,7 +81,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
           </div>
           <div className={styles.subSwitch}>
             A private event can only be viewed by its group members. A public
-            event is viewable by anyone with a link to the event
+            event is viewable by anyone with a link to the event.
           </div>
         </div>
 

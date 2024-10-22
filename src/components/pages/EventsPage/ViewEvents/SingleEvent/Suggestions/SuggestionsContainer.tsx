@@ -3,6 +3,7 @@ import styles from "../../EventStyles.module.css";
 import SuggestionCard from "./SuggestionCard";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth/auth";
+import SuggestionForm from "./SuggestionForm";
 
 interface props {
   event: Event;
@@ -29,7 +30,10 @@ export default function SuggestionsContainer({ event }: props) {
     <div className={`${styles.suggestionsContainer} cool-card`}>
       <div className={styles.suggestionsHeader}>
         {/* ----Header---- */}
-        <h2 style={{ fontWeight: 500, fontSize: "1.2em" }}>Suggestions</h2>
+        <h2 style={{ fontWeight: 500, fontSize: "1.2em" }}>
+          Suggestions
+        </h2>
+        <SuggestionForm event={event} />
       </div>
 
       {/* ---Suggestions Container--- */}

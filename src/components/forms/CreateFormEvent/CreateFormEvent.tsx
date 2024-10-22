@@ -160,10 +160,12 @@ export default function CreateEventForm({
     }
   };
 
+  const { street, city, zipcode, state } = formFields.location.address
+  const { name } = formFields.location
   const handleAccordian = () => {
     if (
       locationOpen &&
-      formFields.location.name &&
+      (street || city || zipcode || state || name) &&
       window.confirm(
         "Are you sure you want to remove this location from the event?"
       )
@@ -186,14 +188,15 @@ export default function CreateEventForm({
         },
       }));
       setLocationOpen(false);
+    } else if (locationOpen) {
+      setLocationOpen(false)
     }
-    if (!locationOpen) {
+    else {
       setLocationOpen(true);
     }
   };
 
   //basic form validation:
-  const { street } = formFields.location.address;
 
   let needsRestOfAddress;
   street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
