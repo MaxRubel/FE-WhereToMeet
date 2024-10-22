@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateEvent, useUpdateEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,11 +33,19 @@ import {
 import { Event } from "dataTypes";
 import { BackArrow } from "@/components/graphics/Graphics1";
 import styles from "./styles.module.css";
+import { useValidateTimes } from "./useValidateTimes";
 
 interface CreateEventFormProps {
   event?: Event;
   setIsViewing?: Dispatch<SetStateAction<string>>;
 }
+
+const initErrors = {
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+};
 
 export default function CreateEventForm({
   event,
@@ -45,7 +53,11 @@ export default function CreateEventForm({
 }: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
+  const [errors, setErrors] = useState(initErrors);
   const [dateOpen, setDateOpen] = useState(false);
+
   const initEvent: Event = {
     _id: "",
     name: "",
@@ -69,11 +81,32 @@ export default function CreateEventForm({
         },
       },
     },
-    date: null,
-    time: "",
+    startDate: null,
+    startTime: "",
+    endDate: null,
+    endTime: "",
     suggestions: [],
     messages: [],
   };
+
+  useEffect(() => {
+    // close date picker
+    function handleClickOut(e: PointerEvent) {
+      if ((e.target as HTMLElement)?.id !== "date-picker") {
+        if (startDateOpen) {
+          setStartDateOpen(false);
+        }
+        if (endDateOpen) {
+          setEndDateOpen(false);
+        }
+      }
+    }
+
+    document.addEventListener("pointerdown", handleClickOut);
+    return () => {
+      document.removeEventListener("pointerdown", handleClickOut);
+    };
+  }, [startDateOpen, endDateOpen]);
 
   const [formFields, setFormFields] = useState<Event>(
     event ? event : initEvent
@@ -122,19 +155,61 @@ export default function CreateEventForm({
     }
   };
 
-  const handleDate = (newDate: Date | undefined) => {
+  const handleStartDate = (newDate: Date) => {
+    setErrors(initErrors);
+    if (
+      useValidateTimes(
+        setErrors,
+        formFields,
+        newDate,
+        "startDate",
+        setFormFields
+      )
+    ) {
+      return;
+    }
     setFormFields((prevFields) => ({
       ...prevFields,
-      date: newDate || null,
+      startDate: newDate,
     }));
-    setDateOpen(false);
+    setStartDateOpen(false);
   };
 
-  const handleTime = (e: any) => {
-    setFormFields((preVal) => ({
-      ...preVal,
-      time: e.target.value,
+  const handleEndDate = (newDate: Date) => {
+    setErrors(initErrors);
+    if (
+      useValidateTimes(setErrors, formFields, newDate, "endDate", setFormFields)
+    ) {
+      return;
+    }
+    setFormFields((prevFields) => ({
+      ...prevFields,
+      endDate: newDate || null,
     }));
+
+    setEndDateOpen(false);
+  };
+
+  const handleStartTime = (e: any) => {
+    setErrors(initErrors);
+    const { value } = e.target;
+    if (
+      useValidateTimes(setErrors, formFields, value, "startTime", setFormFields)
+    ) {
+      return;
+    }
+    setFormFields((preVal) => ({ ...preVal, startTime: value }));
+  };
+
+  const handleEndTime = (e: any) => {
+    setErrors(initErrors);
+    const { value } = e.target;
+    if (
+      useValidateTimes(setErrors, formFields, value, "endTime", setFormFields)
+    ) {
+      return;
+    }
+    setFormFields((preVal) => ({ ...preVal, endTime: value }));
   };
 
   const createEvent = useCreateEvent();
@@ -142,6 +217,13 @@ export default function CreateEventForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    Object.values(errors).forEach((error) => {
+      if (error) {
+        window.alert("Please fill in the required fields.");
+        return;
+      }
+    });
 
     if (event && setIsViewing) {
       //  update
@@ -160,44 +242,71 @@ export default function CreateEventForm({
     }
   };
 
-  const { street, city, zipcode, state } = formFields.location.address
-  const { name } = formFields.location
+  const { street, city, zipcode, state } = formFields.location.address;
+  const { name } = formFields.location;
+
   const handleAccordian = () => {
-    if (
-      locationOpen &&
-      (street || city || zipcode || state || name) &&
-      window.confirm(
-        "Are you sure you want to remove this location from the event?"
-      )
-    ) {
-      setFormFields((preVal) => ({
-        ...preVal,
-        location: {
-          name: "",
-          url: "",
-          address: {
-            street: "",
-            city: "",
-            state: "",
-            zipcode: 0,
-            coordinates: {
-              lat: 0,
-              long: 0,
+    // this nasty looking logic will ask you to confirm before
+    // closing the location tab and deleting the info if there is any data in there.
+    if (locationOpen) {
+      if (
+        (street || city || zipcode || state || name) &&
+        window.confirm(
+          "Are you sure you want to remove this location from the event?"
+        )
+      ) {
+        setFormFields((preVal) => ({
+          ...preVal,
+          location: {
+            name: "",
+            url: "",
+            address: {
+              street: "",
+              city: "",
+              state: "",
+              zipcode: 0,
+              coordinates: {
+                lat: 0,
+                long: 0,
+              },
             },
           },
-        },
-      }));
-      setLocationOpen(false);
-    } else if (locationOpen) {
-      setLocationOpen(false)
-    }
-    else {
+        }));
+        setLocationOpen(false);
+      } else {
+        // if no info then just close it.
+        setLocationOpen(false);
+      }
+    } else {
       setLocationOpen(true);
     }
   };
 
-  //basic form validation:
+  const handleDateAccordian = () => {
+    if (dateOpen) {
+      if (
+        formFields.startDate &&
+        window.confirm("Are you sure you want to remove this date information")
+      ) {
+        setFormFields((preVal) => ({
+          ...preVal,
+          startDate: null,
+          endDate: null,
+          startTime: "",
+          endTime: "",
+        }));
+        setDateOpen(false);
+        setErrors(initErrors);
+      } else if (!formFields.startDate) {
+        setDateOpen(false);
+        setErrors(initErrors);
+      }
+    } else {
+      setDateOpen(true);
+    }
+  };
 
+  //basic form validation:
   let needsRestOfAddress;
   street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
 
@@ -242,74 +351,173 @@ export default function CreateEventForm({
         />
       </div>
 
-      <div className="form-group">
-        <Label htmlFor="groupId" className="form-label">
-          Group
-        </Label>
-        <Select
-          name="groupId"
-          value={formFields.groupId}
-          onValueChange={(value) =>
-            setFormFields((prevFields) => ({ ...prevFields, groupId: value }))
-          }
-        >
-          <SelectTrigger className="form-input">
-            <SelectValue placeholder="Select a group" />
-          </SelectTrigger>
-          <SelectContent>
-            {groups?.map((group: any) => (
-              //@ts-ignore will not be undefined
-              <SelectItem key={group._id} value={group._id}>
-                {group.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* ---group selection--- */}
+      {!event && (
+        <div className="form-group">
+          <Label htmlFor="groupId" className="form-label">
+            Group
+          </Label>
+          <Select
+            name="groupId"
+            value={formFields.groupId}
+            onValueChange={(value) =>
+              setFormFields((prevFields) => ({ ...prevFields, groupId: value }))
+            }
+          >
+            <SelectTrigger className="form-input">
+              <SelectValue placeholder="Select a group" />
+            </SelectTrigger>
+            <SelectContent>
+              {groups?.map((group: any) => (
+                //@ts-ignore will not be undefined
+                <SelectItem key={group._id} value={group._id}>
+                  {group.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      <div className="form-group">
-        <Label className="form-label">Date</Label>
-        <Popover open={dateOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn("form-input justify-start text-left font-normal")}
-              onClick={() => {
-                setDateOpen(true);
-              }}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {formFields.date ? (
-                format(formFields.date, "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={formFields.date || undefined}
-              onSelect={handleDate}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+      <Accordion type="single" collapsible value={dateOpen ? "item-1" : ""}>
+        <AccordionItem value="item-1">
+          <AccordionTrigger onClick={handleDateAccordian}>
+            {dateOpen ? "Remove Date -" : "Add Date +"}
+          </AccordionTrigger>
+          <AccordionContent style={{ marginTop: "1em", padding: "1em" }}>
+            {/* ---start time--- */}
+            <div className={styles.dates}>
+              <div className="colLeft">
+                <div className="form-group">
+                  <Label className="form-label">
+                    Start Date
+                    {errors.startDate && (
+                      <span style={{ color: "red", marginLeft: "10px" }}>
+                        {errors.startDate}
+                      </span>
+                    )}
+                  </Label>
+                  <Popover open={startDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "form-input justify-start text-left font-normal w-[240px]"
+                        )}
+                        onClick={() => {
+                          setStartDateOpen(true);
+                        }}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formFields.startDate ? (
+                          format(formFields.startDate, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        id="date-picker"
+                        //@ts-ignore
+                        selected={formFields.startDate}
+                        //@ts-ignore
+                        onSelect={handleStartDate}
+                        initialFocus
+                        required={formFields.startTime ? true : false}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
 
-      <div className="form-group">
-        <Label htmlFor="time" className="form-label">
-          Time
-        </Label>
-        <Input
-          type="time"
-          name="time"
-          id="time"
-          value={formFields.time}
-          onChange={handleTime}
-          className="form-input w-[240px]"
-        />
-      </div>
+                <div className="form-group">
+                  <Label htmlFor="start-time" className="form-label">
+                    Start Time
+                    {errors.startTime && (
+                      <span style={{ color: "red", marginLeft: "10px" }}>
+                        {errors.startTime}
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    type="time"
+                    name="startTime"
+                    id="start-time"
+                    value={formFields.startTime}
+                    onChange={handleStartTime}
+                    className="form-input w-[240px]"
+                  />
+                </div>
+              </div>
+
+              {/* ---end time--- */}
+              <div className="colLeft">
+                <div className="form-group">
+                  <Label className="form-label">
+                    End Date
+                    {errors.endDate && (
+                      <span style={{ color: "red", marginLeft: "10px" }}>
+                        {errors.endDate}
+                      </span>
+                    )}
+                  </Label>
+                  <Popover open={endDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "form-input justify-start text-left font-normal w-[240px]"
+                        )}
+                        onClick={() => {
+                          setEndDateOpen(true);
+                        }}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formFields.endDate ? (
+                          format(formFields.endDate, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        id="date-picker"
+                        selected={formFields.endDate || undefined}
+                        //@ts-ignore
+                        onSelect={handleEndDate}
+                        required={formFields.endTime ? true : false}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="end-time" className="form-label">
+                    End Time
+                    {errors.endTime && (
+                      <span style={{ color: "red", marginLeft: "10px" }}>
+                        {errors.endTime}
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    type="time"
+                    name="endTime"
+                    id="end-time"
+                    value={formFields.endTime}
+                    onChange={handleEndTime}
+                    className="form-input w-[240px]"
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {/* ---Location Section--- */}
       <Accordion type="single" collapsible value={locationOpen ? "item-1" : ""}>
@@ -317,14 +525,14 @@ export default function CreateEventForm({
           <AccordionTrigger onClick={handleAccordian}>
             {locationOpen ? "Remove Location -" : "Add Location +"}
           </AccordionTrigger>
-          <AccordionContent style={{ padding: "1px" }}>
+          <AccordionContent style={{ padding: "1em" }}>
             <div className="form-group">
               <Label
                 style={{ marginTop: "1em" }}
                 htmlFor="locationName"
                 className="form-label"
               >
-                Name
+                Location Name
               </Label>
               <Input
                 type="text"
@@ -402,7 +610,7 @@ export default function CreateEventForm({
 
               <div className="form-group">
                 <Label htmlFor="zipcode" className="form-label">
-                  Zipcode
+                  Zip
                 </Label>
                 <Input
                   type="number"
@@ -426,6 +634,7 @@ export default function CreateEventForm({
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
       <div style={{ display: "flex", gap: "1em", marginTop: "1.5em" }}>
         <Button type="submit">{event ? "Update Event" : "Create Event"}</Button>
         {event && setIsViewing && (

@@ -49,18 +49,6 @@ export default function SingleEventLayout() {
     return null;
   }
 
-  // const handleDeleteEvent = () => {
-  //   setIsEnabled(false);
-  //   delEventMutation.mutate(eventId, {
-  //     onSuccess: () => {
-  //       navigate("/events");
-  //     },
-  //     onError: (error: any) => {
-  //       console.error("Failed to delete event:", error);
-  //     },
-  //   });
-  // };
-
   return (
     <div className="profile-page-layout" style={{ textAlign: "left" }}>
       <div className="profile-side-bar">
