@@ -29,7 +29,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import { Event } from "dataTypes";
 import { BackArrow } from "@/components/graphics/Graphics1";
 
@@ -38,10 +38,13 @@ interface CreateEventFormProps {
   setIsViewing?: Dispatch<SetStateAction<string>>;
 }
 
-export default function CreateEventForm({ event, setIsViewing }: CreateEventFormProps) {
+export default function CreateEventForm({
+  event,
+  setIsViewing,
+}: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [dateOpen, setDateOpen] = useState(false)
+  const [dateOpen, setDateOpen] = useState(false);
   const initEvent: Event = {
     _id: "",
     name: "",
@@ -61,18 +64,20 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
         zipcode: 0,
         coordinates: {
           lat: 0,
-          long: 0
-        }
-      }
+          long: 0,
+        },
+      },
     },
     date: null,
     time: "",
     suggestions: [],
-    messages: []
+    messages: [],
   };
 
-  const [formFields, setFormFields] = useState<Event>(event ? event : initEvent);
-  const { data: groups, isLoading } = useGetUserGroups(user._id)
+  const [formFields, setFormFields] = useState<Event>(
+    event ? event : initEvent
+  );
+  const { data: groups, isLoading } = useGetUserGroups(user._id);
 
   const handleChange = (
     e:
@@ -80,35 +85,32 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-
     const { name, value } = e.target;
 
     if (
-      name === "street"
-      || name === "city"
-      || name === "state"
-      || name === "zipcode"
+      name === "street" ||
+      name === "city" ||
+      name === "state" ||
+      name === "zipcode"
     ) {
       setFormFields((preVal) => ({
         ...preVal,
         location: {
           ...preVal.location,
-          address: { ...preVal.location.address, [name]: value }
-        }
-      }))
-
+          address: { ...preVal.location.address, [name]: value },
+        },
+      }));
     } else if (name === "url") {
       setFormFields((preVal) => ({
-        ...preVal, location: { ...preVal.location, url: value }
-      }))
-
+        ...preVal,
+        location: { ...preVal.location, url: value },
+      }));
     } else if (name === "locationName") {
       setFormFields((preVal) => ({
-        ...preVal, location: { ...preVal.location, name: value }
-      }))
-    }
-
-    else {
+        ...preVal,
+        location: { ...preVal.location, name: value },
+      }));
+    } else {
       setFormFields((prevFields) => ({
         ...prevFields,
         [name]: value,
@@ -126,28 +128,31 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
 
   const handleTime = (e: any) => {
     setFormFields((preVal) => ({
-      ...preVal, time: e.target.value
-    }))
-  }
+      ...preVal,
+      time: e.target.value,
+    }));
+  };
 
-  const createEvent = useCreateEvent()
-  const updateEvent = useUpdateEvent()
+  const createEvent = useCreateEvent();
+  const updateEvent = useUpdateEvent();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (event && setIsViewing) {  //  update
+    if (event && setIsViewing) {
+      //  update
       updateEvent.mutate(formFields, {
         onSuccess: () => {
-          setIsViewing("singleEvent")
-        }
-      })
-    } else {  //  create
+          setIsViewing("singleEvent");
+        },
+      });
+    } else {
+      //  create
       createEvent.mutate(formFields, {
         onSuccess: (response) => {
-          navigate(`/events/${response._id}`)
-        }
-      })
+          navigate(`/events/${response._id}`);
+        },
+      });
     }
   };
 
@@ -155,14 +160,15 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
   const { street, city, state, zipcode } = formFields.location.address;
 
   let hasEnteredAddress;
-  street || city || state || zipcode ? hasEnteredAddress = true : hasEnteredAddress = false;
+  street || city || state || zipcode
+    ? (hasEnteredAddress = true)
+    : (hasEnteredAddress = false);
 
   let needsRestOfAddress;
-  street ? needsRestOfAddress = true : needsRestOfAddress = false;
-
+  street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
 
   if (isLoading) {
-    return <></>
+    return <></>;
   }
 
   const formContent = (
@@ -217,7 +223,6 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
             <SelectValue placeholder="Select a group" />
           </SelectTrigger>
           <SelectContent>
-
             {groups?.map((group: any) => (
               //@ts-ignore will not be undefined
               <SelectItem key={group._id} value={group._id}>
@@ -235,12 +240,16 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
             <Button
               variant="outline"
               className={cn("form-input justify-start text-left font-normal")}
-              onClick={() => { setDateOpen(true) }}
+              onClick={() => {
+                setDateOpen(true);
+              }}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formFields.date
-                ? format(formFields.date, "PPP")
-                : <span>Pick a date</span>}
+              {formFields.date ? (
+                format(formFields.date, "PPP")
+              ) : (
+                <span>Pick a date</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -271,9 +280,12 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
         <AccordionItem value="item-1">
           <AccordionTrigger>Add Location +</AccordionTrigger>
           <AccordionContent>
-
             <div className="form-group">
-              <Label style={{ marginTop: '1em' }} htmlFor="locationName" className="form-label">
+              <Label
+                style={{ marginTop: "1em" }}
+                htmlFor="locationName"
+                className="form-label"
+              >
                 Name
               </Label>
               <Input
@@ -286,7 +298,6 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 required={hasEnteredAddress}
               />
             </div>
-
 
             <div className="form-group">
               <Label htmlFor="url" className="form-label">
@@ -355,7 +366,11 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 type="number"
                 id="zipcode"
                 name="zipcode"
-                value={formFields.location.address.zipcode ? formFields.location.address.zipcode : ""}
+                value={
+                  formFields.location.address.zipcode
+                    ? formFields.location.address.zipcode
+                    : ""
+                }
                 onChange={handleChange}
                 className="form-input"
                 pattern="[0-9]*"
@@ -363,40 +378,48 @@ export default function CreateEventForm({ event, setIsViewing }: CreateEventForm
                 required={needsRestOfAddress}
               />
             </div>
-
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-
-      <Button type="submit" style={{ marginTop: "1em" }}>
-        {event ? "Update Event" : "Create Event"}
-      </Button>
+      <div style={{ display: "flex", gap: "1em", marginTop: "1.5em" }}>
+        <Button type="submit">{event ? "Update Event" : "Create Event"}</Button>
+        {event && setIsViewing && (
+          <Button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              setIsViewing("singleEvent");
+            }}
+          >
+            Cancel
+          </Button>
+        )}
+      </div>
     </form>
   );
 
   return (
-    <>
-      <div className="create-event-form-container">
+    <div className="create-event-form-container">
+      {/* ---top button row--- */}
+      {event && setIsViewing && (
+        <div style={{ marginBottom: "2em" }}>
+          <Button
+            className="secondary-button"
+            onClick={() => {
+              setIsViewing("singleEvent");
+            }}
+            style={{ display: "flex", gap: "10px" }}
+          >
+            <BackArrow size="18" />
+            Back to your event
+          </Button>
+        </div>
+      )}
 
-        {/* ---top button row--- */}
-        {event && setIsViewing &&
-          <div style={{ marginBottom: '2em' }}>
-            <Button
-              className="secondary-button"
-              onClick={() => { setIsViewing('singleEvent') }}
-              style={{ display: 'flex', gap: '1em' }}
-            >
-              <BackArrow size="16" />
-              Back to your event
-            </Button>
-          </div>
-        }
-
-        <h2 className="text-left" style={{ fontWeight: "300" }}>
-          {event ? "Edit Event" : "Create an Event"}
-        </h2>
-        {formContent}
-      </div>
-    </>
+      <h2 className="text-left" style={{ fontWeight: "300" }}>
+        {event ? "Edit Event" : "Create an Event"}
+      </h2>
+      {formContent}
+    </div>
   );
 }
