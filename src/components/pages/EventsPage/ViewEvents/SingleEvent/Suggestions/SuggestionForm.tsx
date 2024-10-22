@@ -76,7 +76,7 @@ export default function SuggestionForm({ event }: props) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button className="secondary-button">Add A Suggestion</Button>
+        <Button className="secondary-button" style={{ transform: 'translateY(-4px)' }}>Add A Suggestion</Button>
       </DrawerTrigger>
 
       <DrawerContent
@@ -88,7 +88,7 @@ export default function SuggestionForm({ event }: props) {
       >
         <form onSubmit={handleSubmit}>
           <DrawerHeader>
-            <DrawerTitle style={{ fontWeight: "400" }}>
+            <DrawerTitle style={{ textAlign: 'center' }}>
               Add A Suggestion
             </DrawerTitle>
 

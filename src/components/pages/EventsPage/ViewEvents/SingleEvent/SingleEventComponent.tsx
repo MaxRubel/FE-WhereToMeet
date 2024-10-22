@@ -1,8 +1,8 @@
 import { Event } from "dataTypes";
-import SuggestionForm from "./Suggestions/SuggestionForm";
 import SuggestionsContainer from "./Suggestions/SuggestionsContainer";
 import Chat from "./Chat/Chat";
 import LocationCard from "./LocationCard/LocationCard";
+import CalendarCard from "./CalendarCard/CalendarCard";
 
 type Props = {
   event: Event;
@@ -11,32 +11,31 @@ type Props = {
 export default function SingleEventComponent({ event }: Props) {
   return (
     <div style={{ padding: "0em 3em" }}>
+
       {/* Event Title Section */}
-      <div className="flex flex-col items-start justify-between">
+      <div className="flex flex-col items-start justify-between mb-10">
         <h2 className="text-xl font-bold mb-8">{event.name}</h2>
         <p className="text-left">{event.description}</p>
       </div>
 
       {/* ---Event Details--- */}
-      <div className="">
-        <LocationCard location={event.location} />
+      <div style={{ marginTop: "3em" }}>
+        <CalendarCard event={event} />
+        <div style={{ marginTop: '1em' }}><LocationCard location={event.location} /></div>
       </div>
 
-      <div style={{ marginTop: "3em" }}>
-        {/* ----Admin Toggle Switches---- */}
-        {/* only admin creator can toggle switches */}
 
-        {/* ---private event switch--- */}
-        {/* ----Suggestions Container--- */}
-        {event.suggestionsEnabled && (
-          <>
-            <SuggestionForm event={event} />
-            <SuggestionsContainer event={event} />
-          </>
-        )}
+
+      <div style={{ marginTop: "2em" }}>
 
         {/* ----Chat Container---- */}
         {event.chatEnabled && <Chat eventId={event._id} />}
+
+        {/* ----Suggestions Container--- */}
+        {event.suggestionsEnabled && (
+          <SuggestionsContainer event={event} />
+        )}
+
       </div>
     </div>
   );

@@ -9,10 +9,10 @@ type props = {
 export default function LocationCard({ location }: props) {
   const { street, city, state } = location.address;
   return (
-    <div className="cool-card" style={{ marginTop: "3em" }}>
+    <div className="cool-card">
       <div className={styles.titleRow}>
         <LocationIcon size="20" />
-        {location.name}
+        {location.name ? location.name : "No location has been added..."}
       </div>
       {street && (
         <div className={styles.address}>
