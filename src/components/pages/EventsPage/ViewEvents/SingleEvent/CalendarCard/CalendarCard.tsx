@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { CalendarIcon } from "@/components/graphics/Graphics1";
 import { Event } from "dataTypes";
 import { getDay } from "../../../../../../../utils/getDay";
@@ -9,13 +7,15 @@ type props = {
   event: Event;
 };
 
-//@ts-ignore
 export default function CalendarCard({ event }: props) {
   const { startDate, endDate, startTime, endTime } = event;
 
+  if (startDate !== typeof "string" || endDate !== typeof "string") {
+    return "error printing date card. Check types";
+  }
+
   const onSameDay =
     new Date(startDate).getDate() === new Date(endDate).getDate();
-
   const dayOfWeekStart = startDate ? getDay(startDate) : "";
   const formattedtStartDate = startDate ? formatDate(startDate) : "";
   const dayOfWeekEnd = endDate ? getDay(endDate) : "";

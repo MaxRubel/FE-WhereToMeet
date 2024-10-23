@@ -80,9 +80,9 @@ export default function CreateEventForm({
         },
       },
     },
-    startDate: null,
+    startDate: "",
     startTime: "",
-    endDate: null,
+    endDate: "",
     endTime: "",
     suggestions: [],
     messages: [],
@@ -156,7 +156,8 @@ export default function CreateEventForm({
     }
   };
 
-  const handleStartDate = (newDate: Date) => {
+  const handleStartDate = (newDate: Date | undefined) => {
+    if (!newDate) return;
     setErrors(initErrors);
     if (
       useValidateTimes(
@@ -176,7 +177,8 @@ export default function CreateEventForm({
     setStartDateOpen(false);
   };
 
-  const handleEndDate = (newDate: Date) => {
+  const handleEndDate = (newDate: Date | undefined) => {
+    if (!newDate) return;
     setErrors(initErrors);
     if (
       useValidateTimes(setErrors, formFields, newDate, "endDate", setFormFields)
@@ -291,8 +293,8 @@ export default function CreateEventForm({
       ) {
         setFormFields((preVal) => ({
           ...preVal,
-          startDate: null,
-          endDate: null,
+          startDate: "",
+          endDate: "",
           startTime: "",
           endTime: "",
         }));
@@ -421,9 +423,11 @@ export default function CreateEventForm({
                       <Calendar
                         mode="single"
                         id="date-picker"
-                        //@ts-ignore
-                        selected={formFields.startDate}
-                        //@ts-ignore
+                        selected={
+                          formFields.startDate
+                            ? new Date(formFields.startDate)
+                            : undefined
+                        }
                         onSelect={handleStartDate}
                         initialFocus
                         required={formFields.startTime ? true : false}
@@ -486,8 +490,11 @@ export default function CreateEventForm({
                       <Calendar
                         mode="single"
                         id="date-picker"
-                        selected={formFields.endDate || undefined}
-                        //@ts-ignore
+                        selected={
+                          formFields.endDate
+                            ? new Date(formFields.endDate)
+                            : undefined
+                        }
                         onSelect={handleEndDate}
                         required={formFields.endTime ? true : false}
                         initialFocus

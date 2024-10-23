@@ -81,7 +81,7 @@ export function useValidateTimes(
   }
 
   if (type === "startDate") {
-    //@ts-ignore
+    //@ts-ignore -- date is a string here
     if (input && normalizeDate(input) < normalizeDate(new Date())) {
       console.warn("wrong date");
       setErrors((preVal) => ({
@@ -108,7 +108,7 @@ export function useValidateTimes(
         ...preVal,
         startTime: "Start time must be earlier than end time.",
       }));
-      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: null }));
+      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: "" }));
       return true;
     }
   }
@@ -134,7 +134,7 @@ export function useValidateTimes(
         ...preVal,
         startTime: "Start time must be earlier than end time.",
       }));
-      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: null }));
+      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: "" }));
       return true;
     }
   }
