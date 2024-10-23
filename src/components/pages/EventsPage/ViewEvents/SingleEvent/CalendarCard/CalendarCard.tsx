@@ -10,7 +10,10 @@ type props = {
 export default function CalendarCard({ event }: props) {
   const { startDate, endDate, startTime, endTime } = event;
 
-  if (startDate !== typeof "string" || endDate !== typeof "string") {
+  const datesAreOk =
+    typeof startDate === "string" && typeof endDate === "string";
+
+  if (!datesAreOk) {
     return "error printing date card. Check types";
   }
 
