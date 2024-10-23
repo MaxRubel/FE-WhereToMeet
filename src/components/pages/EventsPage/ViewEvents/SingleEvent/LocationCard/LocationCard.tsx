@@ -12,7 +12,13 @@ export default function LocationCard({ location }: props) {
     <div className="cool-card">
       <div className={styles.titleRow}>
         <LocationIcon size="20" />
-        {location.name ? location.name : "No location has been added..."}
+        {location.name ? (
+          location.name
+        ) : (
+          <span style={{ fontWeight: "300" }}>
+            No location has been added...
+          </span>
+        )}
       </div>
       {street && (
         <div className={styles.address}>
