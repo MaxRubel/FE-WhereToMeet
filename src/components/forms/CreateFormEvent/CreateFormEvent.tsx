@@ -110,8 +110,8 @@ export default function CreateEventForm({
   const [formFields, setFormFields] = useState<Event>(
     event ? event : initEvent
   );
-  const [dateOpen, setDateOpen] = useState(event?.startDate ? true : false);
 
+  const [dateOpen, setDateOpen] = useState(event?.startDate ? true : false);
   const [locationOpen, setLocationOpen] = useState(
     event?.location.name ? true : false
   );
