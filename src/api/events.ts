@@ -284,7 +284,3 @@ export function useSendInvite() {
     },
   });
 }
-      .catch((err) => reject(err));
-  });
-}
-
