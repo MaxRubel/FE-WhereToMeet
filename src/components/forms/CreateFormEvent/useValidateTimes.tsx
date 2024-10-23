@@ -83,7 +83,6 @@ export function useValidateTimes(
   if (type === "startDate") {
     //@ts-ignore -- date is a string here
     if (input && normalizeDate(input) < normalizeDate(new Date())) {
-      console.warn("wrong date");
       setErrors((preVal) => ({
         ...preVal,
         startDate: "Start date cannot be earlier than today's date.",
