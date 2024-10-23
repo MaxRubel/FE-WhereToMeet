@@ -1,6 +1,11 @@
 import { Event, Suggestion } from "dataTypes";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { getAuth } from "firebase/auth";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -224,6 +229,62 @@ export async function checkEventPrivacy(id: string) {
     })
       .then((response) => response.json())
       .then((data) => resolve(data))
+      .catch((err) => reject(err))
+  })
+}
+
+interface InvitePayload {
+  eventId: string;
+  inviteeEmail: string;
+}
+interface InviteResponse {
+  message: string;
+  success: boolean;
+  invitedUser?: {
+    email: string;
+  };
+}
+export function useSendInvite() {
+  const queryClient = useQueryClient();
+
+  return useMutation<InviteResponse, Error, InvitePayload>({
+    onMutate: async (payload) => {
+      const auth = getAuth();
+      const idToken = await auth.currentUser?.getIdToken();
+
+      if (!idToken) {
+        throw new Error('No auth token available')
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/invite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      return response.json();
+    },
+
+    onSuccess: (_, payload) => {
+      queryClient.invalidateQueries({
+        queryKey: ['events', payload.eventId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['event-invites', payload.eventId]
+      });
+    },
+    onError: (err) => {
+      console.error('Failed to send invite', err);
+    },
+  });
+}
       .catch((err) => reject(err));
   });
 }
+
