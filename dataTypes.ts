@@ -73,8 +73,10 @@ export type Event = {
   chatEnabled: boolean;
   description: string;
   location: Location;
-  date: Date | null;
-  time: string;
+  startDate: Date | string;
+  startTime: string;
+  endDate: Date | string;
+  endTime: string;
   suggestions: Suggestion[];
   messages: Message[];
 };

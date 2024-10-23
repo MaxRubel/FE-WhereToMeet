@@ -3,13 +3,14 @@ import { auth } from "../../context/auth/firebase";
 import { useAuth } from "../../context/auth/auth";
 
 export default function SignOutButton() {
-  const { setUser } = useAuth();
+  const { setUser, checkUserFunc } = useAuth();
 
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
       setUser("notLoggedIn");
       localStorage.setItem("user", "");
+      checkUserFunc();
     } catch (error) {
       console.error("Error signing out", error);
     }

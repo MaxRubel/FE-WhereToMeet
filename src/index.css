@@ -40,12 +40,12 @@ h1 {
 }
 
 button {
-  /* border-radius: 8px; */
-  /* border: 1px solid transparent; */
-  /* padding: 0.6em 1.2em; */
-  /* font-size: 1em; */
-  /* font-weight: 500; */
-  /* font-family: inherit; */
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
 }
 
@@ -258,4 +258,45 @@ h2 {
   padding: 1em;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  height: 100vh; 
+}
+
+.column {
+  flex: 50%; 
+  padding: 10px;
+  height: 100%; 
+  background-color: #b3b8bd;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+  background-color: #f0f0f0; 
+}
+
+.right {
+  background-color: #b3b8bd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center 
+}
+
+.sign-in-btn {
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+.logo {
+  width: 60%;
+}
+
+.minilogo{
+  width: 20%;
 }

@@ -10,26 +10,26 @@ import { getAuth } from "firebase/auth";
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
 export const useCreateEvent = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: Event) => {
       const response = await fetch(`${endpoint}/events`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] })
-    }
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
   });
 };
 
-// Update Event - Migrated to v4
+// Update Event
 export function useUpdateEvent() {
   const queryClient = useQueryClient();
 
@@ -61,7 +61,7 @@ const fetchUserEvents = async (userId: string): Promise<Event[]> => {
 
 export function useGetUserEvents(userId: string) {
   return useQuery<Event[], Error>({
-    queryKey: ['events', userId],
+    queryKey: ["events", userId],
     queryFn: () => fetchUserEvents(userId),
     enabled: !!userId,
   });
@@ -87,7 +87,7 @@ export function useGetSingleEvent(id: string) {
   return { ...query, setIsEnabled };
 }
 
-// Delete Event - Migrated to v4
+// Delete Event
 export function useDeleteEvent() {
   const queryClient = useQueryClient();
 
@@ -99,17 +99,16 @@ export function useDeleteEvent() {
           "Content-Type": "application/json",
         },
       });
-      return response.json()
+      return response.json();
     },
     onSuccess: (_, id) => {
-      console.log("deleted")
       queryClient.invalidateQueries({ queryKey: ["events", id] });
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }
 
-// Add Suggestion To Event - Migrated to v4
+// Add Suggestion To Event
 export function useAddSuggestion() {
   const queryClient = useQueryClient();
 
@@ -133,7 +132,7 @@ export type RemoveSuggestionPayload = {
   suggestionId: string;
 };
 
-// Remove Suggestion - Migrated to v4
+// Remove Suggestion
 export function useRemoveSuggestion() {
   const queryClient = useQueryClient();
 
@@ -161,7 +160,7 @@ export interface ToggleVotePayload {
 }
 
 export function useToggleVote() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   async function toggleVote(payload: ToggleVotePayload) {
     const response = await fetch(`${endpoint}/events/add-vote`, {
@@ -170,19 +169,18 @@ export function useToggleVote() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-    })
-    if (!response.ok) {
-      throw new Error("failed to vote")
-    }
-    return response.json()
+    });
+    return response.json();
   }
 
   return useMutation({
     mutationFn: toggleVote,
     onMutate: async (payload) => {
-      await queryClient.cancelQueries({ queryKey: ["events", payload.eventId] })
+      await queryClient.cancelQueries({
+        queryKey: ["events", payload.eventId],
+      });
 
-      const previousEvent = queryClient.getQueryData<any>(["events"])
+      const previousEvent = queryClient.getQueryData<any>(["events"]);
 
       if (previousEvent) {
         const updatedEvent = {
@@ -191,34 +189,34 @@ export function useToggleVote() {
             if (suggestion._id === payload.suggestionId) {
               const hasVoted = suggestion.votes.some(
                 (vote: any) => vote.voter === payload.userId
-              )
+              );
               return {
                 ...suggestion,
                 votes: hasVoted
                   ? suggestion.votes.filter(
-                    (vote: any) => vote.voter !== payload.userId
-                  )
-                  : [...suggestion.votes, { voter: payload.userId }]
-              }
+                      (vote: any) => vote.voter !== payload.userId
+                    )
+                  : [...suggestion.votes, { voter: payload.userId }],
+              };
             }
-            return suggestion
-          })
-        }
+            return suggestion;
+          }),
+        };
 
-        queryClient.setQueryData(["events"], updatedEvent)
+        queryClient.setQueryData(["events"], updatedEvent);
       }
 
-      return { previousEvent }
+      return { previousEvent };
     },
     onError: (_err, _payload, context) => {
       if (context?.previousEvent) {
-        queryClient.setQueryData(["events"], context.previousEvent)
+        queryClient.setQueryData(["events"], context.previousEvent);
       }
     },
     onSettled: (_, __, payload) => {
-      queryClient.invalidateQueries({ queryKey: ["events", payload.eventId] })
+      queryClient.invalidateQueries({ queryKey: ["events", payload.eventId] });
     },
-  })
+  });
 }
 
 export async function checkEventPrivacy(id: string) {
@@ -286,3 +284,7 @@ export function useSendInvite() {
     },
   });
 }
+      .catch((err) => reject(err));
+  });
+}
+

@@ -11,7 +11,11 @@ import {
 import styles from "./Styles.module.css";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { CancelButton, UpArrow } from "@/components/graphics/Graphics1";
+import {
+  CancelButton,
+  ChatIcon,
+  UpArrow,
+} from "@/components/graphics/Graphics1";
 import { sendMessage, updateMessage } from "@/api/chat";
 import { useAuth } from "@/context/auth/auth";
 import MessageCard from "./MessageCard";
@@ -99,7 +103,7 @@ export default function Chat({ eventId }: props) {
   }, [eventId]);
 
   useEffect(() => {
-    // setup editting / update
+    //  editting / updating chat message
     if (isEditting?.id) {
       setMessage(isEditting.message);
     } else {
@@ -145,7 +149,10 @@ export default function Chat({ eventId }: props) {
     <div className={`cool-card ${styles.chatContainer}`}>
       {/* ----Header---- */}
       <div className={styles.chatHeader}>
-        <h2 style={{ fontWeight: 500, fontSize: "1.2em" }}>Chat</h2>
+        <h2 className={styles.chatHeaderWithIcon}>
+          <ChatIcon size="20" />
+          Chat
+        </h2>
       </div>
 
       {/* ---- Messages Container ---- */}
@@ -163,6 +170,7 @@ export default function Chat({ eventId }: props) {
           <Textarea
             placeholder="Say something..."
             value={message}
+            id="chat-textarea"
             onChange={(e) => {
               setMessage(e.target.value);
             }}
