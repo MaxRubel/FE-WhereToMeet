@@ -8,6 +8,11 @@ interface EventErrors {
   endTime: string;
 }
 
+function normalizeDate(date: string) {
+  const dateF = new Date(date);
+  return new Date(dateF.getFullYear(), dateF.getMonth(), dateF.getDate());
+}
+
 export function useValidateTimes(
   setErrors: Dispatch<React.SetStateAction<EventErrors>>,
   formFields: Event,
@@ -15,7 +20,7 @@ export function useValidateTimes(
   type: string,
   setFormFields: Dispatch<React.SetStateAction<Event>>
 ): boolean {
-  const { startTime, endTime, startDate, endDate } = formFields;
+  let { startTime, endTime, startDate, endDate } = formFields;
 
   if (type === "startTime") {
     //no start date when start time is added
@@ -38,8 +43,6 @@ export function useValidateTimes(
 
   if (type === "endTime") {
     //no end date when end time is added
-    console.log({ input, startTime });
-    console.log(startDate?.getDate() === endDate?.getDate());
     if (!endDate) {
       setErrors((preVal) => ({
         ...preVal,
@@ -65,8 +68,10 @@ export function useValidateTimes(
     }
 
     // if event starts and ends on the same day, end time must be later than start time
-    if (startDate.getDate() === endDate.getDate() && input < startTime) {
-      console.log("yes");
+    if (
+      new Date(startDate).getDate() === new Date(endDate).getDate() &&
+      input < startTime
+    ) {
       setErrors((preVal) => ({
         ...preVal,
         endTime: "End time must be later than start time.",
@@ -76,6 +81,18 @@ export function useValidateTimes(
   }
 
   if (type === "startDate") {
+    //@ts-ignore
+    if (input && normalizeDate(input) < normalizeDate(new Date())) {
+      console.warn("wrong date");
+      setErrors((preVal) => ({
+        ...preVal,
+        startDate: "Start date cannot be earlier than today's date.",
+      }));
+      return true;
+    } else {
+      setErrors((preVal) => ({ ...preVal, startDate: "" }));
+    }
+
     if (endDate && input > endDate) {
       setErrors((preVal) => ({
         ...preVal,
