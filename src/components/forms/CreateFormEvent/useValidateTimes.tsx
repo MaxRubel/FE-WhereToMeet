@@ -6,6 +6,7 @@ interface EventErrors {
   endDate: string;
   startTime: string;
   endTime: string;
+  private: string;
 }
 
 function normalizeDate(date: string) {

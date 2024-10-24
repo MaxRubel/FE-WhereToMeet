@@ -27,6 +27,7 @@ type errorsType = {
   endDate: string;
   startTime: string;
   endTime: string;
+  private: string;
 };
 
 export type DatePickerSectionProps = {

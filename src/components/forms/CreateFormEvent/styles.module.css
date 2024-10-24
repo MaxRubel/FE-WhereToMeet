@@ -13,3 +13,21 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+.switchDiv {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 1em;
+  align-items: center;
+}
+
+.privateExplain {
+  text-align: left;
+  max-width: 350px;
+}
+
+.errors {
+  text-align: left;
+  color: red;
+}

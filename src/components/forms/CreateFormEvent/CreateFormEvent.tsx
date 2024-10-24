@@ -1,12 +1,5 @@
 import { useAuth } from "@/context/auth/auth";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -14,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useCreateEvent, useUpdateEvent } from "@/api/events";
 import { Textarea } from "@/components/ui/textarea";
 import "./EventForm.css";
-import { useGetUserGroups } from "@/api/groups";
 import {
   Accordion,
   AccordionContent,
@@ -25,6 +17,8 @@ import { Event } from "dataTypes";
 import { BackArrow } from "@/components/graphics/Graphics1";
 import styles from "./styles.module.css";
 import DatePickerSection, { DatePickerSectionProps } from "./DatePickerSection";
+import GroupPickerSection, { GroupSectionProps } from "./GroupPickerSection";
+import { Switch } from "@/components/ui/switch";
 
 interface CreateEventFormProps {
   event?: Event;
@@ -36,6 +30,7 @@ export const initErrors = {
   endDate: "",
   startTime: "",
   endTime: "",
+  private: "",
 };
 
 export default function CreateEventForm({
@@ -86,7 +81,6 @@ export default function CreateEventForm({
   const [locationOpen, setLocationOpen] = useState(
     event?.location.name ? true : false
   );
-  const { data: groups, isLoading } = useGetUserGroups(user._id);
 
   const handleChange = (
     e:
@@ -140,6 +134,14 @@ export default function CreateEventForm({
       }
     });
 
+    if (formFields.private && !formFields.groupId) {
+      setErrors((preVal) => ({
+        ...preVal,
+        private: "Please select a group for your private event",
+      }));
+      return;
+    }
+
     if (event && setIsViewing) {
       //  update
       updateEvent.mutate(formFields, {
@@ -148,7 +150,7 @@ export default function CreateEventForm({
         },
       });
     } else {
-      //  create
+      // create
       createEvent.mutate(formFields, {
         onSuccess: (response) => {
           navigate(`/events/${response._id}`);
@@ -197,13 +199,24 @@ export default function CreateEventForm({
     }
   };
 
+  const handlePrivate = (e: boolean) => {
+    const clearError = () => {
+      setErrors((preVal) => ({ ...preVal, private: "" }));
+    };
+
+    setFormFields((preVal) => ({ ...preVal, private: e }));
+
+    if (e === false) {
+      setFormFields((preVal) => ({ ...preVal, groupId: "" }));
+      if (errors.private) {
+        clearError();
+      }
+    }
+  };
+
   //basic form validation:
   let needsRestOfAddress;
   street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
-
-  if (isLoading) {
-    return <></>;
-  }
 
   const datePickerProps: DatePickerSectionProps = {
     setStartDateOpen,
@@ -214,6 +227,13 @@ export default function CreateEventForm({
     endDateOpen,
     setErrors,
     setFormFields,
+  };
+
+  const groupSectionProps: GroupSectionProps = {
+    formFields,
+    setFormFields,
+    errors,
+    setErrors,
   };
 
   const formContent = (
@@ -253,34 +273,29 @@ export default function CreateEventForm({
         />
       </div>
 
-      {/* ---group selection--- */}
+      {/* ---Privacy Switch--- */}
       {!event && (
-        <div className="form-group">
-          <Label htmlFor="groupId" className="form-label">
-            Group
-          </Label>
-          <Select
-            name="groupId"
-            value={formFields.groupId}
-            onValueChange={(value) =>
-              setFormFields((prevFields) => ({ ...prevFields, groupId: value }))
-            }
-          >
-            <SelectTrigger className="form-input">
-              <SelectValue placeholder="Select a group" />
-            </SelectTrigger>
-            <SelectContent>
-              {groups?.map((group: any) => (
-                //@ts-ignore will not be undefined
-                <SelectItem key={group._id} value={group._id}>
-                  {group.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div style={{ marginBottom: "2em", marginTop: "1em" }}>
+          <div className={styles.switchDiv}>
+            <Label htmlFor="private-switch">Public Event</Label>
+            <Switch
+              id="private-switch"
+              style={{ padding: "0px" }}
+              onCheckedChange={handlePrivate}
+              checked={formFields.private}
+            />
+            <Label htmlFor="private-switch">Private Event</Label>
+          </div>
+          <div className={styles.privateExplain}>
+            A public event will be viewable by anyone with the link. A private
+            event will only be viewable by members of a group.
+          </div>
         </div>
       )}
 
+      {!event && formFields.private && (
+        <GroupPickerSection {...groupSectionProps} />
+      )}
       <DatePickerSection {...datePickerProps} />
 
       {/* ---Location Section--- */}
