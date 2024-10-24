@@ -47,7 +47,7 @@ export default function GroupPickerSection(props: GroupSectionProps) {
   return (
     <div className="form-group" style={{ marginBottom: "3em" }}>
       <Label htmlFor="groupId" className="form-label">
-        Group
+        Group <span style={{ fontStyle: "italic" }}>required</span>
       </Label>
       <div className={styles.errors}>{errors.private}</div>
       <Select

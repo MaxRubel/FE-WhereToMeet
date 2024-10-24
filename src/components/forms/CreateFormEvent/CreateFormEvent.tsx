@@ -274,22 +274,24 @@ export default function CreateEventForm({
       </div>
 
       {/* ---Privacy Switch--- */}
-      <div style={{ marginBottom: "2em", marginTop: "1em" }}>
-        <div className={styles.switchDiv}>
-          <Label htmlFor="private-switch">Public Event</Label>
-          <Switch
-            id="private-switch"
-            style={{ padding: "0px" }}
-            onCheckedChange={handlePrivate}
-            checked={formFields.private}
-          />
-          <Label htmlFor="private-switch">Private Event</Label>
+      {!event && (
+        <div style={{ marginBottom: "2em", marginTop: "1em" }}>
+          <div className={styles.switchDiv}>
+            <Label htmlFor="private-switch">Public Event</Label>
+            <Switch
+              id="private-switch"
+              style={{ padding: "0px" }}
+              onCheckedChange={handlePrivate}
+              checked={formFields.private}
+            />
+            <Label htmlFor="private-switch">Private Event</Label>
+          </div>
+          <div className={styles.privateExplain}>
+            A public event will be viewable by anyone with the link. A private
+            event will only be viewable by members of a group.
+          </div>
         </div>
-        <div className={styles.privateExplain}>
-          A public event will be viewable by anyone with the link. A private
-          event will only be viewable by members of a group.
-        </div>
-      </div>
+      )}
 
       {!event && formFields.private && (
         <GroupPickerSection {...groupSectionProps} />
