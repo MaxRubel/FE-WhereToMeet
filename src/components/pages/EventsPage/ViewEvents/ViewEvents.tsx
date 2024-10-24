@@ -1,12 +1,12 @@
 import { useAuth } from "@/context/auth/auth";
 import { useGetUserEvents } from "@/api/events";
-import SmallEventCard from "./EventComponent";
+import SmallEventCard from "./SmallEventCard";
 import { Event } from "dataTypes";
 
 export default function ViewEvents() {
   const { user } = useAuth();
 
-  const { data, isLoading, error } = useGetUserEvents(user._id)
+  const { data, isLoading, error } = useGetUserEvents(user._id);
 
   if (isLoading || !data) {
     return null;
@@ -17,7 +17,7 @@ export default function ViewEvents() {
   }
 
   //@ts-ignore
-  const { events } = data
+  const { events } = data;
   return (
     <>
       <div>
@@ -25,7 +25,6 @@ export default function ViewEvents() {
           <div>No events found.</div>
         ) : (
           events.map((event: Event) => (
-            //@ts-ignore
             <SmallEventCard key={event._id} event={event} />
           ))
         )}
