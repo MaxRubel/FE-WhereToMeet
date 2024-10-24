@@ -5,6 +5,11 @@
   padding: 1em;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.eventCard:hover {
+  background-color: rgb(240, 240, 240);
 }
 
 .eventContainer {
@@ -99,4 +104,20 @@
 .backButton {
   display: flex;
   gap: 10px;
+}
+
+.cardSection {
+  display: flex;
+  margin-top: 1em;
+  gap: 15px;
+}
+
+.locationName {
+  display: flex;
+  gap: 15px;
+  margin-top: 1em;
+}
+
+.locationSection {
+  display: flex;
 }
