@@ -2,21 +2,24 @@ import { AddSymbol, ViewFolders } from "@/components/graphics/Graphics1";
 import "./EventPage.css";
 import { useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
-import ViewEvents from "./ViewEvents/ViewEvents";
 import { useNavigate, useParams } from "react-router-dom";
 import SingleEventLayout from "./ViewEvents/SingleEvent/SingleEventLayout";
+import ViewUpcomingEvents from "./ViewEvents/ViewUpcomingEvents";
+import ViewPastEvents from "./ViewEvents/ViewPastEvents";
 
 export default function EventPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [isViewing, setIsViewing] = useState(
-    eventId ? "ViewSingleEvent" : "ViewEvents"
+    eventId ? "ViewSingleEvent" : "upcomingEvents"
   );
 
   return (
     <div className="profile-page-layout">
       <div className="profile-side-bar">
         <ul className="profile-list">
+
+          {/* ---Create Event--- */}
           <button
             className="clear-button side-list-item"
             style={{
@@ -32,29 +35,49 @@ export default function EventPage() {
           >
             <AddSymbol size="20" /> Create Event
           </button>
+
+          {/* ---View Events--- */}
           <button
             className="clear-button side-list-item"
             style={{
-              fontWeight: isViewing == "ViewEvents" ? "900" : "",
+              fontWeight: isViewing == "upcomingEvents" ? "900" : "",
               backgroundColor:
-                isViewing == "ViewEvents" ? "rgb(245,245,245)" : "transparent",
+                isViewing == "upcomingEvents" ? "rgb(245,245,245)" : "transparent",
             }}
             onClick={() => {
-              setIsViewing("ViewEvents");
+              setIsViewing("upcomingEvents");
               navigate("/events");
             }}
           >
-            <ViewFolders size="20" /> View Events
+            <ViewFolders size="20" /> Upcoming Events
           </button>
+
+          {/* ---Past Events--- */}
+          <button
+            className="clear-button side-list-item"
+            style={{
+              fontWeight: isViewing == "pastEvents" ? "900" : "",
+              backgroundColor:
+                isViewing == "pastEvents" ? "rgb(245,245,245)" : "transparent",
+            }}
+            onClick={() => {
+              setIsViewing("pastEvents");
+              navigate("/events");
+            }}
+          >
+            <ViewFolders size="20" /> Past Events
+          </button>
+
         </ul>
       </div>
       <div className="profile-main-form">
-        {isViewing == "CreateEventForm" && <CreateEventForm />}
-        {isViewing == "ViewEvents" && <ViewEvents />}
-        {isViewing == "ViewSingleEvent" && (
+        {isViewing === "CreateEventForm" && <CreateEventForm />}
+        {isViewing === "upcomingEvents" && <ViewUpcomingEvents />}
+        {isViewing === "ViewSingleEvent" && (
           //@ts-ignore   will not be null
           <SingleEventLayout eventId={eventId} setIsViewing={setIsViewing} />
         )}
+        {isViewing === "pastEvents" && <ViewPastEvents />}
       </div>
     </div>
   );

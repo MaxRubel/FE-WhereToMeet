@@ -27,10 +27,10 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
 
   const navigate = useNavigate();
 
-  const togglePrivate = (e: boolean) => {
-    const payload = { ...event, private: e };
-    updateEvent.mutate(payload);
-  };
+  // const togglePrivate = (e: boolean) => {
+  //   const payload = { ...event, private: e };
+  //   updateEvent.mutate(payload);
+  // };
 
   const toggleSuggestions = (e: boolean) => {
     const payload = { ...event, suggestionsEnabled: e };
@@ -66,8 +66,10 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
       <h2>Moderator Settings</h2>
 
       <div id="toggle-container" style={{ marginTop: "2em" }}>
+
+        {/* ---private switch---
         <div id="private container" style={{ marginBottom: "2em" }}>
-          {/* ---private switch--- */}
+
           <div className="flex items-center space-x-2 mb-2">
             <Switch
               checked={event.private}
@@ -83,7 +85,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
             A private event can only be viewed by its group members. A public
             event is viewable by anyone with a link to the event.
           </div>
-        </div>
+        </div> */}
 
         {/* ---suggestions switch--- */}
         <div id="suggestions-switch-container" style={{ marginTop: "2em" }}>
