@@ -86,7 +86,12 @@ export default function Chat({ eventId }: props) {
             user: usersArray.find((item) => item._id === msg.userId),
           }));
 
-          setMessages(updatedMessages);
+          // sort chat messages by earliest to latest
+          const sortedMessages = updatedMessages.sort((a, b) =>
+            new Date(a.created).getTime() - new Date(b.created).getTime()
+          );
+
+          setMessages(sortedMessages);
           setLoadingMessages(false);
         });
       } catch (err) {
