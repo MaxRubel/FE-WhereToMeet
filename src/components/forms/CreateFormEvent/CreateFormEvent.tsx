@@ -288,7 +288,7 @@ export default function CreateEventForm({
           </div>
           <div className={styles.privateExplain}>
             A public event will be viewable by anyone with the link. A private
-            event will only be viewable by members of a group.
+            event will only be viewable by members of a group.  This cannot be changed later.
           </div>
         </div>
       )}

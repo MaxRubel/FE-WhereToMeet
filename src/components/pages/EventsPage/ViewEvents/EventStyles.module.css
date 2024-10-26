@@ -44,6 +44,14 @@
   background-color: red;
 }
 
+.upcomingHeader {
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 1em;
+  border-bottom: 1px solid rgb(237, 237, 237);
+  padding-bottom: 1em;
+}
+
 .suggestionsHeader {
   border-bottom: 1px solid lightgray;
   padding-bottom: 0.5em;

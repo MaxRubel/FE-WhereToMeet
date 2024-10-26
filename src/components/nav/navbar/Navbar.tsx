@@ -10,7 +10,6 @@ export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-  console.log('this is my user', user);
 
   const handleClickOut = (e: MouseEvent): void => {
     if (!(e.target instanceof Element)) return;
