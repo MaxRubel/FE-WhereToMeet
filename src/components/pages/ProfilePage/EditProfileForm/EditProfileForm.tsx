@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardDescription,
@@ -28,11 +28,11 @@ export type EditUserFields = {
   zip: number;
 };
 
-type pointerOver = {
-  address: boolean;
-  phone: boolean;
-  street: boolean;
-};
+// type pointerOver = {
+//   address: boolean;
+//   phone: boolean;
+//   street: boolean;
+// };
 
 export default function EditProfileForm() {
   const { user, checkUserFunc } = useAuth();
@@ -50,12 +50,12 @@ export default function EditProfileForm() {
   const [formFields, setFormFields] = useState<EditUserFields>(initFields);
   const [errors, setErrors] = useState({ phone: "" });
   const [phoneOver, setPhoneOver] = useState(false);
-  const [pointerOver, setPointerOver] = useState<pointerOver>({
-    address: false,
-    phone: false,
-    street: false,
-  });
-  const [checkingAddress, setCheckingAddress] = useState(false);
+  // const [pointerOver, setPointerOver] = useState<pointerOver>({
+  //   address: false,
+  //   phone: false,
+  //   street: false,
+  // });
+  // const [checkingAddress, setCheckingAddress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -71,18 +71,18 @@ export default function EditProfileForm() {
     }));
   };
 
-  useEffect(() => {
-    if (
-      formFields.street ||
-      formFields.city ||
-      formFields.state ||
-      formFields.zip
-    ) {
-      setCheckingAddress(true);
-    } else {
-      setCheckingAddress(false);
-    }
-  }, [formFields]);
+  // useEffect(() => {
+  //   if (
+  //     formFields.street ||
+  //     formFields.city ||
+  //     formFields.state ||
+  //     formFields.zip
+  //   ) {
+  //     setCheckingAddress(true);
+  //   } else {
+  //     setCheckingAddress(false);
+  //   }
+  // }, [formFields]);
 
   const submit = () => {
     setIsSubmitting(true);
