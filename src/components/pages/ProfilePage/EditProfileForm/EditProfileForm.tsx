@@ -216,122 +216,6 @@ export default function EditProfileForm() {
           />
           <span className={styles.error}>{errors.phone && errors.phone}</span>
         </div>
-
-        {/* ADDRESS HEADER */}
-        <HoverCard>
-          <Label htmlFor="street" className="form-label">
-            <h3
-              className="text-left"
-              style={{ margin: "1em 0em", fontWeight: "700" }}
-            >
-              Address
-            </h3>
-            <div
-              className="centered"
-              onMouseEnter={() => {
-                setPointerOver((preVal) => ({ ...preVal, street: true }));
-              }}
-              onMouseLeave={() => {
-                setTimeout(() => {
-                  setPointerOver((preVal) => ({ ...preVal, street: false }));
-                }, SCROLL_OVER_WAIT_TIME);
-              }}
-            >
-              <QuestionMark />
-            </div>
-            <Card
-              className="small-over-text"
-              style={{
-                display: pointerOver.street ? "block" : "none",
-                zIndex: "10",
-              }}
-            >
-              <CardHeader>
-                <CardTitle>Optional</CardTitle>
-                <CardDescription>
-                  This is an optional field. We use your address to find out the
-                  best place for a group to meet. It is not required.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Label>
-        </HoverCard>
-
-        {/* STREET FIELD */}
-        <div className="form-group">
-          <Label htmlFor="street" className="form-label">
-            Street
-          </Label>
-          <Input
-            type="text"
-            id="street"
-            name="street"
-            value={formFields.street}
-            onChange={handleChange}
-            className="form-input"
-            aria-required={checkingAddress}
-            required={checkingAddress}
-            placeholder="116 N. Main St."
-          />
-        </div>
-
-        <div className={styles.splitRow}>
-          {/* CITY FIELD */}
-          <div className="form-group">
-            <Label htmlFor="city" className="form-label">
-              City
-            </Label>
-            <Input
-              type="text"
-              id="city"
-              name="city"
-              value={formFields.city}
-              onChange={handleChange}
-              className="form-input"
-              aria-required={checkingAddress}
-              required={checkingAddress}
-              placeholder="New York"
-            />
-          </div>
-
-          {/* STATE FIELD */}
-          <div className="form-group">
-            <Label htmlFor="state" className="form-label">
-              State
-            </Label>
-            <Input
-              type="text"
-              id="state"
-              name="state"
-              value={formFields.state}
-              onChange={handleChange}
-              className="form-input"
-              aria-required={checkingAddress}
-              required={checkingAddress}
-              placeholder="NY"
-            />
-          </div>
-        </div>
-
-        <div className="edit-profile-split-row">
-          {/* ZIP FIELD */}
-          <div className="form-group">
-            <Label htmlFor="zip" className="form-label">
-              Zip Code
-            </Label>
-            <Input
-              type="text"
-              id="zip"
-              name="zip"
-              value={formFields.zip ? formFields.zip : ""}
-              onChange={handleChange}
-              className="form-input"
-              aria-required={checkingAddress}
-              required={checkingAddress}
-              placeholder="01324"
-            />
-          </div>
-        </div>
       </div>
       <div className={styles.buttonRow}>
         <Button type="submit" disabled={isSubmitting}>
@@ -348,3 +232,119 @@ export default function EditProfileForm() {
     </form>
   );
 }
+
+// ADDRESS HEADER
+// <HoverCard>
+//   <Label htmlFor="street" className="form-label">
+//     <h3
+//       className="text-left"
+//       style={{ margin: "1em 0em", fontWeight: "700" }}
+//     >
+//       Address
+//     </h3>
+//     <div
+//       className="centered"
+//       onMouseEnter={() => {
+//         setPointerOver((preVal) => ({ ...preVal, street: true }));
+//       }}
+//       onMouseLeave={() => {
+//         setTimeout(() => {
+//           setPointerOver((preVal) => ({ ...preVal, street: false }));
+//         }, SCROLL_OVER_WAIT_TIME);
+//       }}
+//     >
+//       <QuestionMark />
+//     </div>
+//     <Card
+//       className="small-over-text"
+//       style={{
+//         display: pointerOver.street ? "block" : "none",
+//         zIndex: "10",
+//       }}
+//     >
+//       <CardHeader>
+//         <CardTitle>Optional</CardTitle>
+//         <CardDescription>
+//           This is an optional field. We use your address to find out the
+//           best place for a group to meet. It is not required.
+//         </CardDescription>
+//       </CardHeader>
+//     </Card>
+//   </Label>
+// </HoverCard>
+
+// {/* STREET FIELD */}
+// <div className="form-group">
+//   <Label htmlFor="street" className="form-label">
+//     Street
+//   </Label>
+//   <Input
+//     type="text"
+//     id="street"
+//     name="street"
+//     value={formFields.street}
+//     onChange={handleChange}
+//     className="form-input"
+//     aria-required={checkingAddress}
+//     required={checkingAddress}
+//     placeholder="116 N. Main St."
+//   />
+// </div>
+
+// <div className={styles.splitRow}>
+//   {/* CITY FIELD */}
+//   <div className="form-group">
+//     <Label htmlFor="city" className="form-label">
+//       City
+//     </Label>
+//     <Input
+//       type="text"
+//       id="city"
+//       name="city"
+//       value={formFields.city}
+//       onChange={handleChange}
+//       className="form-input"
+//       aria-required={checkingAddress}
+//       required={checkingAddress}
+//       placeholder="New York"
+//     />
+//   </div>
+
+//   {/* STATE FIELD */}
+//   <div className="form-group">
+//     <Label htmlFor="state" className="form-label">
+//       State
+//     </Label>
+//     <Input
+//       type="text"
+//       id="state"
+//       name="state"
+//       value={formFields.state}
+//       onChange={handleChange}
+//       className="form-input"
+//       aria-required={checkingAddress}
+//       required={checkingAddress}
+//       placeholder="NY"
+//     />
+//   </div>
+// </div>
+
+// <div className="edit-profile-split-row">
+//   {/* ZIP FIELD */}
+//   <div className="form-group">
+//     <Label htmlFor="zip" className="form-label">
+//       Zip Code
+//     </Label>
+//     <Input
+//       type="text"
+//       id="zip"
+//       name="zip"
+//       value={formFields.zip ? formFields.zip : ""}
+//       onChange={handleChange}
+//       className="form-input"
+//       aria-required={checkingAddress}
+//       required={checkingAddress}
+//       placeholder="01324"
+//     />
+//   </div>
+// </div>
