@@ -10,7 +10,7 @@ type Props = {
 
 export default function SingleEventComponent({ event }: Props) {
   return (
-    <div style={{ padding: "0em 3em" }}>
+    <div style={{ padding: "0em 2em" }}>
       {/* Event Title Section */}
       <div className="flex flex-col items-start justify-between mb-10">
         <h2 className="text-xl font-bold mb-8">{event.name}</h2>

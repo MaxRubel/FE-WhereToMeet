@@ -53,13 +53,13 @@ export default function NavBar() {
         <>
           <ul className={styles.navList}>
             <li>
-              <Link to="/groups" className={styles.navLink}>
-                Groups
+              <Link to="/events" className={styles.navLink}>
+                Events
               </Link>
             </li>
             <li>
-              <Link to="/events" className={styles.navLink}>
-                Events
+              <Link to="/groups" className={styles.navLink}>
+                Groups
               </Link>
             </li>
           </ul>

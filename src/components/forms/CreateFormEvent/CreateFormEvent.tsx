@@ -288,7 +288,7 @@ export default function CreateEventForm({
           </div>
           <div className={styles.privateExplain}>
             A public event will be viewable by anyone with the link. A private
-            event will only be viewable by members of a group.  This cannot be changed later.
+            event will only be viewable by members of a group.
           </div>
         </div>
       )}
@@ -432,7 +432,7 @@ export default function CreateEventForm({
   );
 
   return (
-    <div className="create-event-form-container">
+    <div className="create-event-form-container" style={{ paddingLeft: event ? '2em' : '0em' }}>
       {/* ---top button row--- */}
       {event && setIsViewing && (
         <div style={{ marginBottom: "2em" }}>

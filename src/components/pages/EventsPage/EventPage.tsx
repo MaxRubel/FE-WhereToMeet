@@ -1,4 +1,4 @@
-import { AddSymbol, ViewFolders } from "@/components/graphics/Graphics1";
+import { AddSymbol, CalendarIcon, ViewFolders } from "@/components/graphics/Graphics1";
 import "./EventPage.css";
 import { useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
@@ -49,7 +49,7 @@ export default function EventPage() {
               navigate("/events");
             }}
           >
-            <ViewFolders size="20" /> Upcoming Events
+            <CalendarIcon size="20" /> Upcoming Events
           </button>
 
           {/* ---Past Events--- */}
