@@ -1,17 +1,17 @@
-import { useGetEventsOfGroup } from "@/api/groups"
-import styles from "./ViewSingleGroup.module.css"
-import { Event } from "dataTypes"
-import SmallEventCard from "../../EventsPage/ViewEvents/SmallEventCard"
+import { useGetEventsOfGroup } from "@/api/groups";
+import styles from "./ViewSingleGroup.module.css";
+import { Event } from "dataTypes";
+import SmallEventCard from "../../EventsPage/ViewEvents/SmallEventCard";
 
 type props = {
-  groupId: string
-}
+  groupId: string;
+};
 
 export default function GroupEvents({ groupId }: props) {
-  const { data: events, isLoading } = useGetEventsOfGroup(groupId)
+  const { data: events, isLoading } = useGetEventsOfGroup(groupId);
 
   if (isLoading || !events) {
-    return null
+    return null;
   }
 
   // Filter and sort events by upcoming
@@ -31,13 +31,13 @@ export default function GroupEvents({ groupId }: props) {
       </div>
       <div>
         {events?.length > 0 ? (
-          events.map((event: Event) => (<SmallEventCard event={event} key={event._id} />))
+          events.map((event: Event) => (
+            <SmallEventCard event={event} key={event._id} />
+          ))
         ) : (
-          <div>
-            There are no events for this group...
-          </div>
+          <div className="text-left">There are no events for this group...</div>
         )}
       </div>
     </div>
-  )
+  );
 }

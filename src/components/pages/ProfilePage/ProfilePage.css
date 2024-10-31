@@ -47,3 +47,7 @@
 .side-list-item:focus {
   outline: none;
 }
+
+.side-list-item:hover {
+  background-color: rgb(240, 240, 240) !important;
+}

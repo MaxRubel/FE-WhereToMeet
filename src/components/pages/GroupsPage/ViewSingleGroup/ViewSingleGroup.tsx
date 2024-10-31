@@ -3,7 +3,7 @@ import {
   useGetSingleGroup,
   useUpdateGroup,
 } from "@/api/groups";
-import { EditIcon } from "@/components/graphics/Graphics1";
+import { BackArrow, EditIcon } from "@/components/graphics/Graphics1";
 import { Group } from "dataTypes";
 import { useEffect, useState } from "react";
 import { formatDate } from "../../../../../utils/formatDate";
@@ -28,7 +28,6 @@ import { Textarea } from "@/components/ui/textarea";
 import GroupEvents from "./GroupEvents";
 // import GroupSkelly from "./GroupSkelly";
 
-
 export default function ViewSingleGroup() {
   const [isEditting, setIsEditting] = useState(false);
   const [inputVal, setInputVal] = useState("");
@@ -36,9 +35,9 @@ export default function ViewSingleGroup() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const { groupId } = useParams()
+  const { groupId } = useParams();
   if (!groupId) {
-    throw new Error("No group id passed in query param")
+    throw new Error("No group id passed in query param");
   }
   const deleteGroupMutation = useDeleteGroup();
   const updateGroupMutation = useUpdateGroup();
@@ -87,128 +86,150 @@ export default function ViewSingleGroup() {
   }
 
   return (
-    <div style={{ padding: '3em' }}>
-      <div id="header-fields" className="text-left">
-        {isEditting ? (
-          <form className={styles.newNameForm} onSubmit={handleUpdateGroup}>
-            <div>
-              <Label className="text-left">Edit Name</Label>
-              <div style={{ display: "flex", gap: "15px" }}>
-                <Input
-                  value={inputVal}
-                  className={styles.newInput}
-                  required
-                  onChange={(e) => setInputVal(e.target.value)}
+    <>
+      <div className="profile-page-layout">
+        <div className="profile-side-bar">
+          <ul className="profile-list">
+            <button
+              className="side-list-item"
+              onClick={() => {
+                navigate("/groups");
+              }}
+            >
+              <BackArrow size="18" />
+              Your Groups
+            </button>
+          </ul>
+        </div>
+
+        <div style={{ padding: "3em" }}>
+          <div id="header-fields" className="text-left">
+            {isEditting ? (
+              <form className={styles.newNameForm} onSubmit={handleUpdateGroup}>
+                <div>
+                  <Label className="text-left">Edit Name</Label>
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Input
+                      value={inputVal}
+                      className={styles.newInput}
+                      required
+                      onChange={(e) => setInputVal(e.target.value)}
+                    />
+                    <div className={styles.topButtonRowForm}>
+                      <Button type="submit">Submit</Button>
+                      <Button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => setIsEditting(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            ) : // NOT EDITTING:
+            user._id === group?.ownerId ? (
+              // THIS IS YOUR GROUP:
+              <Button
+                onClick={() => setIsEditting(true)}
+                className="empty-button"
+              >
+                {data?.name}
+                <EditIcon size={"20"} />
+              </Button>
+            ) : (
+              //THIS IS NOT YOUR GROUP:
+              <h2 className="text-left">{data?.name}</h2>
+            )}
+            {!isEditting && (
+              <div className="text-left light-font">
+                {/* @ts-ignore */}
+                created on: {formatDate(group?.dateCreated)}
+              </div>
+            )}
+          </div>
+
+          {/* ----Description---- */}
+          <div
+            style={{ marginTop: "2em", fontWeight: "300", textAlign: "left" }}
+          >
+            {isEditting ? (
+              <div>
+                <Label className="text-left">Edit Description</Label>
+                <Textarea
+                  style={{ maxWidth: "420px" }}
+                  onChange={(e) => {
+                    setDescInput(e.target.value);
+                  }}
+                  value={descInput}
                 />
-                <div className={styles.topButtonRowForm}>
-                  <Button type="submit">Submit</Button>
-                  <Button
-                    type="button"
-                    className="secondary-button"
-                    onClick={() => setIsEditting(false)}
-                  >
-                    Cancel
-                  </Button>
+              </div>
+            ) : (
+              <div>
+                <div
+                  className="text-left"
+                  style={{ marginTop: "2em", fontWeight: "300" }}
+                >
+                  {group.description}
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* ----Members Container---- */}
+          <div className={styles.membersSection}>
+            <h3 className="">Members</h3>
+            <div className={`light-font ${styles.membersContainer}`}>
+              {group?.members?.length
+                ? group?.members?.map((member) => (
+                    <GroupMemberAvatar
+                      key={member._id}
+                      member={member}
+                      group={group}
+                    />
+                  ))
+                : "No members have been added yet..."}
             </div>
-          </form>
-        ) : // NOT EDITTING:
-          user._id === group?.ownerId ? (
-            // THIS IS YOUR GROUP:
-            <Button onClick={() => setIsEditting(true)} className="empty-button">
-              {data?.name}
-              <EditIcon size={"20"} />
-            </Button>
-          ) : (
-            //THIS IS NOT YOUR GROUP:
-            <h2 className="text-left">{data?.name}</h2>
-          )}
-        {!isEditting && (
-          <div className="text-left light-font">
-            {/* @ts-ignore */}
-            created on: {formatDate(group?.dateCreated)}
-          </div>
-        )}
-      </div>
 
-      {/* ----Description---- */}
-      <div style={{ marginTop: "2em", fontWeight: "300", textAlign: "left" }}>
-        {isEditting ? (
-          <div>
-            <Label className="text-left">Edit Description</Label>
-            <Textarea
-              style={{ maxWidth: "420px" }}
-              onChange={(e) => {
-                setDescInput(e.target.value);
-              }}
-              value={descInput}
-            />
-          </div>
-        ) : (
-          <div>
-            <div
-              className="text-left"
-              style={{ marginTop: "2em", fontWeight: "300" }}
-            >
-              {group.description}
+            {/* ----ADD MEMBER BUTTON---- */}
+            <div className={styles.buttonRow}>
+              {/* @ts-ignore "groupId is null checked" */}
+              <AddMember groupId={group?._id} />
+
+              {/* ----DELETE BUTTON---- */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="deleteButton">Delete This Group</Button>
+                </DialogTrigger>
+                <DialogContent aria-describedby="dialog-content">
+                  <DialogHeader className="text-left">
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your group and remove all of its events from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="text-left flex gap-4">
+                    <Button
+                      style={{ backgroundColor: "red" }}
+                      onClick={handleDeleteGroup}
+                    >
+                      Yes, Delete
+                    </Button>
+                    <DialogClose asChild>
+                      <Button className="secondary-button">Cancel</Button>
+                    </DialogClose>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
-        )}
-      </div>
 
-      {/* ----Members Container---- */}
-      <div className={styles.membersSection}>
-        <h3 className="">Members</h3>
-        <div className={`light-font ${styles.membersContainer}`}>
-          {group?.members?.length
-            ? group?.members?.map((member) => (
-              <GroupMemberAvatar
-                key={member._id}
-                member={member}
-                group={group}
-              />
-            ))
-            : "No members have been added yet..."}
-        </div>
-
-        {/* ----ADD MEMBER BUTTON---- */}
-        <div className={styles.buttonRow}>
-          {/* @ts-ignore "groupId is null checked" */}
-          <AddMember groupId={group?._id} />
-
-
-          {/* ----DELETE BUTTON---- */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="deleteButton">Delete This Group</Button>
-            </DialogTrigger>
-            <DialogContent aria-describedby="dialog-content">
-              <DialogHeader className="text-left">
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete your
-                  group and remove all of its events from our servers.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="text-left flex gap-4">
-                <Button
-                  style={{ backgroundColor: "red" }}
-                  onClick={handleDeleteGroup}
-                >
-                  Yes, Delete
-                </Button>
-                <DialogClose asChild>
-                  <Button className="secondary-button">Cancel</Button>
-                </DialogClose>
-              </div>
-            </DialogContent>
-          </Dialog>
+          {/* ----Events Section---- */}
+          <GroupEvents groupId={groupId} />
         </div>
       </div>
-
-      {/* ----Events Section---- */}
-      <GroupEvents groupId={groupId} />
-    </div>
+    </>
   );
 }
