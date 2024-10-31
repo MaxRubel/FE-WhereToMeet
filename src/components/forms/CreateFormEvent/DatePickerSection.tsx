@@ -160,12 +160,22 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
   };
 
   return (
-    <Accordion type="single" collapsible value={dateOpen ? "item-1" : ""}>
-      <AccordionItem value="item-1">
+    <Accordion
+      type="single"
+      className="border-none"
+      collapsible
+      value={dateOpen ? "item-1" : ""}
+    >
+      <AccordionItem value="item-1" className="border-b-0">
         <AccordionTrigger onClick={handleDateAccordian}>
           {dateOpen ? "Remove Date -" : "Add Date +"}
         </AccordionTrigger>
-        <AccordionContent style={{ marginTop: "1em", padding: "1em" }}>
+        <AccordionContent
+          style={{
+            marginTop: "1em",
+            padding: "1em",
+          }}
+        >
           {/* ---start time--- */}
           <div className={styles.dates}>
             <div className="colLeft">

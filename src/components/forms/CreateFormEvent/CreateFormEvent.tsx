@@ -300,7 +300,7 @@ export default function CreateEventForm({
 
       {/* ---Location Section--- */}
       <Accordion type="single" collapsible value={locationOpen ? "item-1" : ""}>
-        <AccordionItem value="item-1">
+        <AccordionItem value="item-1" className="border-b-0">
           <AccordionTrigger onClick={handleAccordian}>
             {locationOpen ? "Remove Location -" : "Add Location +"}
           </AccordionTrigger>
@@ -432,7 +432,10 @@ export default function CreateEventForm({
   );
 
   return (
-    <div className="create-event-form-container" style={{ paddingLeft: event ? '2em' : '0em' }}>
+    <div
+      className="create-event-form-container"
+      style={{ paddingLeft: event ? "2em" : "0em" }}
+    >
       {/* ---top button row--- */}
       {event && setIsViewing && (
         <div style={{ marginBottom: "2em" }}>
