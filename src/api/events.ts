@@ -44,6 +44,7 @@ export function useUpdateEvent() {
   });
 }
 
+// Get User's Events
 const fetchUserEvents = async (userId: string): Promise<Event[]> => {
   const response = await fetch(`${endpoint}/events/user-events/${userId}`, {
     method: "GET",
@@ -61,6 +62,7 @@ export function useGetUserEvents(userId: string) {
     enabled: !!userId,
   });
 }
+
 
 // Get Single Event
 export function useGetSingleEvent(id: string) {
@@ -189,8 +191,8 @@ export function useToggleVote() {
                 ...suggestion,
                 votes: hasVoted
                   ? suggestion.votes.filter(
-                      (vote: any) => vote.voter !== payload.userId
-                    )
+                    (vote: any) => vote.voter !== payload.userId
+                  )
                   : [...suggestion.votes, { voter: payload.userId }],
               };
             }
