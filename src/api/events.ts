@@ -1,7 +1,6 @@
 import { Event, Suggestion } from "dataTypes";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAuth } from "firebase/auth";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
