@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Group } from "dataTypes";
+import { Event, Group } from "dataTypes";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
 
@@ -156,4 +156,25 @@ export function useRemoveGroupMember() {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
+}
+
+export function useGetEventsOfGroup(groupId: string) {
+  const queryFn = async () => {
+    const response = await fetch(`${endpoint}/groups/events-of/${groupId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.json();
+  }
+
+  return useQuery<Event[], Error>({
+    queryKey: ["groups", "events", groupId],
+    queryFn,
+    enabled: !!groupId,
+    refetchOnMount: true,
+    staleTime: 0
+  });
+
 }

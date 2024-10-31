@@ -25,6 +25,7 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import GroupEvents from "./GroupEvents";
 // import GroupSkelly from "./GroupSkelly";
 
 
@@ -131,7 +132,7 @@ export default function ViewSingleGroup() {
         )}
       </div>
 
-      {/* ----DESCRIPTION---- */}
+      {/* ----Description---- */}
       <div style={{ marginTop: "2em", fontWeight: "300", textAlign: "left" }}>
         {isEditting ? (
           <div>
@@ -156,7 +157,7 @@ export default function ViewSingleGroup() {
         )}
       </div>
 
-      {/* ----MEMBERS CONTAINER---- */}
+      {/* ----Members Container---- */}
       <div className={styles.membersSection}>
         <h3 className="">Members</h3>
         <div className={`light-font ${styles.membersContainer}`}>
@@ -175,35 +176,39 @@ export default function ViewSingleGroup() {
         <div className={styles.buttonRow}>
           {/* @ts-ignore "groupId is null checked" */}
           <AddMember groupId={group?._id} />
-        </div>
 
-        {/* ----DELETE BUTTON---- */}
-        <Dialog>
-          <DialogTrigger style={{ marginTop: "6em" }} asChild>
-            <Button className="deleteButton">Delete This Group</Button>
-          </DialogTrigger>
-          <DialogContent aria-describedby="dialog-content">
-            <DialogHeader className="text-left">
-              <DialogTitle>Are you absolutely sure?</DialogTitle>
-              <DialogDescription>
-                This action cannot be undone. This will permanently delete your
-                group and remove all of its events from our servers.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="text-left flex gap-4">
-              <Button
-                style={{ backgroundColor: "red" }}
-                onClick={handleDeleteGroup}
-              >
-                Yes, Delete
-              </Button>
-              <DialogClose asChild>
-                <Button className="secondary-button">Cancel</Button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </Dialog>
+
+          {/* ----DELETE BUTTON---- */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="deleteButton">Delete This Group</Button>
+            </DialogTrigger>
+            <DialogContent aria-describedby="dialog-content">
+              <DialogHeader className="text-left">
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete your
+                  group and remove all of its events from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="text-left flex gap-4">
+                <Button
+                  style={{ backgroundColor: "red" }}
+                  onClick={handleDeleteGroup}
+                >
+                  Yes, Delete
+                </Button>
+                <DialogClose asChild>
+                  <Button className="secondary-button">Cancel</Button>
+                </DialogClose>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
+
+      {/* ----Events Section---- */}
+      <GroupEvents groupId={groupId} />
     </div>
   );
 }
