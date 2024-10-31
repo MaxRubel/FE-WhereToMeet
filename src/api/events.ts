@@ -1,10 +1,6 @@
 import { Event, Suggestion } from "dataTypes";
 import { useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
 
 const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
@@ -229,13 +225,14 @@ export async function checkEventPrivacy(id: string) {
     })
       .then((response) => response.json())
       .then((data) => resolve(data))
-      .catch((err) => reject(err))
-  })
+      .catch((err) => reject(err));
+  });
 }
 
 interface InvitePayload {
   eventId: string;
   inviteeEmail: string;
+  inviterEmail: string;
 }
 interface InviteResponse {
   message: string;
@@ -247,40 +244,29 @@ interface InviteResponse {
 export function useSendInvite() {
   const queryClient = useQueryClient();
 
+  async function mutationFn(payload: InvitePayload) {
+    const response = await fetch(`${endpoint}/events/invite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.json();
+  }
+
   return useMutation<InviteResponse, Error, InvitePayload>({
-    onMutate: async (payload) => {
-      const auth = getAuth();
-      const idToken = await auth.currentUser?.getIdToken();
-
-      if (!idToken) {
-        throw new Error('No auth token available')
-      }
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/invite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-      return response.json();
-    },
-
+    mutationFn,
     onSuccess: (_, payload) => {
       queryClient.invalidateQueries({
-        queryKey: ['events', payload.eventId]
+        queryKey: ["events", payload.eventId],
       });
       queryClient.invalidateQueries({
-        queryKey: ['event-invites', payload.eventId]
+        queryKey: ["event-invites", payload.eventId],
       });
     },
     onError: (err) => {
-      console.error('Failed to send invite', err);
+      console.error("Failed to send invite", err);
     },
   });
 }
