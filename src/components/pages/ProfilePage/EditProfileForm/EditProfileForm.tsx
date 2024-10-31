@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardDescription,
@@ -28,11 +28,11 @@ export type EditUserFields = {
   zip: number;
 };
 
-// type pointerOver = {
-//   address: boolean;
-//   phone: boolean;
-//   street: boolean;
-// };
+type pointerOver = {
+  address: boolean;
+  phone: boolean;
+  street: boolean;
+};
 
 export default function EditProfileForm() {
   const { user, checkUserFunc } = useAuth();
@@ -50,14 +50,16 @@ export default function EditProfileForm() {
   const [formFields, setFormFields] = useState<EditUserFields>(initFields);
   const [errors, setErrors] = useState({ phone: "" });
   const [phoneOver, setPhoneOver] = useState(false);
-  // const [pointerOver, setPointerOver] = useState<pointerOver>({
-  //   address: false,
-  //   phone: false,
-  //   street: false,
-  // });
-  // const [checkingAddress, setCheckingAddress] = useState(false);
+  const [pointerOver, setPointerOver] = useState<pointerOver>({
+    address: false,
+    phone: false,
+    street: false,
+  });
+  const [checkingAddress, setCheckingAddress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const ADDRESS_FEATURE_FLAG =
+    import.meta.env.VITE_PROFILE_ADDRESS === "true" ? true : false;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -71,18 +73,18 @@ export default function EditProfileForm() {
     }));
   };
 
-  // useEffect(() => {
-  //   if (
-  //     formFields.street ||
-  //     formFields.city ||
-  //     formFields.state ||
-  //     formFields.zip
-  //   ) {
-  //     setCheckingAddress(true);
-  //   } else {
-  //     setCheckingAddress(false);
-  //   }
-  // }, [formFields]);
+  useEffect(() => {
+    if (
+      formFields.street ||
+      formFields.city ||
+      formFields.state ||
+      formFields.zip
+    ) {
+      setCheckingAddress(true);
+    } else {
+      setCheckingAddress(false);
+    }
+  }, [formFields]);
 
   const submit = () => {
     setIsSubmitting(true);
@@ -150,7 +152,6 @@ export default function EditProfileForm() {
             placeholder="Your name"
           />
         </div>
-
         {/* EMAIL FIELD */}
         <div className="form-group">
           <Label htmlFor="email" className="form-label">
@@ -168,7 +169,6 @@ export default function EditProfileForm() {
             placeholder="Your email"
           />
         </div>
-
         {/* PHONE FIELD */}
         <div className="form-group">
           <HoverCard>
@@ -216,6 +216,123 @@ export default function EditProfileForm() {
           />
           <span className={styles.error}>{errors.phone && errors.phone}</span>
         </div>
+
+        {ADDRESS_FEATURE_FLAG && (
+          <>
+            <HoverCard>
+              <Label htmlFor="street" className="form-label">
+                <h3
+                  className="text-left"
+                  style={{ margin: "1em 0em", fontWeight: "700" }}
+                >
+                  Address
+                </h3>
+                <div
+                  className="centered"
+                  onMouseEnter={() => {
+                    setPointerOver((preVal) => ({ ...preVal, street: true }));
+                  }}
+                  onMouseLeave={() => {
+                    setTimeout(() => {
+                      setPointerOver((preVal) => ({
+                        ...preVal,
+                        street: false,
+                      }));
+                    }, SCROLL_OVER_WAIT_TIME);
+                  }}
+                >
+                  <QuestionMark />
+                </div>
+                <Card
+                  className="small-over-text"
+                  style={{
+                    display: pointerOver.street ? "block" : "none",
+                    zIndex: "10",
+                  }}
+                >
+                  <CardHeader>
+                    <CardTitle>Optional</CardTitle>
+                    <CardDescription>
+                      This is an optional field. We use your address to find out
+                      the best place for a group to meet. It is not required.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Label>
+            </HoverCard>
+
+            <div className="form-group">
+              <Label htmlFor="street" className="form-label">
+                Street
+              </Label>
+              <Input
+                type="text"
+                id="street"
+                name="street"
+                value={formFields.street}
+                onChange={handleChange}
+                className="form-input"
+                aria-required={checkingAddress}
+                required={checkingAddress}
+                placeholder="116 N. Main St."
+              />
+            </div>
+            <div className={styles.splitRow}>
+              <div className="form-group">
+                <Label htmlFor="city" className="form-label">
+                  City
+                </Label>
+                <Input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formFields.city}
+                  onChange={handleChange}
+                  className="form-input"
+                  aria-required={checkingAddress}
+                  required={checkingAddress}
+                  placeholder="New York"
+                />
+              </div>
+
+              {/* STATE FIELD */}
+              <div className="form-group">
+                <Label htmlFor="state" className="form-label">
+                  State
+                </Label>
+                <Input
+                  type="text"
+                  id="state"
+                  name="state"
+                  value={formFields.state}
+                  onChange={handleChange}
+                  className="form-input"
+                  aria-required={checkingAddress}
+                  required={checkingAddress}
+                  placeholder="NY"
+                />
+              </div>
+            </div>
+            <div className="edit-profile-split-row">
+              <div className="form-group">
+                <Label htmlFor="zip" className="form-label">
+                  Zip Code
+                </Label>
+                <Input
+                  type="text"
+                  id="zip"
+                  name="zip"
+                  value={formFields.zip ? formFields.zip : ""}
+                  onChange={handleChange}
+                  className="form-input"
+                  aria-required={checkingAddress}
+                  required={checkingAddress}
+                  placeholder="01324"
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className={styles.buttonRow}>
         <Button type="submit" disabled={isSubmitting}>
@@ -232,119 +349,3 @@ export default function EditProfileForm() {
     </form>
   );
 }
-
-// ADDRESS HEADER
-// <HoverCard>
-//   <Label htmlFor="street" className="form-label">
-//     <h3
-//       className="text-left"
-//       style={{ margin: "1em 0em", fontWeight: "700" }}
-//     >
-//       Address
-//     </h3>
-//     <div
-//       className="centered"
-//       onMouseEnter={() => {
-//         setPointerOver((preVal) => ({ ...preVal, street: true }));
-//       }}
-//       onMouseLeave={() => {
-//         setTimeout(() => {
-//           setPointerOver((preVal) => ({ ...preVal, street: false }));
-//         }, SCROLL_OVER_WAIT_TIME);
-//       }}
-//     >
-//       <QuestionMark />
-//     </div>
-//     <Card
-//       className="small-over-text"
-//       style={{
-//         display: pointerOver.street ? "block" : "none",
-//         zIndex: "10",
-//       }}
-//     >
-//       <CardHeader>
-//         <CardTitle>Optional</CardTitle>
-//         <CardDescription>
-//           This is an optional field. We use your address to find out the
-//           best place for a group to meet. It is not required.
-//         </CardDescription>
-//       </CardHeader>
-//     </Card>
-//   </Label>
-// </HoverCard>
-
-// {/* STREET FIELD */}
-// <div className="form-group">
-//   <Label htmlFor="street" className="form-label">
-//     Street
-//   </Label>
-//   <Input
-//     type="text"
-//     id="street"
-//     name="street"
-//     value={formFields.street}
-//     onChange={handleChange}
-//     className="form-input"
-//     aria-required={checkingAddress}
-//     required={checkingAddress}
-//     placeholder="116 N. Main St."
-//   />
-// </div>
-
-// <div className={styles.splitRow}>
-//   {/* CITY FIELD */}
-//   <div className="form-group">
-//     <Label htmlFor="city" className="form-label">
-//       City
-//     </Label>
-//     <Input
-//       type="text"
-//       id="city"
-//       name="city"
-//       value={formFields.city}
-//       onChange={handleChange}
-//       className="form-input"
-//       aria-required={checkingAddress}
-//       required={checkingAddress}
-//       placeholder="New York"
-//     />
-//   </div>
-
-//   {/* STATE FIELD */}
-//   <div className="form-group">
-//     <Label htmlFor="state" className="form-label">
-//       State
-//     </Label>
-//     <Input
-//       type="text"
-//       id="state"
-//       name="state"
-//       value={formFields.state}
-//       onChange={handleChange}
-//       className="form-input"
-//       aria-required={checkingAddress}
-//       required={checkingAddress}
-//       placeholder="NY"
-//     />
-//   </div>
-// </div>
-
-// <div className="edit-profile-split-row">
-//   {/* ZIP FIELD */}
-//   <div className="form-group">
-//     <Label htmlFor="zip" className="form-label">
-//       Zip Code
-//     </Label>
-//     <Input
-//       type="text"
-//       id="zip"
-//       name="zip"
-//       value={formFields.zip ? formFields.zip : ""}
-//       onChange={handleChange}
-//       className="form-input"
-//       aria-required={checkingAddress}
-//       required={checkingAddress}
-//       placeholder="01324"
-//     />
-//   </div>
-// </div>
