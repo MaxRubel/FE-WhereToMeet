@@ -52,11 +52,17 @@ export function useGetUserGroups(userId: string) {
   });
 }
 
+type NewGroupResp = {
+  data: {
+    insertedId: string
+  }
+}
+
 // Create Group
 export function useCreateGroup() {
   const queryClient = useQueryClient();
 
-  return useMutation<Group, Error, Group>({
+  return useMutation<Group | Error | NewGroupResp>({
     mutationFn: async (payload) => {
       const response = await fetch(`${endpoint}/groups`, {
         method: "POST",
