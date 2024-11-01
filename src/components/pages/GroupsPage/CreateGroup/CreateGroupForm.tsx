@@ -31,7 +31,7 @@ export default function CreateGroupForm({ setIsViewing }: props) {
   };
 
   const [formFields, setFormFields] = useState<GroupForm>(initFields);
-  const createGroupMutation = useCreateGroup();
+  const createGroup = useCreateGroup();
   const navigate = useNavigate();
 
   const handleChange = (
@@ -65,7 +65,8 @@ export default function CreateGroupForm({ setIsViewing }: props) {
       ],
     };
 
-    createGroupMutation.mutate(payload, {
+    //@ts-ignore
+    createGroup.mutate(payload, {
       onSuccess: (data: unknown) => {
         const typedData = data as response;
         setIsViewing("ViewSingleGroup");
@@ -123,7 +124,7 @@ export default function CreateGroupForm({ setIsViewing }: props) {
         <Button
           style={{ marginTop: "1em" }}
           type="submit"
-          disabled={createGroupMutation.isLoading}
+          disabled={createGroup.isPending}
         >
           Submit
         </Button>
