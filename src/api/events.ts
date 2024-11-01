@@ -63,7 +63,6 @@ export function useGetUserEvents(userId: string) {
   });
 }
 
-
 // Get Single Event
 export function useGetSingleEvent(id: string) {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -191,8 +190,8 @@ export function useToggleVote() {
                 ...suggestion,
                 votes: hasVoted
                   ? suggestion.votes.filter(
-                    (vote: any) => vote.voter !== payload.userId
-                  )
+                      (vote: any) => vote.voter !== payload.userId
+                    )
                   : [...suggestion.votes, { voter: payload.userId }],
               };
             }
@@ -242,6 +241,7 @@ interface InviteResponse {
     email: string;
   };
 }
+
 export function useSendInvite() {
   const queryClient = useQueryClient();
 
@@ -269,5 +269,40 @@ export function useSendInvite() {
     onError: (err) => {
       console.error("Failed to send invite", err);
     },
+  });
+}
+
+type AddInvitePayload = {
+  email: string;
+  eventId: string;
+};
+
+export function addInviteEmailtoDB(payload: AddInvitePayload) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/events/add-invite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resp.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err));
+  });
+}
+
+export function checkInvitedEmail(payload: AddInvitePayload) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/events/check-invite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resp.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err));
   });
 }

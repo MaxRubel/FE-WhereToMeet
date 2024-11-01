@@ -79,6 +79,7 @@ export type Event = {
   endTime: string;
   suggestions: Suggestion[];
   messages: Message[];
+  invites: string[];
 };
 
 //------ sub-types------

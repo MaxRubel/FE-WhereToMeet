@@ -72,6 +72,7 @@ export default function CreateEventForm({
     endTime: "",
     suggestions: [],
     messages: [],
+    invites: [],
   };
 
   const [formFields, setFormFields] = useState<Event>(

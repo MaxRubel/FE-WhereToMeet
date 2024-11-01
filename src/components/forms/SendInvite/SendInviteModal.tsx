@@ -1,4 +1,8 @@
-import { useSendInvite } from "@/api/events";
+import {
+  addInviteEmailtoDB,
+  checkInvitedEmail,
+  useSendInvite,
+} from "@/api/events";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,12 +14,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/auth/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   eventId: string;
+};
+
+type RespType = {
+  success: boolean;
+  message: string;
 };
 
 export default function SendInviteModal({ eventId }: Props) {
@@ -24,19 +33,26 @@ export default function SendInviteModal({ eventId }: Props) {
   const sendInvite = useSendInvite();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [error, setError] = useState("");
 
-  const handleInvite = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    // clear the dialog on open / close
+    setEmail("");
+    setError("");
+  }, [isOpen]);
 
+  const sendInviteFunc = async () => {
     sendInvite.mutate(
       { eventId, inviteeEmail: email, inviterEmail: user.email },
       {
         onSuccess: () => {
+          addInviteEmailtoDB({ email, eventId });
           toast({
             title: "Success!",
             description: "Invitation sent successfully.",
             className: "toastty",
           });
+
           setEmail("");
           setIsOpen(false);
         },
@@ -50,6 +66,30 @@ export default function SendInviteModal({ eventId }: Props) {
         },
       }
     );
+  };
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await checkInvitedEmail({
+        email,
+        eventId,
+      });
+      const check = response as RespType;
+      if (check.success) {
+        sendInviteFunc();
+      } else {
+        setError("This person has already been invited.");
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error) setError("");
+    const { value } = e.target;
+    setEmail(value);
   };
 
   return (
@@ -71,19 +111,20 @@ export default function SendInviteModal({ eventId }: Props) {
             <Input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               placeholder="Enter email address"
               className="text-black"
               disabled={sendInvite.isPending}
             />
           </div>
           {sendInvite.isError && (
-            <p className="text-sm text-red-500">
+            <span className="text-sm text-red-500">
               {sendInvite.error instanceof Error
                 ? sendInvite.error.message
                 : "An error occurred"}
-            </p>
+            </span>
           )}
+          {error && <span style={{ color: "red" }}>{error}</span>}
           <Button
             type="submit"
             className="bg-purple-600 hover:bg-purple-700 w-full"
