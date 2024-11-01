@@ -1,8 +1,12 @@
-import { AddSymbol, CalendarIcon, ViewFolders } from "@/components/graphics/Graphics1";
+import {
+  AddSymbol,
+  CalendarIcon,
+  ViewFolders,
+} from "@/components/graphics/Graphics1";
 import "./EventPage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateEventForm from "@/components/forms/CreateFormEvent/CreateFormEvent";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import SingleEventLayout from "./ViewEvents/SingleEvent/SingleEventLayout";
 import ViewUpcomingEvents from "./ViewEvents/ViewUpcomingEvents";
 import ViewPastEvents from "./ViewEvents/ViewPastEvents";
@@ -10,15 +14,33 @@ import ViewPastEvents from "./ViewEvents/ViewPastEvents";
 export default function EventPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // set state based on URL Params:
+  const creating = searchParams.get("creating") === "true";
   const [isViewing, setIsViewing] = useState(
-    eventId ? "ViewSingleEvent" : "upcomingEvents"
+    creating
+      ? "CreateEventForm"
+      : eventId
+      ? "ViewSingleEvent"
+      : "upcomingEvents"
   );
+
+  useEffect(() => {
+    // reset the state on URL change
+    setIsViewing(
+      creating
+        ? "CreateEventForm"
+        : eventId
+        ? "ViewSingleEvent"
+        : "upcomingEvents"
+    );
+  }, [eventId, creating]);
 
   return (
     <div className="profile-page-layout">
       <div className="profile-side-bar">
         <ul className="profile-list">
-
           {/* ---Create Event--- */}
           <button
             className="clear-button side-list-item"
@@ -42,7 +64,9 @@ export default function EventPage() {
             style={{
               fontWeight: isViewing == "upcomingEvents" ? "900" : "",
               backgroundColor:
-                isViewing == "upcomingEvents" ? "rgb(245,245,245)" : "transparent",
+                isViewing == "upcomingEvents"
+                  ? "rgb(245,245,245)"
+                  : "transparent",
             }}
             onClick={() => {
               setIsViewing("upcomingEvents");
@@ -67,7 +91,6 @@ export default function EventPage() {
           >
             <ViewFolders size="20" /> Past Events
           </button>
-
         </ul>
       </div>
       <div className="profile-main-form">

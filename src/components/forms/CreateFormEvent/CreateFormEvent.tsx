@@ -128,6 +128,11 @@ export default function CreateEventForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // remove groupId from public event
+    if (!formFields.private) {
+      setFormFields((preVal) => ({ ...preVal, groupId: "" }));
+    }
+
     Object.values(errors).forEach((error) => {
       if (error) {
         window.alert("Please fill in the required fields.");
@@ -275,28 +280,24 @@ export default function CreateEventForm({
       </div>
 
       {/* ---Privacy Switch--- */}
-      {!event && (
-        <div style={{ marginBottom: "2em", marginTop: "1em" }}>
-          <div className={styles.switchDiv}>
-            <Label htmlFor="private-switch">Public Event</Label>
-            <Switch
-              id="private-switch"
-              style={{ padding: "0px" }}
-              onCheckedChange={handlePrivate}
-              checked={formFields.private}
-            />
-            <Label htmlFor="private-switch">Private Event</Label>
-          </div>
-          <div className={styles.privateExplain}>
-            A public event will be viewable by anyone with the link. A private
-            event will only be viewable by members of a group.
-          </div>
+      <div style={{ marginBottom: "2em", marginTop: "1em" }}>
+        <div className={styles.switchDiv}>
+          <Label htmlFor="private-switch">Public Event</Label>
+          <Switch
+            id="private-switch"
+            style={{ padding: "0px" }}
+            onCheckedChange={handlePrivate}
+            checked={formFields.private}
+          />
+          <Label htmlFor="private-switch">Private Event</Label>
         </div>
-      )}
+        <div className={styles.privateExplain}>
+          A public event will be viewable by anyone with the link. A private
+          event will only be viewable by members of a group.
+        </div>
+      </div>
 
-      {!event && formFields.private && (
-        <GroupPickerSection {...groupSectionProps} />
-      )}
+      {formFields.private && <GroupPickerSection {...groupSectionProps} />}
       <DatePickerSection {...datePickerProps} />
 
       {/* ---Location Section--- */}

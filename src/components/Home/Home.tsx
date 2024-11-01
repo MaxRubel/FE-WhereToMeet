@@ -1,57 +1,67 @@
-import { RefObject, useRef } from "react";
 import { useAuth } from "@/context/auth/auth";
-import { deleteUser } from "@/api/users";
 import style from "./home.module.css";
-
-const endpoint = import.meta.env.VITE_HTTP_MONGO_SERVER;
+import { useGetUserEvents } from "@/api/events";
+import { Event } from "dataTypes";
+import SmallEventCard from "../pages/EventsPage/ViewEvents/SmallEventCard";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
+import { GridLoader } from "react-spinners";
 
 export default function Home() {
-  const buttonRef: RefObject<HTMLButtonElement> = useRef(null);
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
+  const { data, isLoading } = useGetUserEvents(user._id);
+  const navigate = useNavigate();
 
-  const handleTestEndpoint = async () => {
-    try {
-      const resp = await fetch(endpoint);
-      console.warn(resp);
-      if (buttonRef.current) {
-        buttonRef.current.style.backgroundColor = "Green";
-        buttonRef.current.style.color = "white";
-      }
-    } catch (err) {
-      console.error("Not connecting to endpoint: ", err);
-      if (buttonRef.current) {
-        buttonRef.current.style.backgroundColor = "red";
-        buttonRef.current.style.color = "white";
-      }
-    }
-  };
+  if (isLoading) {
+    return <GridLoader />;
+  }
 
-  const handleDeleteUser = async () => {
-    try {
-      await deleteUser(user._id);
-      setUser("notLoggedIn");
-      localStorage.setItem("user", "");
-    } catch (err) {
-      console.error("unable to delete user: ", err);
-    }
-  };
+  //@ts-ignore
+  const upcomingEvents = data?.events.filter((event) => {
+    const eventDate = new Date(event.startDate);
+    const now = new Date();
+    return eventDate >= now;
+  });
 
   return (
     <div id="home-page-container" className={style.homePageContainer}>
       <div className={style.content}>
         {/* fixed section */}
         <div className={`${style.announcementsContainer} centered`}>
-          Announcments
-          {/* <img src="elvesChatting.jpeg" alt="" style={{ objectFit: "fill", width: "100%" }} /> */}
+          <img
+            src="beardedDudes.jpeg"
+            alt=""
+            style={{ objectFit: "cover", width: "100%" }}
+          />
         </div>
 
         {/* 2nd Section */}
         <div className={style.lowerSection}>
-          <h1>Welcome!</h1>
-          <button onClick={handleTestEndpoint} ref={buttonRef}>
-            Test Server Endpoint
-          </button>
-          <button onClick={handleDeleteUser}>Delete Your User</button>
+          <h2 style={{ paddingBottom: "1em" }}>Your Upcoming Events</h2>
+          <div>
+            {/* @ts-ignore */}
+            {upcomingEvents.length > 0 ? (
+              //@ts-ignore
+              upcomingEvents.map((event: Event) => (
+                <SmallEventCard event={event} key={event._id} />
+              ))
+            ) : (
+              <div className="flex flex-col justify-center">
+                <div>It looks like you have no upcoming events...</div>
+                <div style={{ marginTop: "2em" }}>
+                  <Button
+                    style={{ width: "200px" }}
+                    className="secondary-button"
+                    onClick={() => {
+                      navigate("/events?creating=true");
+                    }}
+                  >
+                    Why not create one?
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

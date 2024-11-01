@@ -66,7 +66,6 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
       <h2>Moderator Settings</h2>
 
       <div id="toggle-container" style={{ marginTop: "2em" }}>
-
         {/* ---private switch---
         <div id="private container" style={{ marginBottom: "2em" }}>
 
@@ -98,8 +97,8 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
             />
             <label htmlFor="toggle-suggestions" className="text-sm font-medium">
               {event.suggestionsEnabled
-                ? "Disable Suggestions"
-                : "Enable Suggestions"}
+                ? "Suggestions Enabled"
+                : "Suggestions Disabled"}
             </label>
           </div>
           <div className={styles.subSwitch}>
@@ -118,7 +117,7 @@ export default function ModeratorSettings({ event, setIsViewing }: props) {
               style={{ padding: "0px" }}
             />
             <label htmlFor="toggle-chat" className="text-sm font-medium">
-              {event.chatEnabled ? "Disable Chat" : "Enable Chat"}
+              {event.chatEnabled ? "Chat Enabled" : "Chat Disabled"}
             </label>
           </div>
           <div className={styles.subSwitch}>
