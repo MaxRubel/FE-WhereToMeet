@@ -43,7 +43,7 @@ export default function NavBar() {
       role="navigation"
       aria-label="Main Navigation"
     >
-      <div className="logo" role="banner">
+      <div role="banner">
         <Link to="/" className={styles.logoHover}>
           Where To Meet
         </Link>

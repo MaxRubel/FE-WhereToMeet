@@ -5,6 +5,7 @@ import AuthContextProvider from "./context/auth/auth.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
+import NavContextProvider from "./context/nav/NavContext.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,12 +20,15 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <React.StrictMode>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-      <ReactQueryDevtools />
-    </React.StrictMode>
-  </QueryClientProvider>
+
+  <AuthContextProvider>
+    <NavContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <React.StrictMode>
+          <App />
+          <ReactQueryDevtools />
+        </React.StrictMode>
+      </QueryClientProvider>
+    </NavContextProvider>
+  </AuthContextProvider>
 );
