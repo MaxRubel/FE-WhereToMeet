@@ -20,7 +20,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useValidateTimes } from "./useValidateTimes";
 import { initErrors } from "./CreateFormEvent";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type errorsType = {
   startDate: string;
@@ -57,24 +57,24 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
     formFields?.startDate ? true : false
   );
 
-  useEffect(() => {
-    // close date picker
-    function handleClickOut(e: PointerEvent) {
-      if ((e.target as HTMLElement)?.id !== "date-picker") {
-        if (startDateOpen) {
-          setStartDateOpen(false);
-        }
-        if (endDateOpen) {
-          setEndDateOpen(false);
-        }
-      }
-    }
+  // useEffect(() => {
+  //   // close date picker
+  //   function handleClickOut(e: PointerEvent) {
+  //     if ((e.target as HTMLElement)?.id !== "date-picker") {
+  //       if (startDateOpen) {
+  //         setStartDateOpen(false);
+  //       }
+  //       if (endDateOpen) {
+  //         setEndDateOpen(false);
+  //       }
+  //     }
+  //   }
 
-    document.addEventListener("pointerdown", handleClickOut);
-    return () => {
-      document.removeEventListener("pointerdown", handleClickOut);
-    };
-  }, [startDateOpen, endDateOpen]);
+  //   document.addEventListener("pointerdown", handleClickOut);
+  //   return () => {
+  //     document.removeEventListener("pointerdown", handleClickOut);
+  //   };
+  // }, [startDateOpen, endDateOpen]);
 
   const handleStartDate = (newDate: Date | undefined) => {
     if (!newDate) return;
