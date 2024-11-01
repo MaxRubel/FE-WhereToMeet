@@ -20,6 +20,9 @@ export default function Home() {
   const upcomingEvents = data?.events.filter((event) => {
     const eventDate = new Date(event.startDate);
     const now = new Date();
+    eventDate.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+
     return eventDate >= now;
   });
 
