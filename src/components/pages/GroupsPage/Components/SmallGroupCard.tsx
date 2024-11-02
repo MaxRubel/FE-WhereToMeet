@@ -47,8 +47,7 @@ export default function SmallGroupCard({ group }: SingleGroupProps) {
           }
         </div>
 
-        {/* @ts-expect-error (groupId is not null) */}
-        <AddMember groupId={group._id} />
+        <AddMember group={group} />
       </div>
     </>
   );

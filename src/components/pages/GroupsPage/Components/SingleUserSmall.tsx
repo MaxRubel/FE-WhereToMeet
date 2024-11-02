@@ -6,9 +6,10 @@ import { toast } from "@/hooks/use-toast"
 type props = {
   user: UserDB
   groupId: string
+  resetForm: () => void
 }
 
-export default function SingleUserSmall({ user, groupId }: props) {
+export default function SingleUserSmall({ user, groupId, resetForm }: props) {
   const addUserToGroup = useAddUserToGroup();
 
   const handleAddUser = async () => {
@@ -19,6 +20,7 @@ export default function SingleUserSmall({ user, groupId }: props) {
 
     addUserToGroup.mutate(payload, {
       onSuccess: () => {
+        resetForm();
         toast({
           title: "Success!",
           description: `${user.name} has been added to your group.`,

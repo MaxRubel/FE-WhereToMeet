@@ -129,19 +129,19 @@ export default function ViewSingleGroup() {
                 </div>
               </form>
             ) : // NOT EDITTING:
-            user._id === group?.ownerId ? (
-              // THIS IS YOUR GROUP:
-              <Button
-                onClick={() => setIsEditting(true)}
-                className="empty-button"
-              >
-                {data?.name}
-                <EditIcon size={"20"} />
-              </Button>
-            ) : (
-              //THIS IS NOT YOUR GROUP:
-              <h2 className="text-left">{data?.name}</h2>
-            )}
+              user._id === group?.ownerId ? (
+                // THIS IS YOUR GROUP:
+                <Button
+                  onClick={() => setIsEditting(true)}
+                  className="empty-button"
+                >
+                  {data?.name}
+                  <EditIcon size={"20"} />
+                </Button>
+              ) : (
+                //THIS IS NOT YOUR GROUP:
+                <h2 className="text-left">{data?.name}</h2>
+              )}
             {!isEditting && (
               <div className="text-left light-font">
                 {/* @ts-ignore */}
@@ -183,19 +183,19 @@ export default function ViewSingleGroup() {
             <div className={`light-font ${styles.membersContainer}`}>
               {group?.members?.length
                 ? group?.members?.map((member) => (
-                    <GroupMemberAvatar
-                      key={member._id}
-                      member={member}
-                      group={group}
-                    />
-                  ))
+                  <GroupMemberAvatar
+                    key={member._id}
+                    member={member}
+                    group={group}
+                  />
+                ))
                 : "No members have been added yet..."}
             </div>
 
             {/* ----ADD MEMBER BUTTON---- */}
             <div className={styles.buttonRow}>
               {/* @ts-ignore "groupId is null checked" */}
-              <AddMember groupId={group?._id} />
+              <AddMember group={group} />
 
               {/* ----DELETE BUTTON---- */}
               <Dialog>
