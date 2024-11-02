@@ -23,16 +23,19 @@ export default function GroupMemberAvatar({ member, group }: props) {
     if (!group._id || !member._id) {
       return;
     }
-    const payload = { groupId: group._id, memberId: member._id };
-    removeMember.mutate(payload, {
-      onSuccess: () => {
-        toast({
-          title: "Success!",
-          description: `${user.name} has been removed from your group.`,
-          className: "toastty",
-        });
-      },
-    });
+
+    if (window.confirm("Are you sure you want to remove this person from your group?")) {
+      const payload = { groupId: group._id, memberId: member._id };
+      removeMember.mutate(payload, {
+        onSuccess: () => {
+          toast({
+            title: "Success!",
+            description: `${member.name} has been removed from your group.`,
+            className: "toastty",
+          });
+        },
+      });
+    }
   };
 
   return (

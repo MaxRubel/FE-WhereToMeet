@@ -11,16 +11,18 @@ import styles from "./GroupStyles.module.css"
 import { Input } from '@/components/ui/input';
 import { useEffect, useRef, useState } from 'react';
 import { findUser } from '@/api/users';
-import { UserDB } from 'dataTypes';
-import SingleUserSmall from './InviteUserCard';
+import { Group, UserDB } from 'dataTypes';
+import SingleUserSmall from './SingleUserSmall';
+import { useAuth } from '@/context/auth/auth';
 
 type props = {
-  groupId: string
+  group: Group
 }
-export default function AddMember({ groupId }: props) {
+export default function AddMember({ group }: props) {
   const [searchValue, setSearchValue] = useState("")
   const [userResults, setUserResults] = useState<UserDB[]>([])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { user } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
@@ -35,7 +37,14 @@ export default function AddMember({ groupId }: props) {
       timeoutRef.current = setTimeout(() => {
         findUser(searchValue).then((data) => {
           const typedData = data as UserDB[]
-          setUserResults(typedData)
+
+          // don't display people who are already in the group:
+          const memberIds = new Set(group.members.map(member => member._id));
+
+          const filteredUsers = typedData.filter(candidate =>
+            candidate._id !== user._id && !memberIds.has(candidate._id)
+          );
+          setUserResults(filteredUsers)
         })
       }, 500);
     } else {
@@ -48,6 +57,11 @@ export default function AddMember({ groupId }: props) {
       }
     };
   }, [searchValue]);
+
+  const resetForm = () => {
+    setUserResults([])
+    setSearchValue("")
+  }
 
   return (
     <Dialog>
@@ -68,11 +82,17 @@ export default function AddMember({ groupId }: props) {
                   placeholder='Search Users'
                   onChange={handleChange}
                   value={searchValue}
+                  style={{ color: 'black' }}
                 />
               </div>
               <div id="users-container" className={styles.usersContainer}>
                 {userResults.map((user) => (
-                  <SingleUserSmall key={user._id} user={user} groupId={groupId} />
+                  <SingleUserSmall
+                    key={user._id}
+                    user={user}
+                    //@ts-ignore
+                    groupId={group._id}
+                    resetForm={resetForm} />
                 ))}
               </div>
             </div>

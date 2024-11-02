@@ -29,6 +29,7 @@
   grid-template-columns: 1fr 60px;
   padding: .5em 1em;
   cursor: pointer;
+  color: black;
 }
 
 .singleUserContainer:hover {
