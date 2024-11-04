@@ -61,6 +61,7 @@ export default function CreateGroupForm({ setIsViewing }: props) {
         {
           _id: user._id,
           joined: new Date(),
+          email:user.email
         },
       ],
     };
