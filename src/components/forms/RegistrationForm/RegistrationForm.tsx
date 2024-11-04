@@ -20,6 +20,7 @@ export type RegisterUserForm = {
   name: string;
   email: string;
   phone: string;
+  noEmails: boolean;
 };
 
 const initErrors = {
@@ -32,12 +33,14 @@ const initFields: RegisterUserForm = {
   name: "",
   email: "",
   phone: "",
+  noEmails: false,
 };
 
 export default function RegistrationForm() {
   const { user, setUser, checkUserFunc } = useAuth();
   const [formFields, setFormFields] = useState<RegisterUserForm>({
-    ...initFields, email: user.email
+    ...initFields,
+    email: user.email,
   });
   const [errors, setErrors] = useState(initErrors);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,13 +57,13 @@ export default function RegistrationForm() {
       return;
     }
 
-    const payload: UserDB = { ...emptyUserDB, ...formFields, uid: user.uid }
+    const payload: UserDB = { ...emptyUserDB, ...formFields, uid: user.uid };
 
     registerUser(payload).then((resp: unknown) => {
-      const typedResp = resp as UserDB
+      const typedResp = resp as UserDB;
       const storeUser = { ...user, ...typedResp };
       setUser(storeUser);
-      checkUserFunc()
+      checkUserFunc();
       localStorage.setItem("user", JSON.stringify(storeUser));
     });
   };
@@ -78,7 +81,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="form-container" style={{ marginTop: '3em' }}>
+    <div className="form-container" style={{ marginTop: "3em" }}>
       <h2 className="form-title">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         {/* NAME FIELD */}
