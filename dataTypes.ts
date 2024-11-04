@@ -22,6 +22,7 @@ export type UserDB = {
     };
   };
   friends: string[];
+  noEmails: boolean;
 };
 
 // -- init user --

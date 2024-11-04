@@ -131,3 +131,23 @@ export function getChatUsers(payload: chatUsersPayload) {
       .catch((err) => reject(err));
   });
 }
+
+export type ChangeEmailPrivatePayload = {
+  userId: string;
+  value: boolean;
+};
+
+export function changeEmailSetting(payload: ChangeEmailPrivatePayload) {
+  return new Promise((resolve, reject) => {
+    fetch(`${endpoint}/users/change-email-privacy`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resp.json())
+      .then((data) => resolve(data))
+      .catch((err) => reject(err));
+  });
+}
