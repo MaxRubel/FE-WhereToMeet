@@ -13,7 +13,10 @@
 }
 
 .membersFlex {
-  margin: .5em 0em;
+  margin: 0.5em 0em;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .spacedRow {
@@ -27,7 +30,7 @@
   border-radius: 10px;
   display: grid;
   grid-template-columns: 1fr 60px;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   cursor: pointer;
   color: black;
 }
@@ -62,5 +65,5 @@
 .skeleMembers {
   display: flex;
   flex-direction: wrap;
-  gap: 6px
+  gap: 6px;
 }
