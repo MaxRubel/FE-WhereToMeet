@@ -14,6 +14,7 @@ export default function EditPrivacyForm() {
     };
 
     try {
+      console.log("changing privacy setting");
       await changeEmailSetting(payload);
     } catch (err) {
       console.error(err);

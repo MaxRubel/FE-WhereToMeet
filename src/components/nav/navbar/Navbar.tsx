@@ -4,7 +4,7 @@ import { auth } from "../../../context/auth/firebase";
 import { useAuth } from "../../../context/auth/auth";
 import { useNavigate } from "react-router-dom";
 import styles from "./navbar.module.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -43,7 +43,7 @@ export default function NavBar() {
       role="navigation"
       aria-label="Main Navigation"
     >
-      <div role="banner">
+      <div role="banner" className={styles.logoDiv}>
         <Link to="/" className={styles.logoHover}>
           Where To Meet
         </Link>

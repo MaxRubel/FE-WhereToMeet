@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth/auth";
 import { useRemoveGroupMember } from "@/api/groups";
 import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 type props = {
   member: UserDB;
@@ -18,13 +19,18 @@ type props = {
 export default function GroupMemberAvatar({ member, group }: props) {
   const { user } = useAuth();
   const removeMember = useRemoveGroupMember();
+  const [imgError, setImgError] = useState(false);
 
   const handleRemoveUser = () => {
     if (!group._id || !member._id) {
       return;
     }
 
-    if (window.confirm("Are you sure you want to remove this person from your group?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to remove this person from your group?"
+      )
+    ) {
       const payload = { groupId: group._id, memberId: member._id };
       removeMember.mutate(payload, {
         onSuccess: () => {
@@ -43,11 +49,22 @@ export default function GroupMemberAvatar({ member, group }: props) {
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="inline-block">
-            <img
-              src={member.avatarUrl ? member.avatarUrl : user.photoURL}
-              alt={"Avatar"}
-              className="h-12 w-12 rounded-full object-cover cursor-pointer bg-background"
-            />
+            {imgError ? (
+              <img
+                src="https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg"
+                alt={"group member avatar"}
+                className="h-12 w-12 rounded-full object-cover cursor-pointer bg-background"
+              />
+            ) : (
+              <img
+                src={member.avatarUrl ? member.avatarUrl : user.photoURL}
+                alt={"group member avatar"}
+                className="h-12 w-12 rounded-full object-cover cursor-pointer bg-background"
+                onError={() => {
+                  setImgError(true);
+                }}
+              />
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent className="bg-white text-black shadow-md rounded-md p-2">

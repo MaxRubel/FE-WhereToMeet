@@ -23,7 +23,8 @@ export default function ViewUpcomingEvents() {
   today.setHours(0, 0, 0, 0);
   const filteredEvents = events.filter(
     (event: Event) =>
-      new Date(event.startDate).setHours(0, 0, 0, 0) >= today.getTime()
+      new Date(event.startDate).setHours(0, 0, 0, 0) >= today.getTime() ||
+      !event.startDate
   );
 
   return (
