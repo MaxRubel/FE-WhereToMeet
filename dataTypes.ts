@@ -56,7 +56,7 @@ export type UserType =
   | { _id: string }; //for guest
 
 export type Group = {
-  _id?: string; //primary key
+  _id: string; //primary key
   ownerId: string; //foreign key
   name: string;
   description: string;

@@ -31,11 +31,7 @@ type errorsType = {
 };
 
 export type DatePickerSectionProps = {
-  setStartDateOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setEndDateOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  startDateOpen: boolean;
   formFields: Event;
-  endDateOpen: boolean;
   errors: errorsType;
   setErrors: React.Dispatch<React.SetStateAction<errorsType>>;
   setFormFields: React.Dispatch<React.SetStateAction<Event>>;
@@ -43,12 +39,8 @@ export type DatePickerSectionProps = {
 
 export default function DatePickerSection(props: DatePickerSectionProps) {
   const {
-    setStartDateOpen,
-    setEndDateOpen,
     formFields,
     errors,
-    startDateOpen,
-    endDateOpen,
     setErrors,
     setFormFields,
   } = props;
@@ -94,7 +86,6 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
       ...prevFields,
       startDate: newDate,
     }));
-    setStartDateOpen(false);
   };
 
   const handleEndDate = (newDate: Date | undefined) => {
@@ -109,8 +100,6 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
       ...prevFields,
       endDate: newDate || null,
     }));
-
-    setEndDateOpen(false);
   };
 
   const handleStartTime = (e: any) => {
@@ -188,16 +177,13 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
                     </span>
                   )}
                 </Label>
-                <Popover open={startDateOpen}>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
                         "form-input justify-start text-left font-normal w-[240px]"
                       )}
-                      onClick={() => {
-                        setStartDateOpen(true);
-                      }}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formFields.startDate ? (
@@ -255,16 +241,13 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
                     </span>
                   )}
                 </Label>
-                <Popover open={endDateOpen}>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
                         "form-input justify-start text-left font-normal w-[240px]"
                       )}
-                      onClick={() => {
-                        setEndDateOpen(true);
-                      }}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formFields.endDate ? (

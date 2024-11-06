@@ -2,6 +2,7 @@ import { UserDB } from "dataTypes"
 import styles from "./GroupStyles.module.css"
 import { AddUserPayload, useAddUserToGroup } from "@/api/groups"
 import { toast } from "@/hooks/use-toast"
+import { useState } from "react"
 
 type props = {
   user: UserDB
@@ -11,6 +12,7 @@ type props = {
 
 export default function SingleUserSmall({ user, groupId, resetForm }: props) {
   const addUserToGroup = useAddUserToGroup();
+  const [error, setError] = useState(false)
 
   const handleAddUser = async () => {
     const payload: AddUserPayload = {
@@ -38,9 +40,12 @@ export default function SingleUserSmall({ user, groupId, resetForm }: props) {
       </div>
       <div>
         <img
-          src={user.avatarUrl}
+          src={error
+            ? "https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg"
+            : user.avatarUrl}
           alt="Avatar"
           className="h-12 w-12 rounded-full object-cover"
+          onError={() => setError(true)}
         />
       </div>
     </div>
