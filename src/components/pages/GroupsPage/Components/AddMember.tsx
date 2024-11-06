@@ -90,7 +90,6 @@ export default function AddMember({ group }: props) {
                   <SingleUserSmall
                     key={user._id}
                     user={user}
-                    //@ts-ignore
                     groupId={group._id}
                     resetForm={resetForm} />
                 ))}
