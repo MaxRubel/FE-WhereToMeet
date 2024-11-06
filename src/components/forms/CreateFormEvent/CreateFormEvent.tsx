@@ -39,8 +39,6 @@ export default function CreateEventForm({
 }: CreateEventFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [startDateOpen, setStartDateOpen] = useState(false);
-  const [endDateOpen, setEndDateOpen] = useState(false);
   const [errors, setErrors] = useState(initErrors);
 
   const initEvent: Event = {
@@ -225,12 +223,8 @@ export default function CreateEventForm({
   street ? (needsRestOfAddress = true) : (needsRestOfAddress = false);
 
   const datePickerProps: DatePickerSectionProps = {
-    setStartDateOpen,
-    setEndDateOpen,
     formFields,
     errors,
-    startDateOpen,
-    endDateOpen,
     setErrors,
     setFormFields,
   };
