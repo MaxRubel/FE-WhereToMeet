@@ -12,6 +12,7 @@ export default function InviteForm({ eventId }: any) {
             {
                 eventId,
                 inviteeEmail: email,
+                inviterEmail: 'example@email.com'
             },
             {
                 onSuccess: (data) => {
