@@ -3,15 +3,17 @@ import styles from "./navbar.module.css";
 
 type props = {
   open: boolean;
+  signOut: () => void;
+  closeNavList: () => void;
 };
 
-export default function SmallNavList({ open }: props) {
+export default function SmallNavList({ open, signOut, closeNavList }: props) {
   return (
     <div
       className="box-shadow"
       style={{
         backgroundColor: "rgb(255, 255, 255)",
-        height: "47.4vh",
+        height: "46vh",
         width: "93%",
         margin: "auto",
         position: "fixed",
@@ -23,15 +25,28 @@ export default function SmallNavList({ open }: props) {
         fontSize: "1.5em",
         transition: ".5s all ease",
         border: "none",
-        borderBottomRightRadius: "8%",
-        borderBottomLeftRadius: "8%",
+        borderBottomRightRadius: "5%",
+        borderBottomLeftRadius: "5%",
       }}
     >
       <div className={styles.smallNavList}>
-        <Link to={"/events?creating=true"}>Create New Event</Link>
-        <Link to={"/groups"}>View Groups</Link>
-        <Link to={"edit-profile"}>Edit Profile</Link>
-        <Link style={{ marginTop: ".5em" }} to={""}>
+        <Link to={"/events?creating=true"} onClick={closeNavList}>
+          Create New Event
+        </Link>
+        <Link to={"/groups"} onClick={closeNavList}>
+          View Groups
+        </Link>
+        <Link to={"edit-profile"} onClick={closeNavList}>
+          Edit Profile
+        </Link>
+        <Link
+          style={{ marginTop: ".5em" }}
+          to={"/"}
+          onClick={() => {
+            closeNavList();
+            signOut();
+          }}
+        >
           Sign Out
         </Link>
       </div>

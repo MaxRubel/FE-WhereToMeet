@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/auth/auth";
 import { useNavigate } from "react-router-dom";
 import styles from "./navbar.module.css";
 import { Link } from "react-router-dom";
-import { HamburgerIcon } from "@/components/graphics/Graphics1";
+import { CloseIcon, HamburgerIcon } from "@/components/graphics/Graphics1";
 import SmallNavList from "./SmallNavList";
 
 export default function NavBar() {
@@ -13,7 +13,7 @@ export default function NavBar() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-  const [smallNavOpen, setSmallNavOpen] = useState(true);
+  const [smallNavOpen, setSmallNavOpen] = useState(false);
 
   const handleClickOut = (e: MouseEvent): void => {
     if (!(e.target instanceof Element)) return;
@@ -29,6 +29,10 @@ export default function NavBar() {
     if (val >= 700 && smallNavOpen) {
       setSmallNavOpen(false);
     }
+  };
+
+  const closeSmallNavList = () => {
+    setSmallNavOpen(false);
   };
 
   const signOut = async () => {
@@ -137,7 +141,11 @@ export default function NavBar() {
     // SCREEN IS SMALLER THAN 700px
     return (
       <>
-        <SmallNavList open={smallNavOpen} />
+        <SmallNavList
+          open={smallNavOpen}
+          signOut={signOut}
+          closeNavList={closeSmallNavList}
+        />
         <nav
           className={styles.navBarContainer}
           role="navigation"
@@ -167,7 +175,11 @@ export default function NavBar() {
                 />
 
                 <span className="visually-hidden">User Settings</span>
-                <HamburgerIcon size={"34"} />
+                {smallNavOpen ? (
+                  <CloseIcon size="28" />
+                ) : (
+                  <HamburgerIcon size={"34"} />
+                )}
               </button>
               {settingsOpen && (
                 <div
