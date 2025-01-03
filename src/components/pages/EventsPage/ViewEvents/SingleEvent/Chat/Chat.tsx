@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getDatabase,
   ref,
@@ -32,9 +32,19 @@ export default function Chat({ eventId }: props) {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
   const [isEditting, setIsEditting] = useState<Message | null>(null);
+  const bottomWindowRef = useRef<HTMLDivElement>(null);
 
   //@ts-ignore loadingMessage will be used in the future
   const [loadingMessages, setLoadingMessages] = useState(true);
+
+  const scrollToBottom = () => {
+    if (bottomWindowRef.current) {
+      const container = bottomWindowRef.current.parentElement;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+  };
 
   useEffect(() => {
     const db = getDatabase();
@@ -107,6 +117,10 @@ export default function Chat({ eventId }: props) {
     };
   }, [eventId]);
 
+  useEffect(()=>{
+    scrollToBottom()
+  },[messages])
+
   useEffect(() => {
     //  editting / updating chat message
     if (isEditting?.id) {
@@ -167,6 +181,7 @@ export default function Chat({ eventId }: props) {
             <MessageCard message={message} sendEditData={setIsEditting} />
           </div>
         ))}
+        <div ref={bottomWindowRef}/>
       </div>
 
       {/* ----Text Area---- */}
