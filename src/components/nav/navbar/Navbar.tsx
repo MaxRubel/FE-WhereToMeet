@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import styles from "./navbar.module.css";
 import { Link } from "react-router-dom";
 import { HamburgerIcon } from "@/components/graphics/Graphics1";
+import SmallNavList from "./SmallNavList";
 
 export default function NavBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const [smallNavOpen, setSmallNavOpen] = useState(true);
 
   const handleClickOut = (e: MouseEvent): void => {
     if (!(e.target instanceof Element)) return;
@@ -22,7 +24,11 @@ export default function NavBar() {
   };
 
   const handleResize = () => {
-    setScreenWidth(window.innerWidth);
+    const val = window.innerWidth;
+    setScreenWidth(val);
+    if (val >= 700 && smallNavOpen) {
+      setSmallNavOpen(false);
+    }
   };
 
   const signOut = async () => {
@@ -128,33 +134,22 @@ export default function NavBar() {
       </nav>
     );
   } else {
+    // SCREEN IS SMALLER THAN 700px
     return (
-      <nav
-        className={styles.navBarContainer}
-        role="navigation"
-        aria-label="Main Navigation"
-      >
-        <div role="banner" className={styles.logoDivSmall}>
-          <Link to="/" className={styles.logoHover}>
-            Where To Meet
-          </Link>
-        </div>
+      <>
+        <SmallNavList open={smallNavOpen} />
+        <nav
+          className={styles.navBarContainer}
+          role="navigation"
+          aria-label="Main Navigation"
+        >
+          <div role="banner" className={styles.logoDivSmall}>
+            <Link to="/" className={styles.logoHover}>
+              Where To Meet
+            </Link>
+          </div>
 
-        {user && user._id && user._id !== "guest" ? (
-          <>
-            {/* <ul className={styles.navList}>
-              <li>
-                <Link to="/events" className={styles.navLink}>
-                  Events
-                </Link>
-              </li>
-              <li>
-                <Link to="/groups" className={styles.navLink}>
-                  Groups
-                </Link>
-              </li>
-            </ul> */}
-
+          {user && user._id && user._id !== "guest" ? (
             <div className={styles.navbarRightSmall}>
               <button
                 id="nav-button"
@@ -162,7 +157,7 @@ export default function NavBar() {
                 aria-haspopup="true"
                 aria-expanded={settingsOpen}
                 aria-controls="settings-menu"
-                onClick={() => setSettingsOpen((prevVal) => !prevVal)}
+                onClick={() => setSmallNavOpen((prevVal) => !prevVal)}
               >
                 <img
                   className={styles.avatarPhoto}
@@ -200,15 +195,15 @@ export default function NavBar() {
                 </div>
               )}
             </div>
-          </>
-        ) : (
-          <div>
-            <Link to="/sign-in" className={styles.navLink}>
-              Please Sign In
-            </Link>
-          </div>
-        )}
-      </nav>
+          ) : (
+            <div>
+              <Link to="/sign-in" className={styles.navLink}>
+                Please Sign In
+              </Link>
+            </div>
+          )}
+        </nav>
+      </>
     );
   }
 }

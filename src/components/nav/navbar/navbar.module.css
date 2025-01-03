@@ -83,6 +83,14 @@
   border-right: 1px solid rgb(122, 120, 120);
 }
 
+.greyHover {
+  gap: 15px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .greyHover:hover {
   background-color: rgb(59, 59, 59);
   color: rgb(245, 245, 245);
@@ -124,4 +132,15 @@
 .logoDivSmall {
   width: 50vw;
   border-right: 1px solid rgb(122, 120, 120);
+}
+
+.smallNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  text-align: left;
+  justify-content: center;
+  height: 100%;
+  font-weight: 300;
+  /* padding-left: 2em; */
 }
