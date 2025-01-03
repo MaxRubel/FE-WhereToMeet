@@ -81,7 +81,6 @@ export default function ViewSingleGroup() {
   };
 
   if (isLoading) {
-    // return <GroupSkelly />;
     return "";
   }
 
@@ -194,10 +193,10 @@ export default function ViewSingleGroup() {
 
             {/* ----ADD MEMBER BUTTON---- */}
             <div className={styles.buttonRow}>
-              {/* @ts-ignore "groupId is null checked" */}
               <AddMember group={group} />
 
               {/* ----DELETE BUTTON---- */}
+              {group.ownerId === user._id && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="deleteButton">Delete This Group</Button>
@@ -223,6 +222,7 @@ export default function ViewSingleGroup() {
                   </div>
                 </DialogContent>
               </Dialog>
+              )}
             </div>
           </div>
 
