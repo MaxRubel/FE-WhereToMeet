@@ -21,11 +21,14 @@
 }
 
 .lowerSection {
-  min-height: 100vh;
   background-color: rgb(255, 255, 255);
   position: sticky;
   z-index: 2;
   scroll-snap-align: start;
   padding: 7em;
-  padding-top: 2em;
+  padding-top: 4em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
