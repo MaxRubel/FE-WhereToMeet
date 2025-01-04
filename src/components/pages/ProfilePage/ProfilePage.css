@@ -2,6 +2,7 @@
   display: grid;
   padding-top: 2em;
   grid-template-columns: 1fr 4fr;
+  padding-bottom: 3em;
 }
 
 .profile-side-bar {
@@ -50,4 +51,15 @@
 
 .side-list-item:hover {
   background-color: rgb(240, 240, 240) !important;
+}
+
+@media screen and (max-width: 699px) {
+  .profile-page-layout {
+    grid-template-columns: 1fr;
+    padding-top: 1em;
+  }
+
+  .profile-side-bar {
+    padding-top: 0em;
+  }
 }
