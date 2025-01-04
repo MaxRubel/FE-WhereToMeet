@@ -17,6 +17,12 @@
   z-index: 10;
 }
 
+@media screen and (max-width: 699px) {
+  .navBarContainer {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .navList {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -31,6 +37,12 @@
 .navbarRight {
   display: flex;
   justify-content: center;
+}
+
+.navbarRightSmall {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .settingsMenuNav {
@@ -72,10 +84,8 @@
 }
 
 .greyHover {
-  height: 55px;
-  width: 55px;
+  gap: 15px;
   padding: 0px;
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,6 +95,14 @@
   background-color: rgb(59, 59, 59);
   color: rgb(245, 245, 245);
   transition: all 0.7s ease;
+}
+
+.greyHoverSmall {
+  gap: 15px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .navLink {
@@ -109,4 +127,20 @@
 
 .logoHover:hover {
   color: rgb(226, 224, 224);
+}
+
+.logoDivSmall {
+  width: 50vw;
+  border-right: 1px solid rgb(122, 120, 120);
+}
+
+.smallNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  text-align: left;
+  justify-content: center;
+  height: 100%;
+  font-weight: 300;
+  /* padding-left: 2em; */
 }
