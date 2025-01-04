@@ -144,3 +144,20 @@
   font-weight: 300;
   /* padding-left: 2em; */
 }
+
+.smallContainer{
+  left: 0;
+  right: 0;
+  z-index: 9;
+  padding: 1.5em 3em;
+  font-size: 1.2em;
+  transition: 0.5s all ease;
+  border: none;
+  border-bottom-right-radius: 5%;
+  border-bottom-left-radius: 5%;
+  background-color: white;
+  height: 46vh;
+  width: 93%;
+  margin: auto;
+  position: fixed;
+}
