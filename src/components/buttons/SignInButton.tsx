@@ -30,17 +30,17 @@ export default function SignInButton() {
   
 
   return (
-    <div className="row">
-      <div className="column left">
+    <div className="login-display">
+      <div className="column left ">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRJRGaLyKPCb2DopKU-IPVylyxUODEdgHmLA&s" alt="Logo" className="minilogo" /> 
 
-        <h2>Welcome to Where to Meet</h2>
+        <h1>Welcome to Where to Meet</h1>
         <p>Find your perfect meetup spot with us!</p> 
         <Button className="sign-in-btn mt-3" onClick={signIn}>Login</Button>
       </div>
       <div className="column right">
       <img src="https://i.pinimg.com/474x/ab/3d/e2/ab3de2f5cc08f507f728f39c66e596b8.jpg" alt="Logo" className="logo" /> 
-        <h2 className="mt-3">What is Where to Meet?</h2>
+        <h1 className="mt-3">What is Where to Meet?</h1>
         <p>Where to Meet is a platform for connecting and finding ideal meeting places for everyone.</p>
         
       </div>
