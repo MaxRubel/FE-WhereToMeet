@@ -36,7 +36,7 @@ export default function SignInButton() {
 
         <h1>Welcome to Where to Meet</h1>
         <p>Find your perfect meetup spot with us!</p> 
-        <Button className="sign-in-btn mt-3" onClick={signIn}>Login</Button>
+        <Button className="sign-in-btn mt-3" onClick={signIn}>Connect with Google</Button>
       </div>
       <div className="column right">
       <img src="https://i.pinimg.com/474x/ab/3d/e2/ab3de2f5cc08f507f728f39c66e596b8.jpg" alt="Logo" className="logo" /> 
