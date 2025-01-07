@@ -9,7 +9,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-
+import { GridLoader } from "react-spinners";
 import { checkUser } from "../../api/users";
 import { UserType } from "dataTypes";
 
@@ -21,6 +21,7 @@ type AuthContextType = {
   setIsPublicRoute: Dispatch<SetStateAction<boolean>>;
   isGuest: boolean;
   setIsGuest: Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
 };
 
 type AuthContextProviderProps = {
@@ -35,6 +36,7 @@ const authContext = createContext<AuthContextType>({
   setIsPublicRoute: () => { },
   isGuest: false,
   setIsGuest: () => { },
+  isLoading: false,
 });
 
 
@@ -45,6 +47,7 @@ export default function AuthContextProvider({
   const [checkUserCount, setCheckUserCount] = useState(0);
   const [isPublicRoute, setIsPublicRoute] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [isLoading, setIsLoading]=useState(false);
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -60,6 +63,7 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     const user = localStorage.getItem("user");
+    setIsLoading(true);
     // local storage item found:
     if (user) {
       const parsedUser = JSON.parse(user);
@@ -71,6 +75,8 @@ export default function AuthContextProvider({
             const storeUser = { ...parsedUser, ...resp.user };
             setUser(storeUser);
             localStorage.setItem("user", JSON.stringify(storeUser));
+            setIsLoading(false);
+            
           }
         })
         .catch((err: any) => {
@@ -78,13 +84,18 @@ export default function AuthContextProvider({
             "NOT CONNECTING TO DB... MAKE SURE ENV IS SET AND SERVER RUNNING",
             err
           );
-        });
+        })
+        .finally(()=>{
+        setIsLoading(false);
+    })
 
       // no local storage item found:
     } else if (!isGuest) {
       setUser("notLoggedIn");
+      setIsLoading(false)
     } else if (isGuest) {
       setUser({ _id: "guest" });
+      setIsLoading(false)
     }
   }, [checkUserCount, isGuest]);
 
@@ -96,8 +107,13 @@ export default function AuthContextProvider({
     setIsPublicRoute,
     isGuest,
     setIsGuest,
-  }), [user, isPublicRoute, isGuest]);
-
+    isLoading,
+  }), [user, isPublicRoute, isGuest, isLoading]);
+  
+  if(isLoading){
+   return( <GridLoader/>)
+  }
+  
   return (
     <authContext.Provider
       value={memoizedContextValue}
@@ -105,6 +121,7 @@ export default function AuthContextProvider({
       {children}
     </authContext.Provider>
   );
+
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

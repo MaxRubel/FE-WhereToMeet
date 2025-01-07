@@ -53,7 +53,7 @@ export type UserType =
   | null // for loading page
   | "notLoggedIn" // for not logged in
   | (UserDB & FirebaseUser) // for logged in
-  | { _id: string }; //for guest
+  | { _id: string }; //for guest;
 
 export type Group = {
   _id: string; //primary key
