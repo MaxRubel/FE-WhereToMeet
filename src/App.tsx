@@ -5,7 +5,11 @@ import Router from "./Route";
 import { GridLoader } from "react-spinners";
 
 function App() {
-  const { user, isGuest, isPublicRoute } = useAuth();
+  const { user, isGuest, isPublicRoute, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <GridLoader />;
+  }
 
   if (isGuest || isPublicRoute) {
     return <Router />;
@@ -13,13 +17,17 @@ function App() {
 
   if (user === null) {
     return <GridLoader />;
-  } else if (user === "notLoggedIn") {
-    return <LoginForm />;
-  } else if (!user._id) {
-    return <RegistrationForm />;
-  } else {
-    return <Router />;
   }
+
+  if (user === "notLoggedIn") {
+    return <LoginForm />;
+  }
+
+  if (!user._id) {
+    return <RegistrationForm />;
+  }
+
+  return <Router />;
 }
 
 export default App;
