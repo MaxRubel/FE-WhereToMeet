@@ -11,10 +11,10 @@ export default function SignInButton() {
   const [isLoaderVisible, setIsLoaderVisible] = useState(false)
 
   const signIn = async () => {
+    setIsLoaderVisible(true);
     const provider = new GoogleAuthProvider();
     try {
       const googleUser = await signInWithPopup(auth, provider);
-      setIsLoaderVisible(true);
 
       if (googleUser) {
         //@ts-ignore
