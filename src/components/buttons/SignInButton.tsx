@@ -22,8 +22,8 @@ export default function SignInButton() {
         localStorage.setItem("user", JSON.stringify(googleUser.user));
         checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
-            setIsLoaderVisible(false)
             setUser({ ...resp.user, ...googleUser.user });
+            setIsLoaderVisible(false)
           }
         });
       }
