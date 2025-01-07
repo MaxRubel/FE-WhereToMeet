@@ -3,9 +3,12 @@ import { auth } from "../../context/auth/firebase";
 import { useAuth } from "../../context/auth/auth";
 import { checkUser } from "../../api/users";
 import { Button } from "../ui/button";
+import { GridLoader } from "react-spinners";
+import { useState } from "react";
 
 export default function SignInButton() {
   const { setUser } = useAuth();
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false)
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -14,11 +17,15 @@ export default function SignInButton() {
 
       if (googleUser) {
         //@ts-ignore
+        setIsLoaderVisible(true);
         setUser(googleUser.user);
         localStorage.setItem("user", JSON.stringify(googleUser.user));
         checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
+            setIsLoaderVisible(false)
             setUser({ ...resp.user, ...googleUser.user });
+          }else{
+            setIsLoaderVisible(false);
           }
         });
       }
@@ -27,10 +34,14 @@ export default function SignInButton() {
     }
   };
 
-  
+  if(isLoaderVisible){
+    return <GridLoader/>
+  }
 
-  return (
-    <div className="login-display">
+  else {return (
+    <div>
+      
+      <div className="login-display">
       <div className="column left ">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRJRGaLyKPCb2DopKU-IPVylyxUODEdgHmLA&s" alt="Logo" className="minilogo" /> 
 
@@ -44,8 +55,11 @@ export default function SignInButton() {
         <p>Where to Meet is a platform for connecting and finding ideal meeting places for everyone.</p>
         
       </div>
+       </div>
     </div>
+    
   );
+}
   
   
 }
