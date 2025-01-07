@@ -14,23 +14,23 @@ export default function SignInButton() {
     const provider = new GoogleAuthProvider();
     try {
       const googleUser = await signInWithPopup(auth, provider);
+      setIsLoaderVisible(true);
 
       if (googleUser) {
         //@ts-ignore
-        setIsLoaderVisible(true);
         setUser(googleUser.user);
         localStorage.setItem("user", JSON.stringify(googleUser.user));
         checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
             setIsLoaderVisible(false)
             setUser({ ...resp.user, ...googleUser.user });
-          }else{
-            setIsLoaderVisible(false);
           }
         });
       }
     } catch (error) {
       console.error("Error signing in", error);
+    } finally{
+      setIsLoaderVisible(false)
     }
   };
 
