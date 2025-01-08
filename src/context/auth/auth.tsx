@@ -21,6 +21,8 @@ type AuthContextType = {
   setIsPublicRoute: Dispatch<SetStateAction<boolean>>;
   isGuest: boolean;
   setIsGuest: Dispatch<SetStateAction<boolean>>;
+  userId:any;
+  setUserId:Dispatch<SetStateAction<any>>;
 };
 
 type AuthContextProviderProps = {
@@ -35,6 +37,8 @@ const authContext = createContext<AuthContextType>({
   setIsPublicRoute: () => { },
   isGuest: false,
   setIsGuest: () => { },
+  userId:'',
+  setUserId:() => {},
 });
 
 
@@ -45,6 +49,7 @@ export default function AuthContextProvider({
   const [checkUserCount, setCheckUserCount] = useState(0);
   const [isPublicRoute, setIsPublicRoute] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [userId, setUserId] = useState<UserType>({_id: ''});
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -60,10 +65,13 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     const user = localStorage.getItem("user");
+    console.warn('local storage', user)
     // local storage item found:
     if (user) {
       const parsedUser = JSON.parse(user);
+      console.warn('local storage parse:',parsedUser._id)
       setUser(parsedUser);
+      setUserId(parsedUser._id);
 
       checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
@@ -86,7 +94,7 @@ export default function AuthContextProvider({
     } else if (isGuest) {
       setUser({ _id: "guest" });
     }
-  }, [checkUserCount, isGuest]);
+  }, [checkUserCount, isGuest,userId]);
 
   const memoizedContextValue = useMemo(() => ({
     user,
@@ -96,7 +104,10 @@ export default function AuthContextProvider({
     setIsPublicRoute,
     isGuest,
     setIsGuest,
-  }), [user, isPublicRoute, isGuest]);
+    userId,
+    setUserId
+    
+  }), [user, isPublicRoute, isGuest,userId]);
 
   return (
     <authContext.Provider

@@ -3,10 +3,14 @@ import LoginForm from "./components/forms/LoginForm/LoginForm";
 import RegistrationForm from "./components/forms/RegistrationForm/RegistrationForm";
 import Router from "./Route";
 import { GridLoader } from "react-spinners";
+import React from "react";
 
 function App() {
-  const { user, isGuest, isPublicRoute} = useAuth();
+  const { user, isGuest, isPublicRoute, userId } = useAuth();
 
+  React.useEffect(() => {
+    console.log('my userid:', userId);
+  }, [userId]);
 
   if (isGuest || isPublicRoute) {
     return <Router />;
@@ -18,14 +22,13 @@ function App() {
 
   else if (user === "notLoggedIn") {
     return <LoginForm />;
-  } else if (!user._id) {
-    setTimeout(() =>  <RegistrationForm/>, 6000); 
-  //  <RegistrationForm />;
-  
-  }else{
+  }
+
+  else if (!userId) {
+    return <RegistrationForm />;
+  }
 
   return <Router />;
-  }
 }
 
 export default App;

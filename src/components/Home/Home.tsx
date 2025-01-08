@@ -42,7 +42,7 @@ export default function Home() {
         <div className={style.lowerSection}>
           <h2 style={{ paddingBottom: "1em" }}>Your Upcoming Events</h2>
           <div>
-            {upcomingEvents.length > 0 ? (
+            {upcomingEvents?.length > 0 ? (
               upcomingEvents.map((event: Event) => (
                 <SmallEventCard event={event} key={event._id} />
               ))
