@@ -16,7 +16,8 @@ function App() {
   } else if (user === "notLoggedIn") {
     return <LoginForm />;
   } else if (!user._id) {
-    return <RegistrationForm />;
+    setTimeout(() =>  <RegistrationForm/>, 6000); 
+  //  <RegistrationForm />;
   } else {
     return <Router />;
   }
