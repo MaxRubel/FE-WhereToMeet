@@ -3,6 +3,7 @@ import LoginForm from "./components/forms/LoginForm/LoginForm";
 import RegistrationForm from "./components/forms/RegistrationForm/RegistrationForm";
 import Router from "./Route";
 import { GridLoader } from "react-spinners";
+// reversing my mistakes
 
 function App() {
   const { user, isGuest, isPublicRoute } = useAuth();
