@@ -12,7 +12,7 @@ function App() {
     return <Router />;
   }
 
-  if (user === null) {
+  if (user === null || user === "fetching") {
     return <GridLoader />;
   } else if (user === "notLoggedIn") {
     return <LoginForm />;

@@ -58,19 +58,23 @@ export default function AuthContextProvider({
     setCheckUserCount((preVal) => preVal + 1);
   }, [])
 
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     // local storage item found:
     if (user) {
       const parsedUser = JSON.parse(user);
       setUser(parsedUser);
-
+      const prevUser = parsedUser
+      setUser("fetching")
       checkUser({ uid: parsedUser.uid })
         .then((resp: any) => {
           if (resp.userExists) {
             const storeUser = { ...parsedUser, ...resp.user };
             setUser(storeUser);
             localStorage.setItem("user", JSON.stringify(storeUser));
+          } else {
+            setUser(prevUser)
           }
         })
         .catch((err: any) => {

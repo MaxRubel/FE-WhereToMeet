@@ -13,8 +13,7 @@ export default function SignInButton() {
       const googleUser = await signInWithPopup(auth, provider);
 
       if (googleUser) {
-        //@ts-ignore
-        setUser(googleUser.user);
+        setUser("fetching");
         localStorage.setItem("user", JSON.stringify(googleUser.user));
         checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
