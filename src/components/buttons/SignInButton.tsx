@@ -19,7 +19,7 @@ export default function SignInButton() {
           if (resp.userExists) {
             setUser({ ...resp.user, ...googleUser.user });
           } else {
-            setUser(googleUser.user)
+            setUser(googleUser.user);
           }
         });
       }
