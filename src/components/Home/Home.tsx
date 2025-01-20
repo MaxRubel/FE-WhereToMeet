@@ -5,7 +5,7 @@ import { Event } from "dataTypes";
 import SmallEventCard from "../pages/EventsPage/ViewEvents/SmallEventCard";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { GridLoader } from "react-spinners";
+import Loading from "../Loading";
 
 export default function Home() {
   const { user } = useAuth();
@@ -13,7 +13,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   if (isLoading) {
-    return <GridLoader />;
+    return <Loading />;
   }
 
   //@ts-ignore
