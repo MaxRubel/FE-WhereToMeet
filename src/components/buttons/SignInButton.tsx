@@ -18,6 +18,8 @@ export default function SignInButton() {
         checkUser({ uid: googleUser.user.uid }).then((resp: any) => {
           if (resp.userExists) {
             setUser({ ...resp.user, ...googleUser.user });
+          } else {
+            setUser(googleUser.user)
           }
         });
       }
