@@ -2,7 +2,7 @@ import { useAuth } from "./context/auth/auth";
 import LoginForm from "./components/forms/LoginForm/LoginForm";
 import RegistrationForm from "./components/forms/RegistrationForm/RegistrationForm";
 import Router from "./Route";
-import { GridLoader } from "react-spinners";
+import Loading from "./components/Loading";
 // reversing my mistakes
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
   }
 
   if (user === null || user === "fetching") {
-    return <GridLoader />;
+    return <Loading />;
   } else if (user === "notLoggedIn") {
     return <LoginForm />;
   } else if (!user._id) {
