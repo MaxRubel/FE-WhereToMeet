@@ -1,0 +1,8 @@
+#login-right-container {
+  background-image: url("https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDY3bmhyMGE4Mnc3bXN6dWY5ZmR4ZjA4ZXJvbjQ2ZXlzOW9lbHJseiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26xBAevSH9ORZM6tO/giphy.gif");
+  background-size: cover;
+}
+
+.column right {
+  background-color: #715043;
+}
