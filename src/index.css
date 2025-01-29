@@ -267,13 +267,14 @@ h2 {
 .login-display {
   display: flex;
   height: 100vh;
+  color: white;
 }
 
 .column {
   flex: 50%;
   padding: 10px;
   height: 100%;
-  background-color: #b3b8bd;
+  background-color: #715043;
 }
 
 .left {
@@ -281,7 +282,7 @@ h2 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
+  background-color: #715043;
 }
 
 .right {
@@ -291,7 +292,7 @@ h2 {
   justify-content: center;
   align-items: center;
 }
-@media(max-width:768px){
+@media (max-width: 768px) {
   .login-display {
     display: flex;
     flex-direction: column;
@@ -305,7 +306,7 @@ h2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color:white;
+    background-color: #715043;
   }
   .right {
     background-color: white;
@@ -314,7 +315,6 @@ h2 {
     justify-content: center;
     align-items: center;
   }
-
 }
 .sign-in-btn {
   padding: 10px 20px;
@@ -326,7 +326,9 @@ h2 {
 }
 
 .minilogo {
-  width: 20%;
+  width: 10%;
+  border-radius: 100px;
+  margin-bottom: 10px;
 }
 
 .purple {
