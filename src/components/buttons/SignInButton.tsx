@@ -32,11 +32,7 @@ export default function SignInButton() {
   return (
     <div className="login-display">
       <div className="column left ">
-        <img
-          src="../../../public/wheretomeetlogo.webp"
-          alt="Logo"
-          className="minilogo"
-        />
+        <img src="/wheretomeetlogo.webp" alt="Logo" className="minilogo" />
 
         <h1>Welcome to Where to Meet</h1>
         <p>Find your perfect meetup spot with us!</p>
