@@ -9,9 +9,73 @@ interface EventErrors {
   private: string;
 }
 
-function normalizeDate(date: string) {
+interface ValidationResult {
+  hasError: boolean;
+  updatedFields?: Partial<Event>;
+}
+
+function normalizeDate(date: string | Date): Date {
   const dateF = new Date(date);
   return new Date(dateF.getFullYear(), dateF.getMonth(), dateF.getDate());
+}
+
+function isSameDay(date1: string | Date, date2: string | Date): boolean {
+  const d1 = normalizeDate(date1);
+  const d2 = normalizeDate(date2);
+  return d1.getTime() === d2.getTime();
+}
+
+export function validateDateTimeState(formFields: Event): EventErrors {
+  const { startDate, endDate, startTime, endTime } = formFields;
+  const errors: EventErrors = {
+    startDate: "",
+    endDate: "",
+    startTime: "",
+    endTime: "",
+    private: ""
+  };
+
+  // Only validate if we have any date/time fields filled
+  if (startDate || endDate || startTime || endTime) {
+    // Check if start date is before today
+    if (startDate) {
+      const today = normalizeDate(new Date());
+      const startDateNormalized = normalizeDate(startDate);
+      if (startDateNormalized < today) {
+        errors.startDate = "Start date cannot be earlier than today's date";
+      }
+    }
+
+    if (startTime && !startDate) {
+      errors.startDate = "Date is required";
+    }
+
+    if (endTime && !endDate) {
+      errors.endDate = "End date is required";
+    }
+
+    if (endDate && !startDate) {
+      errors.startDate = "Start date is required";
+    }
+
+    if (startDate && endDate) {
+      const startDateNormalized = normalizeDate(startDate);
+      const endDateNormalized = normalizeDate(endDate);
+      
+      if (endDateNormalized < startDateNormalized) {
+        errors.endDate = "End date cannot be earlier than start date";
+      }
+
+      // If same day, validate times
+      if (isSameDay(startDate, endDate) && startTime && endTime) {
+        if (startTime > endTime) {
+          errors.endTime = "End time must be later than start time";
+        }
+      }
+    }
+  }
+
+  return errors;
 }
 
 export function useValidateTimes(
@@ -19,125 +83,58 @@ export function useValidateTimes(
   formFields: Event,
   input: string | Date,
   type: string,
-  setFormFields: Dispatch<React.SetStateAction<Event>>
-): boolean {
-  let { startTime, endTime, startDate, endDate } = formFields;
+  _setFormFields: Dispatch<React.SetStateAction<Event>>
+): ValidationResult {
+  let newFields: Partial<Event> = {};
 
-  if (type === "startTime") {
-    //no start date when start time is added
-    if (!startDate) {
-      setErrors((preVal) => ({ ...preVal, startDate: "Date is required" }));
-      return true;
-    } else {
-      setErrors((preVal) => ({ ...preVal, startDate: "" }));
-    }
+  // First, set the new value
+  switch (type) {
+    case "startTime":
+      newFields.startTime = input as string;
+      break;
+    case "endTime":
+      newFields.endTime = input as string;
+      break;
+    case "startDate":
+      newFields.startDate = input as Date;
+      break;
+    case "endDate":
+      newFields.endDate = input as Date;
+      break;
+  }
 
-    // if event starts and ends on the same day, start time must be earlier than end time
-    if (endDate && startDate === endDate && endTime && input > endTime) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startTime: "Start time must be earlier than end time.",
-      }));
-      return true;
+  // Create a temporary state with the new value
+  const tempState = {
+    ...formFields,
+    ...newFields
+  };
+
+  // Validate the entire state
+  const newErrors = validateDateTimeState(tempState);
+  setErrors(newErrors);
+
+  // Check if there are any errors
+  const hasErrors = Object.values(newErrors).some(error => error !== "");
+  
+  if (hasErrors) {
+    return { hasError: true };
+  }
+
+  // If no errors, include any additional field updates for time conflicts
+  if (type === "startDate" && formFields.endDate && formFields.startTime && formFields.endTime) {
+    if (isSameDay(input, formFields.endDate) && formFields.startTime > formFields.endTime) {
+      newFields.endTime = "";
     }
   }
 
-  if (type === "endTime") {
-    //no end date when end time is added
-    if (!endDate) {
-      setErrors((preVal) => ({
-        ...preVal,
-        endDate: "You must enter the date first.",
-      }));
-      return true;
-    }
-
-    if (!startDate) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startDate: "You must enter the date first.",
-      }));
-      return true;
-    }
-
-    if (!startTime) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startTime: "You must enter a start time first.",
-      }));
-      return true;
-    }
-
-    // if event starts and ends on the same day, end time must be later than start time
-    if (
-      new Date(startDate).getDate() === new Date(endDate).getDate() &&
-      input < startTime
-    ) {
-      setErrors((preVal) => ({
-        ...preVal,
-        endTime: "End time must be later than start time.",
-      }));
-      return true;
+  if (type === "endDate" && formFields.startDate && formFields.startTime && formFields.endTime) {
+    if (isSameDay(input, formFields.startDate) && formFields.startTime > formFields.endTime) {
+      newFields.endTime = "";
     }
   }
 
-  if (type === "startDate") {
-    //@ts-ignore -- date is a string here
-    if (input && normalizeDate(input) < normalizeDate(new Date())) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startDate: "Start date cannot be earlier than today's date.",
-      }));
-      return true;
-    } else {
-      setErrors((preVal) => ({ ...preVal, startDate: "" }));
-    }
-
-    if (endDate && input > endDate) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startDate: "Start date must be earlier than end date.",
-      }));
-      return true;
-    } else {
-      setErrors((preVal) => ({ ...preVal, startDate: "" }));
-    }
-
-    if (startTime && endTime && startTime > endTime) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startTime: "Start time must be earlier than end time.",
-      }));
-      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: "" }));
-      return true;
-    }
-  }
-
-  if (type === "endDate") {
-    if (!startDate) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startDate: "You must enter an start date first.",
-      }));
-      return true;
-    }
-    if (input < startDate) {
-      setErrors((preVal) => ({
-        ...preVal,
-        endDate: "End date must be later than start date.",
-      }));
-      return true;
-    }
-
-    if (startTime && endTime && startTime > endTime) {
-      setErrors((preVal) => ({
-        ...preVal,
-        startTime: "Start time must be earlier than end time.",
-      }));
-      setFormFields((preVal) => ({ ...preVal, endTime: "", endDate: "" }));
-      return true;
-    }
-  }
-
-  return false;
+  return {
+    hasError: false,
+    updatedFields: newFields
+  };
 }
