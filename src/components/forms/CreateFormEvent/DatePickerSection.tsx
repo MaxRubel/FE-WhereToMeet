@@ -70,58 +70,51 @@ export default function DatePickerSection(props: DatePickerSectionProps) {
 
   const handleStartDate = (newDate: Date | undefined) => {
     if (!newDate) return;
-    setErrors(initErrors);
-    if (
-      useValidateTimes(
-        setErrors,
-        formFields,
-        newDate,
-        "startDate",
-        setFormFields
-      )
-    ) {
-      return;
+    
+    const result = useValidateTimes(setErrors, formFields, newDate, "startDate", setFormFields);
+
+    if (!result.hasError && result.updatedFields) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        ...result.updatedFields
+      }));
     }
-    setFormFields((prevFields) => ({
-      ...prevFields,
-      startDate: newDate,
-    }));
   };
 
   const handleEndDate = (newDate: Date | undefined) => {
     if (!newDate) return;
-    setErrors(initErrors);
-    if (
-      useValidateTimes(setErrors, formFields, newDate, "endDate", setFormFields)
-    ) {
-      return;
+    
+    const result = useValidateTimes(setErrors, formFields, newDate, "endDate", setFormFields);
+
+    if (!result.hasError && result.updatedFields) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        ...result.updatedFields
+      }));
     }
-    setFormFields((prevFields) => ({
-      ...prevFields,
-      endDate: newDate || null,
-    }));
   };
 
-  const handleStartTime = (e: any) => {
-    setErrors(initErrors);
+  const handleStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    if (
-      useValidateTimes(setErrors, formFields, value, "startTime", setFormFields)
-    ) {
-      return;
+    const result = useValidateTimes(setErrors, formFields, value, "startTime", setFormFields);
+
+    if (!result.hasError && result.updatedFields) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        ...result.updatedFields
+      }));
     }
-    setFormFields((preVal) => ({ ...preVal, startTime: value }));
   };
 
-  const handleEndTime = (e: any) => {
-    setErrors(initErrors);
+  const handleEndTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    if (
-      useValidateTimes(setErrors, formFields, value, "endTime", setFormFields)
-    ) {
-      return;
+    const result = useValidateTimes(setErrors, formFields, value, "endTime", setFormFields);
+    if (!result.hasError && result.updatedFields) {
+      setFormFields((preVal) => ({
+        ...preVal,
+        ...result.updatedFields
+      }));
     }
-    setFormFields((preVal) => ({ ...preVal, endTime: value }));
   };
 
   const handleDateAccordian = () => {

@@ -19,6 +19,7 @@ import styles from "./styles.module.css";
 import DatePickerSection, { DatePickerSectionProps } from "./DatePickerSection";
 import GroupPickerSection, { GroupSectionProps } from "./GroupPickerSection";
 import { Switch } from "@/components/ui/switch";
+import { validateDateTimeState } from "./useValidateTimes";
 
 interface CreateEventFormProps {
   event?: Event;
@@ -125,19 +126,24 @@ export default function CreateEventForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+  
+    // Validate the entire form state
+    const dateTimeErrors = validateDateTimeState(formFields);
+    setErrors(dateTimeErrors);
+  
+    // Check if there are any errors
+    const hasErrors = Object.values(dateTimeErrors).some(error => error !== "");
+  
+    if (hasErrors) {
+      window.alert("Please fix all validation errors before submitting.");
+      return;
+    }
+  
     // remove groupId from public event
     if (!formFields.private) {
       setFormFields((preVal) => ({ ...preVal, groupId: "" }));
     }
-
-    Object.values(errors).forEach((error) => {
-      if (error) {
-        window.alert("Please fill in the required fields.");
-        return;
-      }
-    });
-
+  
     if (formFields.private && !formFields.groupId) {
       setErrors((preVal) => ({
         ...preVal,
@@ -145,16 +151,15 @@ export default function CreateEventForm({
       }));
       return;
     }
-
+  
+    // Continue with form submission...
     if (event && setIsViewing) {
-      //  update
       updateEvent.mutate(formFields, {
         onSuccess: () => {
           setIsViewing("singleEvent");
         },
       });
     } else {
-      // create
       createEvent.mutate(formFields, {
         onSuccess: (response) => {
           navigate(`/events/${response._id}`);
